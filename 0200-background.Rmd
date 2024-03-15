@@ -18,7 +18,7 @@ knitr::include_graphics("fig/OW_2024_bulk.png")
 
 The Neexdzii Kwah (Upper Bukley River) is an 8th order stream that drains an area of `r fwapgr::fwa_watershed_at_measure(360873822, 164920) %>% mutate(area_km2 = round(area_ha/100, 1)) %>% pull(area_km2)` km^2^ in a generally northerly direction from Bulkley Lake on the Nechako Plateau to its confluence with the Widzin Kwah (Morice River) near Houston [@WidzinKwahWaterSustainabilityProject]. It has a mean annual discharge of `r round(fasstr::calc_longterm_mean(station_number = "08EE003")$LTMAD,1)` m^3^/s at station 08EE003 located near Houston. The hydrograph peaks around May - June during the spring freshet with additional peaks related to significant rain events (Figures \@ref(fig:hydrograph1) and \@ref(fig:hydrology-stats1))[@westcott2022UpperBulkley]. Below the Morice confluence is the Lower Widzin Kwah (Lower Bulkley River) which flows in a northwesterly direction to its confluence with the Skeena River in Hazleton, but only a small section is included in the project study area [@WidzinKwahWaterSustainabilityProject].
 
-```{r, eval= FALSE}
+```{r get_hydat_stations, eval= FALSE}
 hydat_stations <- fpr::fpr_db_query(query = lfpr_dbq_clip('whse_environmental_monitoring.envcan_hydrometric_stn_sp',
 'whse_basemapping.fwa_watershed_groups_poly', 'watershed_group_code', c("BULK", "MORR")))
 
@@ -26,7 +26,7 @@ hydat_stations_active <- hydat_stations %>%
   dplyr::filter(station_operating_status == "ACTIVE-REALTIME")
 ```
 
-```{r, eval=TRUE}
+```{r, eval=FALSE}
 lfpr_create_hydrograph("08EE003", start_year = 1980)
 ```
 
@@ -41,7 +41,7 @@ knitr::include_graphics("fig/hydrology_stats_08EE003.png")
 ### Buck Creek
 Buck Creek is a 5th order stream which joins the Upper Bulkley River just upstream of the Morice Bulkley confluence and drains an area of `r fwapgr::fwa_watershed_at_measure(360886221) %>% mutate(area_km2 = round(area_ha/100, 1)) %>% pull(area_km2)` km^2^. Buck Creek is one of the main tributaries to the Upper Bulkley River and has a mean annual discharge of `r round(fasstr::calc_longterm_mean(station_number = "08EE013")$LTMAD,1)` m^3^/s at station 08EE013 located near the Houston Medical Centre approximately 1 km upstream of the mouth [@westcott2022UpperBulkley]. Flows from Buck Creek account for just under 1/3 of the total flows in the Upper Bulkley River. The hydrograph for Buck Creek shows a similar pattern to the Upper Bulkley River with peak flows in May - June (Figures \@ref(fig:hydrograph2) and \@ref(fig:hydrology-stats2)).
 
-```{r, eval=TRUE}
+```{r, eval=FALSE}
 lfpr_create_hydrograph("08EE013")
 ```
 
@@ -56,9 +56,9 @@ knitr::include_graphics("fig/hydrology_stats_08EE013.png")
 
 ### McQuarrie Creek
 
-```{r}
+```{r mcquarrie-creek, eval=TRUE}
 #McQuarrie Creek, station number 08EE0002, but station not part of hydat database
-mq <- read.csv("data/hydrometric/DataSetExport-Discharge.Logger@08EE0002-20240308164919.csv")
+mq <- read.csv("data/hydrometric/DataSetExport-Discharge.Logger08EE0002-20240308164919.csv")
 
 mq_clean <- mq %>%
   janitor::row_to_names(2) %>%
@@ -117,7 +117,7 @@ The Widzin Kwah (Morice River) watershed drains `r fwapgr::fwa_watershed_at_meas
 
 
 
-```{r, eval=TRUE}
+```{r, eval=FALSE}
 lfpr_create_hydrograph("08ED002")
 ```
 
