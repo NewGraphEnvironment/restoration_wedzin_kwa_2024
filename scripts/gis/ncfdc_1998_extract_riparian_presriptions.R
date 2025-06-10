@@ -46,7 +46,7 @@ d <- dplyr::bind_cols(
 
 # burn to project for viewing
 reaches |>
-  sf::st_write("/Users/airvine/Projects/gis/restoration_wedzin_kwa/ncfdc_1998_reach_breaks.geojson", delete_dsn = TRUE)
+  sf::st_write("/Users/airvine/Projects/gis/restoration_wedzin_kwa/ncfdc_1998_reach_breaks_raw.geojson", delete_dsn = TRUE)
 
 path <- 'data/inputs_raw/ncfdc_1998/AppF_riparian_prescriptions.xls'
 

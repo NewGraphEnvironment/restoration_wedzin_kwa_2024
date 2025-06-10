@@ -1,7 +1,6 @@
 tab:tab-exec-sum-cap
 fig:hydrograph-fasstr1
 fig:hydrograph-fasstr2
-tab:tab-hist-sites
 tab:tab-dfo-sad-tr-neexdzii
 tab:fiss-species-table
 tab:tab-rest-princ-pb
@@ -13,7 +12,6 @@ fig:all-benefits
 tab:tab-memos
 tab:tab-rfp-tracking
 tab:tab-uav-imagery-cap
-tab:tab-sites-restoration-gpkg-tracking
 tab:tab-price-2014-waypoints
 tab:tab-ncfdc-1998-priority
 tab:tab-ncfdc-1998-priority-detailed
@@ -71,6 +69,7 @@ collaborative-gis-environment-1
 methodology
 aerial-imagery-1
 historic-information-regarding-impacts-and-restoration-initiatives-1
+morin2016niwhtsidenihibiiten---niwhtsidenï-hibiitën-the-ways-of-our-ancestors
 mitchell1997riparianinstream---riparian-and-in-stream-assessment-of-the-bulkley-river-system---an-examination-and-priorization-of-impacts-on-the-tributaries-to-the-bulkley-river-mainstem
 price2014upperbulkleya---upper-bulkley-floodplain-habitat-modifications-physical-barriers-and-sites-of-potential-importance-to-salmonids
 ncfdc1998midbulkleydetailed---mid-bulkley-detailed-fish-habitatriparianchannel-assessment-for-watershed-restoration
