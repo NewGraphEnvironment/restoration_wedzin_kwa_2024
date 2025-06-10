@@ -1,10 +1,21 @@
 # Recommendations
-The Neexdzii Kwah watershed  has been extensively impacted not only by physical infrastructure, such as the linear corridors of CN Rail, Highway 16, resource extraction roads, and utility lines, but also by the legacy of colonization. Recovery efforts must go beyond technical interventions and include a commitment to learning from the vast body of knowledge held by the Wetsuwet'en people. This includes understanding cultural practices, oral tradition (Kungax), Wet'suwet'en Law (Ink Nu'at'en), place names, family connections, house groups (Yihk), poles (Ts'an), the feast system (Bahlats), etc [@harris2011Yinkadinii]. There is extensive literature documenting these histories, including <a href="https://open.library.ubc.ca/collections/delgamuukw" target="_blank">records from the Delgamuukw trial</a>
-, which can begin to provide a foundation for understanding the cultural significance of this landscape [@universityofbritishcolumbialibraryDelgamuukwTrial].
+The Neexdzii Kwah watershed  has been extensively impacted by land clearing/alterations/pollution related to agricultural activities and resource extraction
+as well as by the development of linear corridors of CN Rail, Highway 16, resource extraction roads, and utility infrastructure.  Furthermore the area
+has also been impacted by the legacy of colonization. Recovery efforts must go beyond technical interventions and include a 
+commitment to learning from the vast body of knowledge held by the Wetsuwet'en people. This includes understanding cultural 
+practices, oral tradition (Kungax), Wet'suwet'en Law (Ink Nu'at'en), place names, family connections, house groups (Yihk), 
+poles (Ts'an), the feast system (Bahlats), etc [@harris2011Yinkadinii]. There is extensive literature documenting these 
+histories, including `r ngr::ngr_str_link_url(url_base = "https://open.library.ubc.ca/collections/delgamuukw", anchor_text = "records from the Delgamuukw & Gisday Wa land claims")`  and within the book "Niwhts’ide’ni Hibi’it’ën: The Ways Of Our Ancestors. Witsuwit’en History & Culture 
+Throughout The Millennia" available through  `r ngr::ngr_str_link_url(url_base = "https://www.sd54.bc.ca/contact-us/", anchor_text = "School District #54")`
+, which can begin to provide a foundation for understanding the cultural significance of this landscape [@universityofbritishcolumbialibraryDelgamuukwTrial; @morin2016NiwhtsideniHibiiten].
 
 <br>
 
-Developing comprehensive restoration planning for the Neexdzii Kwah watershed will help ensure that the restoration activities address the underlying drivers of the degradation necessitating restoration. Through partnerships, education, and resource-sharing, stakeholders can work together to align ecological goals with economic interests, ensuring long-term benefits for the watershed. The following recommendations are provided to try to ensure that the restoration activities are most effective by addressing the underlying drivers of the degradation. At the time of writing this can be considered a partial list as the project is still in development and the recommendations are subject to change as the project progresses:
+This report should be considered a living document, with ongoing revisions and updates tracked through the [Changelog](#Changelog) section. We are humbled by the depth of knowledge that exists for this region, both through traditional knowledge and scientific study. We acknowledge that this report is far from complete, and that the work of restoring and sustaining ecosystem values will require many decades—if not centuries—of dedication. It is our hope that this effort can serve as a catalyst for positive change and foster genuine, open collaboration. 
+
+<br>
+
+Developing comprehensive restoration planning for the Neexdzii Kwah watershed will help ensure that the restoration activities address the underlying drivers of the degradation necessitating restoration. Through partnerships, education, and resource-sharing, stakeholders can work together to align ecological goals with economic interests, ensuring long-term benefits for the watershed. The following recommendations are provided to try to ensure that the restoration activities are most effective by addressing the underlying drivers of the degradation. At the time of writing this can be considered a partial list as the project is still in development and the recommendations are subject to change as the project progresses - often inform by issues and discussions partially tracked [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues) and through the resources documented within Table \@ref(tab:tab-exec-sum-cap).
 
 ```{r, echo=FALSE}
 knitr::include_url("https://www.newgraphenvironment.com/restoration_wedzin_kwa_2024_recomendations/", height = "800px")
