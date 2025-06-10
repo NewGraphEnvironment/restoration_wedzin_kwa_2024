@@ -2,9 +2,9 @@
 
 ## Field Review
 
-In the field in September and early October 2024 we were able to survey approximately 12 km of Bulkley and Buck mainstem along with 1.5 km of Johnny David and Richfield. Within those areas and elsewhere we reviewed: 
+In the field in September and early October 2024 we were able to survey approximately 12 km of Bulkley and Buck mainstem along with 1.5 km of Johnny David and Richfield. Within those areas and elsewhere we reviewed:
 
--    14 past prescription sites from @ncfdc1998MidBulkleyDetailed
+-   14 past prescription sites from @ncfdc1998MidBulkleyDetailed
 
 -   6 prescription locations from the Wet'suwet'en First Nation 2016 report (2 sites were mapped in high resolution with a drone),
 
@@ -72,8 +72,8 @@ rfp_tracking_prep %>%
 ```
 
 ## Aerial Imagery
-Orthoimagery has been gathered in the Neexdzii Kwah watershed for past monitoring of historic restoration sites, as part of fish passage restoration planning efforts, and specifically for this project by Matt Sakals (WLRS Provincial Drone Specialist) and New Graph Environment Ltd. team members. Data has been stored as Cloud Optimized Geotiffs on a cloud service provider (AWS) with most outputs linked to in the collaborative GIS project. Data can be downloaded and viewed through the links provided in Table \@ref(tab:tab-uav-imagery-cap).  
 
+Orthoimagery has been gathered in the Neexdzii Kwah watershed for past monitoring of historic restoration sites, as part of fish passage restoration planning efforts, and specifically for this project by Matt Sakals (WLRS Provincial Drone Specialist) and New Graph Environment Ltd. team members. Data has been stored as Cloud Optimized Geotiffs on a cloud service provider (AWS) with most outputs linked to in the collaborative GIS project. Data can be downloaded and viewed through the links provided in Table \@ref(tab:tab-uav-imagery-cap).
 
 ```{r uav-get, eval = T}
 
@@ -141,19 +141,34 @@ uav_tab |>
   my_dt_table(cols_freeze_left = 0, escape = FALSE)
 ```
 
-
 ## Historic Information Regarding Impacts and Restoration Initiatives
 
-Information amalgamated from past restoration initiatives has been added to the `restoration_wedzin_kwa` project in spatial formats through the `sites_restoration.gpkg` with details of source document locations, geometry type, description of the source document amalgamated, etc. documented in the `sites_restoration_gpkg_tracking.csv` file located [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/sites_restoration_gpkg_tracking.csv) with results presented in Table \@ref(tab:tab-sites-restoration-gpkg-tracking).
+Understanding how we arrived at our current ecological and cultural state is essential for guiding present-day restoration and future sustainability efforts. This section provides high-level summaries of selected foundational references that document impacts to ecosystems and communities, as well as associated restoration initiatives. These works do not represent an exhaustive review but offer critical perspectives and historical context. We particularly highlight:
 
-```{r tab-sites-restoration-gpkg-tracking}
+-   Niwhts’ide’nï Hibi’itën: The Ways of Our Ancestors (@morin2016NiwhtsideniHibiiten)
+
+-   Development Of Aquatic Restoration Designs And On-Farm Cattle Management Improvements Within the Wet’suwet’en First Nation Territory (@gaboury_smith2016DevelopmentAquatic)
+
+-   Mid-Bulkley Detailed Fish Habitat/Riparian/Channel Assessment for Watershed Restoration (@ncfdc1998MidBulkleyDetailed)
+
+-   Upper Bulkley Floodplain Habitat: Modifications, Physical Barriers, and Sites of Potential Importance to Salmonids (@price2014UpperBulkleya)
+
+-   Riparian and In-Stream Assessment of the Bulkley River System: An Examination and Prioritization of Impacts on the Tributaries to the Bulkley River Mainstem (@mitchell1997RiparianInStream)
+
+```{r tab-sites-restoration-gpkg-tracking, eval = FALSE}
+
+
+# Information amalgamated from past restoration initiatives has been added to the `restoration_wedzin_kwa` project in spatial formats through the `sites_restoration.gpkg` with details of source document locations, geometry type, description of the source document amalgamated, etc. documented in the `sites_restoration_gpkg_tracking.csv` file located [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/sites_restoration_gpkg_tracking.csv) with results presented in Table \@ref(tab:tab-sites-restoration-gpkg-tracking).
 readr::read_csv(
   "data/sites_restoration_gpkg_tracking.csv"
 ) %>% 
   fpr::fpr_kable(caption_text = "Summary of past restoration initiatives added to the `sites_restoration.gpkg` geopackage of the `restoration_wedzin_kwa` project. Work in progress.")
 ```
 
-<br>
+### @morin2016NiwhtsideniHibiiten - Niwhts’ide’nï Hibi’itën: The Ways of Our Ancestors
+
+@morin2016NiwhtsideniHibiiten documents Witsuwit’en history, land relationships, and governance through the words and teachings of Hereditary Chiefs and Elders. It emphasizes the importance of oral histories, place-based knowledge, and language, following the Witsuwit’en system of writing (orthography) for names and terms. The work provides essential context for understanding long-term stewardship and the impacts of colonial policies on Witsuwit’en lands and governance.
+
 
 ### @mitchell1997RiparianInStream - Riparian and In-stream Assessment of the Bulkley River System - An Examination and Priorization of Impacts on the Tributaries to the Bulkley River Mainstem
 
@@ -382,10 +397,11 @@ ncfdc_1998_cleaned %>%
 ```
 
 ### @gaboury_smith2016DevelopmentAquatic - Development of Aquatic Restoration Designs and On-Farm Cattle Management Improvements within the Wet'suwet'en irst Nation Territory
+
 @gaboury_smith2016DevelopmentAquatic outlines four general types of aquatic restoration designs aimed at improving fish habitat and passage in the bulkley river system: installing large woody debris and rock groin structures at eroding meanders, constructing riffles in channelized sections, adding riffles at backwater culverts to enhance connectivity, and reconstructing a fish bypass channel. These approaches focus on supporting habitat for steelhead, chinook, coho, trout, and char. Funding for the project was provided by Fisheries and Oceans Canada’s Fish Habitat Restoration Initiative and through in-kind support from landowners and West Fraser. Yinka Dene Economic Development Limited Partnership Inc. (YLP), in collaboration with LGL Limited, developed designs and management plans for 16 high-priority sites in Wet’suwet’en First Nation territory between 2015 and 2019. Related construction efforts are documented in @smith_gaboury2016BUILTREPORT and @smith_gaboury2017ASBUILTREPORT, including work at at four of these sites in 2016 as well as Johnny David Creek at Highway 16 in 2017. Site locations and associated data from this report have been added to the shared GIS project.
 
+### @skeenasustainabilityassessmentforum2021Skeenasustainability - State of the Value Report for Fish and Fish Habitat
 
-###  @skeenasustainabilityassessmentforum2021Skeenasustainability - State of the Value Report for Fish and Fish Habitat
 The Skeena Sustainability Assessment Forum (SSAF) is a collaborative environmental stewardship initiative established under the Environmental Stewardship Initiative (ESI), bringing together 10 Skeena Nations and the Province of British Columbia. The SSAF supports shared decision-making by integrating Indigenous knowledge, scientific data, and local values to assess the state and trends of key environmental resources, including fish and fish habitat [@environmentalstewardshipinitiative2019Skeenasustainability].
 
 <br>
@@ -395,14 +411,12 @@ As part of this work, the SSAF State of the Value Report for Fish and Fish Habit
 ## Future Restoration Site Selection
 
 ### Evaluation of Historic and Current Imagery
-As part of this project - we developed a system to identify the IDs of historic ortho photos for specific timeframes and areas within the Upper Bulkley watershed. The system is designed to be flexible, allowing adjustments to parameters such as input year and location, and it can be adapted for use in other regions across the province. Next steps include aquisition of photos from the province which will enable georeferencing, amalgamation, storage and analysis. Details on the system and the code developed are outlined [here](https://www.newgraphenvironment.com/new_graphiti/posts/2024-11-15-bcdata-ortho-historic/), with individual photo IDs for the study area available [here](https://github.com/NewGraphEnvironment/new_graphiti/tree/main/posts/2024-11-15-bcdata-ortho-historic/exports/). Of note, direct communications with the provincial Image Warehouse Specialist resulted in details of images available for the study area for 1949 and 1963 (prior to those detailed at the above site) - which at the time of reporting had not yet been updated to [Web Imagery Search Interface](https://www2.gov.bc.ca/gov/content/data/geographic-data-services/digital-imagery/imagery-search) or the provincial [
-Base Map Online Store](https://www2.gov.bc.ca/gov/content/data/geographic-data-services/topographic-data/base-map-online-store) [@governmentofbritishcolumbia2024Webimagery; @governmentofbritishcolumbia2025Basemap; pers comm Koraley Tylor - Image Warehouse Specialist]. We have included this information within the project code repository [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/tree/main/data/gis/imagery_historic). 
 
+As part of this project - we developed a system to identify the IDs of historic ortho photos for specific timeframes and areas within the Upper Bulkley watershed. The system is designed to be flexible, allowing adjustments to parameters such as input year and location, and it can be adapted for use in other regions across the province. Next steps include aquisition of photos from the province which will enable georeferencing, amalgamation, storage and analysis. Details on the system and the code developed are outlined [here](https://www.newgraphenvironment.com/new_graphiti/posts/2024-11-15-bcdata-ortho-historic/), with individual photo IDs for the study area available [here](https://github.com/NewGraphEnvironment/new_graphiti/tree/main/posts/2024-11-15-bcdata-ortho-historic/exports/). Of note, direct communications with the provincial Image Warehouse Specialist resulted in details of images available for the study area for 1949 and 1963 (prior to those detailed at the above site) - which at the time of reporting had not yet been updated to [Web Imagery Search Interface](https://www2.gov.bc.ca/gov/content/data/geographic-data-services/digital-imagery/imagery-search) or the provincial [Base Map Online Store](https://www2.gov.bc.ca/gov/content/data/geographic-data-services/topographic-data/base-map-online-store) [@governmentofbritishcolumbia2024Webimagery; @governmentofbritishcolumbia2025Basemap; pers comm Koraley Tylor - Image Warehouse Specialist]. We have included this information within the project code repository [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/tree/main/data/gis/imagery_historic).
 
 ### Fish Passage
 
-High priority fish passage restoration opportunities in the Neexdzii Kwah watershed include mulitple culverts on Highway 16 such as Richfield Creek, Johnny David Creek, and Byman Creek along with crossings on private roads, secondary roads and the railway such as Ailport Creek, Perow Creek, tributary to Buck Creek (PSCIS 197640) and Cesford Creek. Some sites have had past work (Johnny David) and others are currently progressing through the design process (trib to Buck) with details presented in the reports below - which are updated intermittently. Of note @irvine_schick2025SkeenaWatershed includes summary tables within the "Results and Discussion" section which detail all sites surveyed since 2020 and link the reader to individual reports and detailed site memos for each site (when available). Additionally, the top priorities within the greater Bulkley River watershed group are ranked numerically within 
-the table includeing Richfield Creek, Ailport Creek, Cesford Creek and Johnny David Creek within the top ten.
+High priority fish passage restoration opportunities in the Neexdzii Kwah watershed include mulitple culverts on Highway 16 such as Richfield Creek, Johnny David Creek, and Byman Creek along with crossings on private roads, secondary roads and the railway such as Ailport Creek, Perow Creek, tributary to Buck Creek (PSCIS 197640) and Cesford Creek. Some sites have had past work (Johnny David) and others are currently progressing through the design process (trib to Buck) with details presented in the reports below - which are updated intermittently. Of note @irvine_schick2025SkeenaWatershed includes summary tables within the "Results and Discussion" section which detail all sites surveyed since 2020 and link the reader to individual reports and detailed site memos for each site (when available). Additionally, the top priorities within the greater Bulkley River watershed group are ranked numerically within the table includeing Richfield Creek, Ailport Creek, Cesford Creek and Johnny David Creek within the top ten.
 
 -   [Skeena Watershed Fish Passage Restoration Planning 2024](https://www.newgraphenvironment.com/fish_passage_skeena_2024_reporting/)[@irvine_schick2025SkeenaWatershed]
 -   [Skeena Watershed Fish Passage Restoration Planning 2023](https://www.newgraphenvironment.com/fish_passage_skeena_2023_reporting/)[@irvine_schick2024SkeenaWatershed]
@@ -417,10 +431,12 @@ At the time of writing, lateral connectivity analysis had been run for areas of 
 
 Numerous sites proposed for riparian area and erosion protection activities are are viewable in the `restoration_wedzin_kwa` project. These sites were selected based on local knowledge and landowner willingness to participate in restoration activities.
 
-
 ### Delineation of Areas of High Fisheries Values
 
-As noted within the methods - past work to spatially delineate areas of high value habitat known to be utilized historically for chinook and sockeye salmon spawning (among other data) undertaken by DFO, Arocha Canada and others has been stored within a secure location and linked within the shared GIS project.  @wilson_rabnett2007FishPassage includes descriptions of traditional Wet'suwet'en Fisheries sites within the Neexdzi Kwa which will be spatialized for the project - with progress tracked [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/64).
+As noted within the methods - past work to spatially delineate areas of high value habitat known to be utilized historically for chinook and sockeye salmon spawning (among other data) undertaken by DFO, Arocha Canada and others has been stored within a secure location and linked within the shared GIS project. Tables of traditional fishing sites as detailed in @gottesfeld_rabnett2007SkeenaFish as well as @wilson_rabnett2007FishPassage
+have been extracted from the original documents and are stored [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/tree/main/data/inputs_extracted). Traditional fishing areas located within the Neexdzii Kwah as documented by @gottesfeld_rabnett2007SkeenaFish have been
+spatialized, stored within a location (outside of the github and mergin repositories) and linked to within
+the collaborative GIS project.  
 
 ### Parameter Ranking to Select Future Restoration Sites
 
@@ -543,4 +559,3 @@ tab_gis_params_raw |>
   my_dt_table(cols_freeze_left = 2, escape = FALSE)
 
 ```
-
