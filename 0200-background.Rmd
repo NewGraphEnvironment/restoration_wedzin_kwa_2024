@@ -14,6 +14,7 @@ The study area primarily focuses on the Neexdzii Kwah (Upper Bulkley River), whi
 knitr::include_graphics("fig/OW_2024_bulk.png")
 ```
 
+
 ### Neexdzii Kwah (Upper Bulkley River)
 ```{r area-bulk, eval=FALSE}
 fwapgr::fwa_watershed_at_measure(360873822, 164920) %>% mutate(area_km2 = round(area_ha/100, 1)) %>% pull(area_km2)
@@ -216,13 +217,18 @@ A detailed field assessment and write up regarding the upper Bulkley falls was c
 
 #### Traditional Fishing Sites within the Neexdzii Kwah
 
-Traditional fishing areas located within the Neexdzii Kwah as documented by @wilson_rabnett2007FishPassage are detailed in Table \@ref(tab:tab-hist-sites).
+Tables of sites as detailed in @gottesfeld_rabnett2007SkeenaFish as well as @wilson_rabnett2007FishPassage
+have been extracted from these original documents and are stored [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/tree/main/data/inputs_extracted). Traditional fishing areas located within the Neexdzii Kwah as documented by @gottesfeld_rabnett2007SkeenaFish have been
+spatialized, stored within a location (outside of the github and mergin repositories) and linked to within
+the collaborative GIS project.  
 
 
 ```{r hist-sites-extract, eval=FALSE}
+
+# @wilson_rabnett2007FishPassage are detailed in Table \@ref(tab:tab-hist-sites).
 # amazingly tabulizer is now not working with the new version of R.  We use tabulapdf now! (see Price 2014 extraction)
 # Extract historical fishing sites
-path <- "/Users/airvine/zotero/storage/8SUN8SYA/Wilson and Rabnett - 2007 - Fish Passage Assessment of.pdf"
+path <- "/Users/airvine/zotero/storage/8SUN8SYA/wilson_rabnett_2007_fish_passage_assessment_of_highway_16_and_cn_rail_in_the_bulkley_watershed.pdf"
 
 
 ##define the area to extract table from for first page
@@ -238,7 +244,7 @@ tab_trim <- list(c(70.98383,  84.16353, 407.17779, 521.81754 ))
 names_cols <- c('Site Location', 'Tradional Site Name', 'Fish Species')
 
 ##extract the tables useing the areas you defined
-table_raw <- tabulizer::extract_tables(path,
+table_raw <- tabulapdf::extract_tables(path,
                                        pages = seq(64,64),
                                         method = "lattice",
                                         area = tab_trim) %>% 
@@ -251,12 +257,41 @@ table_raw <- tabulizer::extract_tables(path,
 
 # burn out to csv for safe keeping
 table_raw %>% 
-  readr::write_csv('data/trad_fish_sites_gottesfeld_rabnett2007FishPassage.csv')
+  readr::write_csv('data/inputs_extracted/trad_fish_sites_wilsonrabnett2007FishPassage.csv')
+
+
+path <- "/Users/airvine/zotero/storage/IQ89I7BK/gottesfeld_rabnett_2007_skeena_fish_populations_and_their_habitat.pdf"
+
+#you would run with this the first time
+tab_trim <- tabulapdf::locate_areas(path, 384)
+
+tab_trim <- list(c(75.12685,  87.24851, 409.12454, 521.12677))
+
+names_cols <- c('Site Location', 'Tradional Site Name', 'Fish Species')
+
+##extract the tables useing the areas you defined
+table_raw <- tabulapdf::extract_tables(path,
+                                       pages = seq(384,384),
+                                        method = "lattice",
+                                        area = tab_trim) %>% 
+  pluck(1) %>%
+  as_tibble() %>% 
+  # funky column names so we slice the first row and set them as names
+  slice(2:nrow(.)) %>% 
+  dplyr::select(1:3) %>% 
+  purrr::set_names(names_cols) ##should do this as input from "pages" part of the function
+
+# burn out to csv for safe keeping
+table_raw %>% 
+  readr::write_csv('data/inputs_extracted/trad_fish_sites_gottesfeld_rabnett2007FishPassage.csv')
+
+
+
 ```
 
-```{r tab-hist-sites}
+```{r tab-hist-sites, eval = FALSE}
 readr::read_csv('data/trad_fish_sites_gottesfeld_rabnett2007FishPassage.csv') %>% 
-  dplyr::filter(stringr::str_detect(`Site Location`, "Buck|Maxan|McQuarrie|Bulkley Lake|Hwy.16")) %>% 
+  # dplyr::filter(stringr::str_detect(`Site Location`, "Buck|Maxan|McQuarrie|Bulkley Lake|Hwy.16")) %>% 
   arrange(`Tradional Site Name`) %>% 
   fpr::fpr_kable(caption_text = "Traditional fishing sites in the Neexdzii Kwah.  Adapted from Gottesfeld and Rabnett 2007.",
                  scroll = FALSE)
