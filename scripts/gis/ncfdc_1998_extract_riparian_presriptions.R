@@ -211,7 +211,9 @@ pres <- dplyr::left_join(
   pres_prep2,
   rip_poly_raw,
   by = c("riparian_poly_id" = "polygon_id")
-)
+) |>
+  # remove the buck reach 5 prescriptions as obviously incorrect as per https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/91
+  dplyr::filter(sheet_name != "Buck 5")
 
 
 mapview::mapview(
