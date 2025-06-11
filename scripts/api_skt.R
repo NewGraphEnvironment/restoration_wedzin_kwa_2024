@@ -137,6 +137,7 @@ fetch_package(package_nm= "as-built-report-of-aquatic-restoration-2016")
 fetch_package(package_nm= "as-built-report-of-aquatic-restoration-2017")
 fetch_package(package_nm= "mid-bulkley-detailed-fish-habitat-riparian-channel-assessment-for-watershed-restoration")
 fetch_package(package_nm = "analysis-of-2017-water-quality-monitoring-upper-bulkley-river-watershed")
+fetch_package(package_nm = "upper-bulkley-water-temperature-monitoring-data")
 grab_these <- c(
   "water-quality-assessment-and-objectives-for-the-bulkley-river-headwaters",
   "nutrients-and-algae-in-the-upper-bulkley-river-watershed",
