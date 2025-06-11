@@ -214,6 +214,6 @@ prescriptions_fix |>
     sf::st_transform(3005) |>
     sf::st_write(
       dsn = "~/Projects/gis/restoration_wedzin_kwa/sites_restoration.gpkg", #sites_restoration
-      layer = 'ncfdc_1998_prescriptions',
+      layer = 'ncfdc_1998_prescriptions_raw',
       delete_layer = TRUE
     )
