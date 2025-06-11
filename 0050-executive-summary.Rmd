@@ -16,7 +16,7 @@ To support long-term watershed resilience in Neexdzi Kwah, we recommend a coordi
 
 <br>
 
-This report should be considered a living document, with ongoing revisions and updates tracked through the Changelog section. We are humbled by the depth of knowledge that exists for this region, both through traditional knowledge and scientific study. We acknowledge that this report is far from complete, and that the work of restoring and sustaining ecosystem values will require many decades—if not centuries—of dedication. It is our hope that this effort can serve as a catalyst for positive change and foster genuine, open collaboration. Table tab-exec-sum-cap outlines some of the tools and resources developed as part of this project to date.
+This report should be considered a living document, with ongoing revisions and updates tracked through the Changelog section. We are humbled by the depth of knowledge that exists for this region, both through traditional knowledge and scientific study. We acknowledge that this report is far from complete, and that the work of restoring and sustaining ecosystem values will require many decades—if not centuries—of dedication. It is our hope that this effort can serve as a catalyst for positive change and foster genuine, open collaboration. Table \@ref(tab:tab-exec-sum-cap) outlines some of the tools and resources developed as part of this project to date.
 
 <br>
 
