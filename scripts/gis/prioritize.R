@@ -48,7 +48,6 @@ sites_hist_pt1 <- sf::st_read(
 path_hist_layers <- c(
   "sites_wfn_proposed",
   "ncfdc_1998_prescriptions",
-  # these are out of place b/c they are aligned with the reach-breaks
   "ncfdc_1998_riparian"
 )
 
@@ -129,7 +128,9 @@ cols_keep <- c(
   # forms
   "site_id",
   # site_name,      #already have this column
-  "site_name_wfn"
+  "site_name_wfn",
+  # riparian prescriptions
+  "riparian_poly_id", "distance_u_s_km_m"
 )
 
 
@@ -252,7 +253,8 @@ sites_all_prep3 <- purrr::map2(
 #   )
 
 
-# because FWA_Upstream is not exposed on the fwapg webservice yet we will do this manually
+# because FWA_Upstream was not exposed on the fwapg webservice yet we did this manually
+# can do with fwapgr now though - https://smnorris.github.io/fwapg/04_functions.html#fwa-upstream
 sites_all_prep4 <- dplyr::bind_cols(
    sites_all_prep2 |>
      # we no longer need the lat/long so drop
@@ -401,6 +403,8 @@ poly_join <- ranking_params |>
   dplyr::filter(
     source_layer %in% poly_join_names
   )
+  # testing mult outputs of fire year
+  # dplyr::filter(source_column_name == "fire_year")
 
 
 # we convert to next object before the loop to facilitate reproduction
@@ -411,7 +415,9 @@ for (i in seq_len(nrow(poly_join))) {
     target_tbl = sites_all_prep6,
     mask_tbl = poly_join$source_layer[i],
     mask_col_return = poly_join$source_column_name[i],
-    path_gpkg = fs::path(path_gis, poly_join$source_file[i])
+    path_gpkg = fs::path(path_gis, poly_join$source_file[i]),
+    collapse = TRUE,
+    target_col_collapse = "idx"
     # path_gpkg = path_background_layers
   )
 
@@ -445,7 +451,7 @@ sites_all_prep7_no_ownership2 <- ngr::ngr_spk_join(
   dplyr::rename(owner_type1 = owner_type)
 
 
-# this fails when there are not two different outcomes!!! Skipping this for now!!
+# this fails when there are not two different outcomes!!!
 sites_all_prep7_no_ownership3 <- sites_all_prep7_no_ownership2 |>
   dplyr::distinct(idx, owner_type1) |>
   dplyr::group_by(idx) |>
@@ -498,51 +504,14 @@ sites_all_prep8 <- dplyr::left_join(
   #   dplyr::everything()
   # )
 
-# # burn to data_secure for now - without the riparian polygons
+# # burn to data_secure to test
+file_name_test <- "sites_prioritized_test.geojson"
 sites_all_prep8 |>
   sf::st_write(
-  "/Users/airvine/Projects/gis/data_secure/wetsuweten_treaty_society/sites_prioritized.geojson",
+  fs::path("/Users/airvine/Projects/gis/data_secure/wetsuweten_treaty_society", file_name_test),
   delete_dsn = TRUE,
   append = FALSE
 )
-
-# #--------------------------------------------------draft scorer functions---------------------------------------------------
-# # example of running the function on 1 column
-# out1 <- priority_scorer_numeric(
-#   dat_values = sites_all_prep8,
-#   dat_ranks = ranking_params,
-#   col_rank = "bulkley_falls_downstream"
-# )
-#
-# cols_rank <- c(
-#   "bulkley_falls_downstream",
-#   "floodplain_ind"
-# )
-#
-# # try passing a list of col_rank
-# out2 <- purrr::map(
-#   cols_rank,
-#   ~ priority_scorer_numeric(
-#     dat_values = sites_all_prep8,
-#     dat_ranks = ranking_params,
-#     col_rank = .x
-#   )
-# )
-#
-# out3 <- purrr::reduce(out2, dplyr::inner_join, by = "idx")
-#
-# out4 <- out3 |>
-#   dplyr::mutate(
-#     total_score = rowSums(dplyr::across(dplyr::matches("score")), na.rm = TRUE)
-#   )
-#
-#
-# out1 <- priority_scorer_string(
-#   dat_values = sites_all_prep8,
-#   dat_ranks = ranking_params,
-#   col_rank = "owner_type",
-#   col_filter = "source_column_name"
-# )
 
 
 # bcfishpass spawn/rear columns from the stream segment joined -------------------------------------------------------
@@ -598,6 +567,8 @@ cols_rank <- ranking_params |>
 #   # string type
 #   , "owner_type"
 #   )
+# t <- sites_all_prep9 |>
+#   dplyr::select(cols_rank)
 
 out2 <- purrr::map(
   cols_rank,
@@ -629,15 +600,26 @@ sites_all_ranked <- dplyr::left_join(
   # add the lat longs to keep it simple
   fpr::fpr_sp_assign_latlong()
 
+#burn out to the project-----------------------------------------------------------------------------------------------------
+file_name <- "sites_prioritized.geojson"
 
 sites_all_ranked |>
   # stamp a version
   dplyr::mutate(version = format(Sys.Date(), "%Y%m%d")) |>
   sf::st_write(
-    fs::path(path_gis, "sites_prioritized.geojson"),
+    fs::path(path_gis, file_name),
     delete_dsn = TRUE,
     append = FALSE
   )
+
+
+################################################################################################################
+#--------------------------------------------------above here is as far as we have gotten---------------------------------------------------
+################################################################################################################
+
+
+
+
 
 
 
