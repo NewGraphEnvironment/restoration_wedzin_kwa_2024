@@ -7,6 +7,7 @@ url_base <- "https://maps.skeenasalmon.info/geoserver/ows"
 
 # define output directory
 dir_out <- "data/gis/skt/esi_sows"
+dir_gis <- "~/Projects/gis/restoration_wedzin_kwa/wq"
 
 # create directory with fs
 fs::dir_create(dir_out)
@@ -17,6 +18,7 @@ usethis::use_git_ignore(dir_out)
 # Define the layer to download
 layer_name_raw <- "geonode:bcce_watershed_summary_poly_2015_20150331_skeena"
 layer_name_raw <- "geonode:UBulkley_wshed"
+layer_name_raw <- "geonode:UBR_WaterTemp_monitoring_sites_2025_02_23"
 
 # layer_name_out <- stringr::str_extract(layer_name_raw, "(?<=:).*")
 
@@ -48,3 +50,9 @@ if (httr::status_code(response) == 200) {
 } else {
   cat("Error: Failed to download layer. HTTP Status:", httr::status_code(response), "\n")
 }
+
+# copy into the gis project
+fs::file_copy(file_out, fs::path(dir_gis, layer_name_out, ext = "geojson"))
+
+
+sf::st_read(file_out)
