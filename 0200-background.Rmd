@@ -8,10 +8,10 @@ knitr::opts_chunk$set(fig.path = path_fig, dev = "png")
 
 ## Project Location
 
-The study area primarily focuses on the Neexdzii Kwah (Upper Bulkley River), which is located upstream of the confluence of the Widzin Kwah (Morice River) and the Neexdzii Kwah rivers.  Although this area is the initial focus of activities, the overall area for project activities can include anywhere within the boundaries of the Widzin Kwah Water Sustainability Project.  The boundaries of the Widzin Kwah Water Sustainability Project include not only the Neexdzii Kwah but also the entire drainage area of Widzin Kwah (Morice River) as well as the small portion of the Bulkley River downstream of the Morice River confluence to just north of Dockrill Creek [@WidzinKwahWaterSustainabilityProject]. 
+The study area primarily focuses on the Neexdzii Kwah (Upper Bulkley River), which is located upstream of the confluence of the Widzin Kwah (Morice River) and the Neexdzii Kwah rivers (Figure \@ref(fig:overview-map)).  Although this area is the initial focus of activities, the overall area for project activities can include anywhere within the boundaries of the Widzin Kwah Water Sustainability Project.  The boundaries of the Widzin Kwah Water Sustainability Project include not only the Neexdzii Kwah but also the entire drainage area of Widzin Kwah (Morice River) as well as the small portion of the Bulkley River downstream of the Morice River confluence to just north of Dockrill Creek [@WidzinKwahWaterSustainabilityProject]. 
 
-```{r overview-map, fig.cap = 'Overview map of Widzin Kwah Study Area',eval=F}
-knitr::include_graphics("fig/OW_2024_bulk.png")
+```{r overview-map, fig.cap = 'Overview map of Neexdzii Kwah Study Area',eval=T}
+knitr::include_graphics("fig/maps/neexdzi_kwa_overview.png")
 ```
 
 
