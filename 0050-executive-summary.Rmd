@@ -12,7 +12,7 @@ Throughout The Millennia" available through  `r ngr::ngr_str_link_url(url_base =
 
 <br>
 
-To support long-term watershed resilience in Neexdzi Kwah, we recommend a coordinated strategy that includes implementing a cost-effective, culturally grounded ecosystem health monitoring program; adapting range use practices to reduce cattle impacts on water quality and riparian habitats; expanding community education programs that center Wet’suwet’en knowledge and values; and restoring floodplain function through native vegetation recovery and stream reconnection. These efforts draw on past recommendations and aim to align ecological science with Indigenous stewardship for a healthier, more sustainable watershed (see the [Recommendations section](https://www.newgraphenvironment.com/restoration_wedzin_kwa_2024/recommendations.html) for more details).
+To support long-term watershed resilience in Neexdzi Kwah, we recommend a coordinated strategy that includes implementing a cost-effective, culturally grounded ecosystem health monitoring program; adapting range use practices to reduce cattle impacts on water quality and riparian habitats; expanding community education programs that center Wet’suwet’en knowledge and values; and restoring floodplain function through process based restoration including riparian revegetation, recovery of wetland areas and stream reconnection. These efforts draw on past recommendations and aim to align ecological science with Indigenous stewardship for a healthy, sustainable watershed (see the [Recommendations section](https://www.newgraphenvironment.com/restoration_wedzin_kwa_2024/recommendations.html) for more details).
 
 <br>
 
