@@ -21,6 +21,8 @@ dir.create(path)
 # for now though
 
 dl <- "https://nrs.objectstore.gov.bc.ca/gdwuts/093/093l/2019/dem/bc_093l048_xli1m_utm09_2019.tif"
+dl <- "https://nrs.objectstore.gov.bc.ca/gdwuts/093/093l/2019/dem/bc_093l040_xli1m_utm09_2019.tif"
+
 
 system.time(
   download.file(
