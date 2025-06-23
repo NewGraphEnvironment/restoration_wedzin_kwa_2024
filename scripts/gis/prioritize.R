@@ -505,7 +505,7 @@ sites_all_prep8 <- dplyr::left_join(
   # )
 
 # # burn to data_secure to test
-file_name_test <- "sites_prioritized_test.geojson"
+file_name_test <- "sites_prioritized_prep.geojson"
 sites_all_prep8 |>
   sf::st_write(
   fs::path("/Users/airvine/Projects/gis/data_secure/wetsuweten_treaty_society", file_name_test),
