@@ -19,3 +19,4 @@ temp/*
 .DS_Store
 data/gis/skt
 data/gis/skt/esi_sows
+data/inputs_extracted/fwa_network_trace.rds
