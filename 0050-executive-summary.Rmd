@@ -12,7 +12,7 @@ Throughout The Millennia" available through  `r ngr::ngr_str_link_url(url_base =
 
 <br>
 
-To support long-term watershed resilience in Neexdzi Kwah, we recommend a coordinated strategy that includes implementing a cost-effective, culturally grounded ecosystem health monitoring program; adapting range use practices to reduce cattle impacts on water quality and riparian habitats; expanding community education programs that center Wet’suwet’en knowledge and values; and restoring floodplain function through process based restoration including riparian revegetation, recovery of wetland areas and stream reconnection. These efforts draw on past recommendations and aim to align ecological science with Indigenous stewardship for a healthy, sustainable watershed (see the [Recommendations section](https://www.newgraphenvironment.com/restoration_wedzin_kwa_2024/recommendations.html) for more details).
+To support long-term watershed resilience in Neexdzii Kwah, we recommend a coordinated strategy that includes implementing a cost-effective, culturally grounded ecosystem health monitoring program; adapting range use practices to reduce cattle impacts on water quality and riparian habitats; expanding community education programs that center Wet’suwet’en knowledge and values; and restoring floodplain function through process based restoration including riparian revegetation, recovery of wetland areas and stream reconnection. These efforts draw on past recommendations and aim to align ecological science with Indigenous stewardship for a healthy, sustainable watershed (see the [Recommendations section](https://www.newgraphenvironment.com/restoration_wedzin_kwa_2024/recommendations.html) for more details).
 
 <br>
 
@@ -24,7 +24,7 @@ Developing comprehensive restoration planning for the Neexdzii Kwah watershed wi
 
 <br>
 
-In 2024, field activities included benthic invertebrate sampling at three sites on the Neexdzi Kwah mainstem using cabin kick methods, with samples sent to Cordillera Consulting for analysis and results to be uploaded to the federal CABIN database. Environmental DNA (eDNA) sampling was conducted below Bulkley Falls and approximately 1 km downstream. Extensive UAV mapping was completed across the watershed. Additionally, two workshops were held to gather community input on the restoration site prioritization process—one with local landowners and one with Wet'suwet'en community members and leadership.
+In 2024, field activities included benthic invertebrate sampling at three sites on the Neexdzii Kwah mainstem using cabin kick methods, with samples sent to Cordillera Consulting for analysis and results to be uploaded to the federal CABIN database. Environmental DNA (eDNA) sampling was conducted below Bulkley Falls and approximately 1 km downstream. Extensive UAV mapping was completed across the watershed. Additionally, two workshops were held to gather community input on the restoration site prioritization process—one with local landowners and one with Wet'suwet'en community members and leadership.
 
 ```{r ld-exec}
 # read in the exec summary
@@ -40,7 +40,7 @@ exec_summary <- exec_summary_raw |>
 ```
 
 ```{r tab-exec-sum-cap, results="asis"}
-my_caption <- "Neexdzi Kwa Restoration Planning Resources."
+my_caption <- "Technical tools and resources developed as part of the Neexdzii Kwah Restoration Planning project."
 my_tab_caption()
 ```
 

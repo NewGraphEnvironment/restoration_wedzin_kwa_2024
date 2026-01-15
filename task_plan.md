@@ -16,7 +16,7 @@
 - [x] Decision: Keep table for technical tools/workflows; add field work narrative separately
 
 **Field Work Narrative Paragraph (to add):**
-- [ ] Benthic invertebrate sampling (3 sites, Neexdzi Kwah mainstem)
+- [ ] Benthic invertebrate sampling (3 sites, Neexdzii Kwah mainstem)
 - [ ] eDNA sampling (below Bulkley Falls + 1km downstream)
 - [ ] Site reviews (as already described in Results)
 - [ ] UAV mapping extent
@@ -54,7 +54,7 @@
 - [ ] Export site data for report integration
 
 ### 2.2 Add Missing Site Locations
-- [ ] Benthic invertebrate sampling sites (3 sites, Neexdzi Kwah mainstem)
+- [ ] Benthic invertebrate sampling sites (3 sites, Neexdzii Kwah mainstem)
 - [ ] eDNA sampling sites (below Bulkley Falls + 1km downstream)
 - [ ] Verify all sites have proper attributes
 
@@ -66,7 +66,7 @@
 ### 3.1 Climate Anomaly Analysis
 - [ ] Verify climate anomaly appendix documents bc_climate_anomaly fork (newgraph branch)
 - [ ] Document climate perspective before/during study period
-- [ ] Illustrate climate pattern differences within Neexdzi Kwah watershed
+- [ ] Illustrate climate pattern differences within Neexdzii Kwah watershed
 
 ### 3.2 Precipitation Patterns
 - [ ] Review `../new_graphiti/posts/2024-06-19-precipitation/index.qmd`
@@ -97,7 +97,7 @@
 
 ### 4.1 Benthic Invertebrate Sampling
 - [ ] Document cabin kick methods (cite reynoldson_etal2001CABINcanadian from Zotero)
-- [ ] Note 3 sites in Neexdzi Kwah mainstem
+- [ ] Note 3 sites in Neexdzii Kwah mainstem
 - [ ] Reference Cordillera Lab (Summerland) for sample processing
 - [ ] Note results upload to federal CABIN database
 - [ ] Add methods to `0300-methods.Rmd`
