@@ -2,6 +2,7 @@
 # can more easily view in QGIS and elsewhere
 
 path_gis <- "/Users/airvine/Projects/gis/restoration_wedzin_kwa/data_field/sites_reviewed_2024_202506.geojson"
+path_repo <- "data/gis/sites_reviewed_2024_202506.geojson"
 
 
 forms_ls <- c(
@@ -100,10 +101,13 @@ form |>
   )
 
 # burn to repo
+if(fs::file_exists(path_repo)){
+  fs::file_delete(path_repo)
+}
 form |>
   # convert so we can see on github?
   sf::st_transform(crs = 4326) |>
   sf::st_write(
-    "sites_reviewed_2024_202506.geojson",
+    path_repo,
     append=FALSE
   )

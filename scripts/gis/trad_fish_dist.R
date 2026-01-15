@@ -167,7 +167,7 @@ fpr::fpr_db_query("select * from FWA_NetworkTrace(
 )"
 )
 
-t <- fpr::fpr_db_query(
+fwapg_functions <- fpr::fpr_db_query(
   "SELECT
   n.nspname AS schema,
   p.proname AS function_name,
@@ -175,8 +175,8 @@ t <- fpr::fpr_db_query(
   pg_catalog.pg_get_function_result(p.oid) AS return_type
 FROM pg_catalog.pg_proc p
 JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
-WHERE n.nspname = 'whse_basemapping'
-  AND p.proname = 'fwa_downstream'
+WHERE n.nspname IN ('whse_basemapping', 'bcfishpass')
+  --AND p.proname = 'fwa_downstream'
 ORDER BY p.proname;"
 )
 

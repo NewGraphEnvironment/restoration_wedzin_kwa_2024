@@ -1,0 +1,367 @@
+---
+title: "0110-photos-resize"
+date: "Created: 2024-10-21 | Updated: `r format(Sys.Date(), '%Y-%m-%d')`"
+output: 
+  html_document:
+    code_folding: "hide"
+params:
+  repo_owner: "NewGraphEnvironment"
+  repo_name: "restoration_wedzin_kwa_2024"
+  gis_name: "restoration_wedzin_kwa"
+  job_name: "2025-079-sern-ow-neexdzi-kwa"
+---
+
+
+```{r setup, echo=TRUE, include = TRUE}
+knitr::opts_chunk$set(echo=TRUE, message=FALSE, warning=FALSE, dpi=60, out.width = "100%", eval = FALSE)
+options(scipen=999)
+options(knitr.kable.NA = '--') #'--'
+options(knitr.kable.NAN = '--')
+```
+
+
+
+```{r paths}
+
+
+# define paths ------------------------------------------------------------
+dir_photos_mergin_raw <- fs::path("~/Projects/gis/", params$gis_name, "/ignore_mobile/photos/")
+dir_photos_mergin_resized <- fs::path("~/Projects/gis/", params$gis_name, "/ignore_mobile/photos_resized")
+dir_photos_originals <- fs::path("~/Library/CloudStorage/OneDrive-Personal(2)/Projects", params$job_name, "/data/photos/")
+dir_photos_onedrive <- fs::path("~/Library/CloudStorage/OneDrive-Personal(2)/Projects", params$job_name, "data/photos/")
+```
+
+# Resize
+
+```{r dir-create}
+# we are going to resize the original photos and move them to onedrive just in case we need to do homework
+fs::dir_create(fs::path(dir_photos_onedrive, "ai"), recurse = TRUE)
+fs::dir_create(fs::path(dir_photos_onedrive, "ls"), recurse = TRUE)
+```
+
+```{r dir-shared-resize}
+fpr::fpr_photo_resize_batch(
+  dir_source = fs::path(dir_photos_originals,"ai/originals"),
+  dir_target = fs::path(dir_photos_onedrive, "ai")
+)
+
+# fpr::fpr_photo_resize_batch(
+#   dir_source = fs::path(dir_photos_originals,"ls/originals"),
+#   dir_target = fs::path(dir_photos_onedrive, "ls")
+# )
+```
+
+```{r move, eval = F}
+# could move the originals off of onedrive to the local computer to manage storage space but not doing that right now
+
+dir_to <- fs::path("~/Projects/current", params$job_name, "data/photos/ai")
+dir_from<- fs::path(dir_photos_originals,"ai/originals")
+fs::dir_create(dir_to, recurse = TRUE)
+fs::dir_copy(dir_from,
+             dir_to)
+fs::dir_delete(dir_from)
+
+dir_to <- fs::path("~/Projects/current", params$job_name, "data/photos/ls")
+dir_from <- fs::path(dir_photos_originals,"ls/originals")
+fs::dir_create(dir_to, recurse = TRUE)
+fs::dir_copy(dir_from,
+             dir_to)
+fs::dir_delete(dir_from)
+
+```
+
+
+```{r gis-resize}
+# QGIS mergin photos-----------------------------------------------------------------------------------------------------
+## Clean up the mergin file----------------------------------------------------------------------------------------------------
+# remove photos.txt file included in project when created (was to allow mergin git to see the photos dir) but needs
+# to be removed or ignored to not break fpr_photo_resize_batch
+
+
+###!!! make sure you are synced with the server here 
+fs::file_delete(
+  fs::path(dir_photos_mergin_raw, "/photos.txt")
+)
+
+## Resize----------------------------------------------------------------------------------------------------
+# resize the photos and change the extension to JPG for consistency and to avoid issues with fpr_photo calls in reporting
+# sync to mergin after copying to new dir (resized) and removing originals
+# record version number of mergin project in issue for now to track
+
+# get a list of the photos
+p <- fs::dir_ls(
+  dir_photos_mergin_raw, 
+  recurse = T,
+  glob = "*.txt",
+  invert = TRUE)
+
+
+# see how large the photos are in MB rounded to 1 decimal using purrr
+s <- p |> 
+  purrr::map(file.info) |> 
+  purrr::map_dbl("size")/1024/1024
+
+# identify the range of sizes
+range(s)
+# [1] 0.06309891 0.57638550 Not bad.  Lets resize anyway so that we know they fit the reporting and get consistent file extensions
+
+# create the target directory
+fs::dir_create(dir_photos_mergin_resized, recurse = TRUE)
+
+fpr::fpr_photo_resize_batch(
+  dir_source = dir_photos_mergin_raw,
+  dir_target = fs::path(dir_photos_mergin_resized)
+)
+
+
+# quick check to see if the photos are all accounted for
+identical(
+  length(
+    fs::dir_ls(dir_photos_mergin_raw, recurse = T)),
+  length(
+    fs::dir_ls(dir_photos_mergin_resized, recurse = T))
+)
+
+# erase all the photos in the original directory
+fs::dir_delete(dir_photos_mergin_raw)
+
+# recreate the photos.txt file so the form still works
+fs::dir_create(dir_photos_mergin_raw)
+fs::file_create(
+  fs::path(dir_photos_mergin_raw, "photos.txt")
+)
+
+# push to mergin - record version number of mergin project in issue to track
+
+```
+
+```{r form-rename-photos}
+form_raw <- fs::path("~/Projects/gis/", params$gis_name, 'form_monitoring_ree.gpkg')
+form_new <- fs::path("~/Projects/gis/", params$gis_name, 'data_field/2025/form_monitoring_ree_2025.gpkg')
+
+
+fs::dir_create(fs::path_dir(form_new))
+
+# copy the form to the new field directory
+fs::file_copy(
+  form_raw,
+  form_new
+)
+
+form_photos_raw <- fpr::fpr_sp_gpkg_backup(
+  form_new,
+  update_site_id = FALSE,
+  update_utm = TRUE,
+  write_to_csv = TRUE,
+  # turned this off for now but was on first time
+  write_back_to_path = FALSE,
+  return_object = TRUE,
+  write_to_rdata = FALSE
+)  |> 
+  dplyr::arrange(site_id)
+
+# check for duplicate sites
+form_photos_raw |>
+  dplyr::filter(!is.na(site_id)) |>
+  dplyr::group_by(site_id) |>
+  dplyr::filter(dplyr::n()>1) |>
+  nrow()
+
+# check for empty sites
+form_photos_raw |>
+  dplyr::filter(is.na(site_id)) |>
+  nrow()
+
+# create site photo directories right on mergin to make them easy to share...
+form_photos_raw |>
+  dplyr::pull(site_id) |>
+  as.character() |>
+  purrr::map(
+    fpr::fpr_photo_folders, path = dir_photos_mergin_raw
+  )
+
+# also create on onedrive
+#!didn't do this for ow skeena phtos 2024!!!
+form_photos_raw |>
+  dplyr::pull(site_id) |>
+  as.character() |>
+  purrr::map(
+    fpr::fpr_photo_folders, path = paste0(dir_photos_onedrive, "/")
+  )
+```
+
+```{r rename-all}
+
+# NOTE - needed to add a / to the end of the dir names for now untill we update fpr::fpr_photo_rename with fs functions
+fpr::fpr_photo_rename(
+  dat = form_photos_raw,
+  dir_from_stub = paste0(dir_photos_mergin_resized, "/"),
+  dir_to_stub = paste0(dir_photos_mergin_raw, "/")
+)
+
+#monitoring form------------------------------------------------------------------------------------------------
+form1 <- "/Users/airvine/Projects/gis/restoration_wedzin_kwa/data_field/2024/form_monitoring_ree_2024.gpkg"
+form2 <- "/Users/airvine/Projects/gis/restoration_wedzin_kwa/data_field/2024/form_monitoring_ree_20240923.gpkg"
+
+forms_ls <- c(
+  form1,
+  form2
+  )
+
+forms_prep <- forms_ls |> 
+  purrr::map(
+    ~ fpr::fpr_sp_gpkg_backup(
+      path_gpkg = .x,
+      update_utm = TRUE,
+      return_object = TRUE,
+      write_to_rdata = FALSE
+    )
+  ) |> 
+  purrr::set_names(basename(forms_ls))
+
+# we rename to site_id so we can join rationally
+forms_prep$test.gpkg <- forms_prep$form_monitoring_ree_20240923.gpkg |> 
+  dplyr::mutate(site_id = site_name)
+
+# deal with the type issues
+ngr::ngr_tidy_type(
+  forms_prep$form_monitoring_ree_2024.gpkg, 
+  forms_prep$test
+  )
+
+forms <- dplyr::bind_rows(forms_prep$form_monitoring_ree_2024.gpkg,
+                          forms_prep$test,
+                          .id = "source")
+fpr::fpr_photo_rename(
+  dat = forms,
+  dir_from_stub = paste0(dir_photos_mergin_resized, "/"),
+  dir_to_stub = paste0(dir_photos_mergin_raw, "/sites/"),
+  col_directories = site_id,
+  return_df = FALSE
+)
+
+#Fraser sites-----------------------------------------------------------------------------------------------------
+form1 <- "/Users/airvine/Projects/gis/restoration_wedzin_kwa/data_field/2024/form_fiss_site_fraser_2024.gpkg"
+
+form <- fpr::fpr_sp_gpkg_backup(
+      path_gpkg = form1,
+      update_utm = TRUE,
+      return_object = TRUE,
+      write_to_rdata = FALSE
+    )
+
+
+fpr::fpr_photo_rename(
+  dat = form,
+  dir_from_stub = paste0(dir_photos_mergin_resized, "/"),
+  # THIS IS DIFFERENT!!!
+  dir_to_stub = paste0(dir_photos_mergin_raw, "/sites/fraser/"),
+  col_directories = local_name,
+  return_df = FALSE
+)
+
+#walks-----------------------------------------------------------------------------------------------------
+form1 <- "/Users/airvine/Projects/gis/restoration_wedzin_kwa/data_field/2024/form_fiss_site_2024.gpkg"
+
+form <- fpr::fpr_sp_gpkg_backup(
+      path_gpkg = form1,
+      update_utm = TRUE,
+      return_object = TRUE,
+      write_to_rdata = FALSE
+    )
+
+
+fpr::fpr_photo_rename(
+  dat = form,
+  dir_from_stub = paste0(dir_photos_mergin_resized, "/"),
+  # THIS IS DIFFERENT!!!
+  dir_to_stub = paste0(dir_photos_mergin_raw, "/walks/"),
+  col_directories = local_name,
+  return_df = FALSE
+)
+```
+
+
+# Remove duplicates
+
+After we sort the photos that came off the camera by hand into their directories we can amalgamate with the renamed photos.
+
+When a photo is renamed using `fpr::fpr_photo_rename` the photo renamed is not duplicated. However, we take many more photos on our phones than we upload to `Mergin` via our field forms. We subsequently transfer all of our field photos off of our phones onto company drives. Because we use the gallery to upload our photos to `Mergin` (an important procedure so we don't lose photos when `mergin` glitches) we have a lot of duplicates. We use the `fpr::fpr_photo_remove_dupes` function to remove duplicates. We also have a `min_replicates` argument that allows us to remove photos that are not duplicated at least `n` times.
+
+
+NOT YET RUN!!!!!!
+
+```{r remove-dupes}
+
+# use fpr_photo_remove_dupes to see the duplicated photos
+photos_dry_run <- fpr::fpr_photo_remove_dupes(
+  '~/Library/CloudStorage/OneDrive-Personal(2)/Projects/2024-073-sern-peace-fish-passage/data/photos/sorted')
+
+# use fpr_photo_remove_dupes to see the triplicated photos
+photos_dry_run3 <- fpr::fpr_photo_remove_dupes(
+  '~/Library/CloudStorage/OneDrive-Personal(2)/Projects/2024-073-sern-peace-fish-passage/data/photos/sorted',
+                                               min_replicates = 3)
+
+
+# # actually run the removal of the first un-renamed photo
+# fpr::fpr_photo_remove_dupes('~/Library/CloudStorage/OneDrive-Personal(2)/Projects/2024-073-sern-peace-fish-passage/data/photos/sorted',
+#                             dry_run = F)
+
+# now there should only be photos that had triplets. The un-renamed photos have been removed so there will only be duplicates of renamed photos. These should be same photos as in photos_dry_run3.
+photos_dry_run_after <- fpr::fpr_photo_remove_dupes('~/Library/CloudStorage/OneDrive-Personal(2)/Projects/2024-073-sern-peace-fish-passage/data/photos/sorted')
+
+# # now run the removal of the duplicated renamed photos (photos that had triplets)
+# fpr::fpr_photo_remove_dupes('~/Library/CloudStorage/OneDrive-Personal(2)/Projects/2024-073-sern-peace-fish-passage/data/photos/sorted',
+#                             dry_run = F, remove_renamed = TRUE)
+
+# Now there should be no duplicated of any kind, this object should be empty. 
+photos_dry_run_after <- fpr::fpr_photo_remove_dupes('~/Library/CloudStorage/OneDrive-Personal(2)/Projects/2024-073-sern-peace-fish-passage/data/photos/sorted')
+                                                  
+
+# backup the dry runs to a csv so we can track which photos were removed.
+readr::write_csv(photos_dry_run, "data/inputs_extracted/photo_duplicate_rm_log.csv" )
+
+```
+
+The following is a special workflow to deal with this issue https://github.com/NewGraphEnvironment/fish_passage_template_reporting/issues/49
+unique to the peace 2024 data.
+
+```{r site-125161-only-remove-dups}
+
+# use fpr_photo_remove_dupes to see the duplicated photos in just the 125261 folder
+photos_dry_run <- fpr::fpr_photo_remove_dupes(
+  '~/Library/CloudStorage/OneDrive-Personal(2)/Projects/2024-073-sern-peace-fish-passage/data/photos/125261')
+
+# use fpr_photo_remove_dupes to see the triplicated photos in just the 125261 folder
+photos_dry_run3 <- fpr::fpr_photo_remove_dupes(
+  '~/Library/CloudStorage/OneDrive-Personal(2)/Projects/2024-073-sern-peace-fish-passage/data/photos/125261',
+                                               min_replicates = 3)
+
+# There are no triplicated photos in the 125261 folder
+
+# actually run the removal of the first un-renamed photo
+fpr::fpr_photo_remove_dupes('~/Library/CloudStorage/OneDrive-Personal(2)/Projects/2024-073-sern-peace-fish-passage/data/photos/125261',
+dry_run = F)
+
+# Now there should be no duplicated of any kind in the 125261 folder, this object should be empty. 
+photos_dry_run_after <- fpr::fpr_photo_remove_dupes('~/Library/CloudStorage/OneDrive-Personal(2)/Projects/2024-073-sern-peace-fish-passage/data/photos/125261')
+
+# Empty, sweet.
+
+# Now join the site 125261 specific dry run data to the photo_duplicate_rm_log.csv so we can track which photos were removed.
+
+# read `photo_duplicate_rm_log.csv` which tracks which photos were removed
+photo_duplicate_rm_log <- readr::read_csv("data/inputs_extracted/photo_duplicate_rm_log.csv")
+
+# now join the site 125261 specific dry run data to the photo_duplicate_rm_log.csv so we can see these changes
+test_photo_duplicate_rm_log <- photos_dry_run |> 
+  bind_rows(photo_duplicate_rm_log) 
+  
+# Check to see it worked. looks good, now burn over photo_duplicate_rm_log.csv
+test_photo_duplicate_rm_log |> 
+  readr::write_csv("data/inputs_extracted/photo_duplicate_rm_log.csv" )
+
+```
+
+
+

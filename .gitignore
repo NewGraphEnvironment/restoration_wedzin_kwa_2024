@@ -20,3 +20,6 @@ temp/*
 data/gis/skt
 data/gis/skt/esi_sows
 data/inputs_extracted/fwa_network_trace.rds
+
+# Large time series images (regeneratable)
+fig/time_series/*.png

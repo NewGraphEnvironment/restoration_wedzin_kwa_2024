@@ -165,4 +165,3 @@ system_run(args)
 
 
 #to load to qgis its like https://23cog.s3.us-west-2.amazonaws.com/bc_093l058_xli1m_utm09_2019.tif
-
