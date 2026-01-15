@@ -35,9 +35,31 @@
 - Add internal links to corresponding Methods sections
 - Query STAC catalogue to summarize UAV work (number of products, sites mapped, area covered) for exec summary
 
-### 1.2 Methods Section Expansion
-- [ ] Restructure `0300-methods.Rmd` to receive content from exec summary
-- [ ] Organize by methodology type (field, GIS, lab, remote sensing)
+### 1.2 Methods Section Expansion & Cleanup (Issue #97)
+**Review & Cleanup:**
+- [ ] Review all current methods sections for redundancy
+- [ ] Remove unnecessary content
+- [ ] Restructure for clarity and flow
+- [ ] Tighten language throughout
+
+**Field Methods to Add:**
+- [ ] Benthic invertebrate sampling (cabin kick, Cordillera Lab, CABIN database)
+- [ ] eDNA sampling (below Bulkley Falls + 1km downstream)
+- [ ] Workshops documentation (landowner + Wet'suwet'en community)
+
+**Technical Methods to Add/Expand:**
+- [ ] iPhone LiDAR vegetation monitoring methodology
+- [ ] Time series analysis workflow
+- [ ] Climate anomaly methodology (reference Appendix 1)
+
+**Existing Methods to Review:**
+- Collaborative GIS Environment
+- Aerial Imagery (UAV/STAC)
+- Open Source Iterative Reporting
+- Data Sourcing from SKT
+- Documentation of Workflows
+- Historic Information review
+- Future Restoration Site Selection
 
 ### 1.3 Results Section Expansion
 - [ ] Restructure `0400-results.Rmd` to receive content from exec summary
