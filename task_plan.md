@@ -9,13 +9,31 @@
 ---
 
 ## Phase 1: Report Restructuring
-**Status:** `pending`
+**Status:** `in_progress`
 
-### 1.1 Executive Summary Simplification
-- [ ] Review current executive summary table in `0050-executive-summary.Rmd`
-- [ ] Identify rows to move to Methods vs Results sections
-- [ ] Simplify remaining executive summary content
-- [ ] Consider bookdown "parts" structure for organization
+### 1.1 Executive Summary Updates
+- [x] Review current executive summary table structure
+- [x] Decision: Keep table for technical tools/workflows; add field work narrative separately
+
+**Field Work Narrative Paragraph (to add):**
+- [ ] Benthic invertebrate sampling (3 sites, Neexdzi Kwah mainstem)
+- [ ] eDNA sampling (below Bulkley Falls + 1km downstream)
+- [ ] Site reviews (as already described in Results)
+- [ ] UAV mapping extent
+- [ ] Two workshops conducted:
+  - Landowners workshop (input on prioritization)
+  - Wet'suwet'en community members & leadership workshop (input on prioritization)
+
+**Technical Tools Table:**
+- [ ] Rename table caption to "Project Resources & Deliverables" or similar
+- [ ] Add time series analysis workflow
+- [ ] Add climate anomaly tool
+- [ ] Keep existing technical items
+
+**Future improvements (document for later):**
+- Condense URLs to anchor text links
+- Add internal links to corresponding Methods sections
+- Query STAC catalogue to summarize UAV work (number of products, sites mapped, area covered) for exec summary
 
 ### 1.2 Methods Section Expansion
 - [ ] Restructure `0300-methods.Rmd` to receive content from exec summary

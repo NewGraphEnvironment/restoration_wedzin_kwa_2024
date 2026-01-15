@@ -104,9 +104,61 @@
 
 ---
 
+## Phase 1 Analysis: Current Report Structure
+
+### Executive Summary Table (executive_summary.csv)
+Currently 15 rows mixing different types:
+
+**Infrastructure/Tools:**
+- Reporting Framework
+- Collaborative GIS Mapping Tool
+- Code Repository
+- UAV Imagery Viewer
+- Bibliography
+
+**Methodology References:**
+- Historic Imagery workflow
+- Land Cover Analysis
+- Precipitation Analysis
+- State of the Value analysis
+- Scripted Prioritization Ranking
+
+**Deliverables:**
+- Vegetation Monitoring (iPhone LiDAR)
+- Leveraging local Data Hubs
+
+**Already Covered in Methods/Results:**
+- GIS, UAV, Historic Info all have sections already
+
+### Current Methods (0300) Structure
+1. Collaborative GIS Environment
+2. Aerial Imagery (UAV/STAC)
+3. Open Source - Iterative Reporting
+4. Data Sourcing from SKT
+5. Documentation of Workflows
+6. Historic Information review
+7. Future Restoration Site Selection (5 subsections)
+
+### Current Results (0400) Structure
+1. Field Review
+2. Collaborative GIS Environment
+3. Aerial Imagery
+4. Historic Information (5 subsections with detailed summaries)
+5. Future Restoration Site Selection (5 subsections)
+
+### Issues Identified
+- Methods/Results have parallel structures (some overlap)
+- Exec summary table is more "project outputs catalog" than summary
+- Missing methods: benthic, eDNA, iPhone LiDAR, time series, climate anomaly
+- Results needs: site monitoring data, deliverables summary
+
+---
+
 ## Discoveries Log
 
 | Date | Finding | Source | Implications |
 |------|---------|--------|--------------|
 | 2026-01-15 | Project mapped to SRED iterations 1 & 4 | sred-2025-2026 repo | Document R&D activities |
+| 2026-01-15 | Exec summary table mixes methods/tools/deliverables | executive_summary.csv | Need to categorize and relocate |
+| 2026-01-15 | Methods/Results have parallel section names | 0300/0400 Rmd | Consider consolidating or clarifying |
 | | | | |
