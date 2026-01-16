@@ -1,52 +1,8 @@
 # Methods
 
-## Collaborative GIS Environment
-Geographical Information Systems are essential for developing and communicating restoration plans as well as the reasons they are required and how they are developed. Without the ability to visualize the landscape and the data that is used to make decisions it is difficult to conduct and communicate the need for restoration, the details of past and future plans as well as and the potential results of physical works. 
+## Field Assessments
 
-<br>
-
-To facilitate the planning and implementation of restoration activities in the Neexdzii Kwah (and elsewhere within the Widzin Kwah Water Sustainability Project area), a collaborative GIS environment (titled `restoration_wedzin_kwa`) has been established using [QGIS](https://qgis.org/en/site/) and [Mergin Maps](https://merginmaps.com/) (source code [here](https://github.com/MerginMaps). This environment is intended to be a space where project team members can access and view and contribute to the amalgamation of background spatial data and the development of restoration as well as monitoring for the project. The collaborative GIS environment allows users to view, edit, and analyze shared up to date spatial data on personal computers in an office setting as well as phones and tablets in the field. At the time of reporting, the environment was being used to develop and share maps, conduct spatial analyses, communicate restoration plans to stakeholders as well as to provide a central place to store methodologies and tools for conducting field assessments on standardized pre-developed digital forms. The platform can also be used to track the progress of restoration activities and monitor changes in the landscape over time helping encourage the record keeping of past and future restoration activities in a coordinated manner.
-
-<br>
-
-The shared QGIS project was created using scripts currently kept in [`dff-2022`](https://github.com/NewGraphEnvironment/dff-2022) with the precise calls to project creation scripts tracked in the `project_creation_and_permissions.txt` document kept in the main QGIS project directory. Information about how GIS project creation and update scripts function can be viewed [here](https://github.com/NewGraphEnvironment/dff-2022/tree/master/scripts/qgis) with outcomes of their use summarized below:
-
-  - download and clip user specified layers from the [BC Data Catalougue](https://catalogue.data.gov.bc.ca/) as well as data layers stored in custom Amazon Web Services buckets for an area of interest defined by a list of watershed groups and load to a geopackage called `background_layers.gpkg` stored in the main directory of the project.  An additional `lateral_habitat.tiff` layer is also clipped to the user defined area and loaded to the project.
-  - A project directory is created to hold the spatial data and `QGIS` project information (ie. layer symbology and naming conventions, metadata, etc.).  
-  - Metadata for individual project spatial layers is kept in the `rfp_tracking` table within the `background_layers.gpkg` along with tables related to user supplied stream width/gradient inputs to `bcfishpass` to model potentially high value habitat that is accessible to fish species of interest. 
-
-```{r qris, eval=FALSE}
-## QRis
-# [QGIS Riverscapes Studio](https://qris.riverscapes.net/) (QRis) is a free plugin for QGIS that helps you digitize your riverscape data. QRis is a great planning tool for helping users with spatial representation of riverscapes. 
-# 
-# QRis has two distinct types of features:
-#   
-#   * Static: These are features that are relatively permanent, such as the valley bottom.
-#   * Dynamic: These are features that change over time, such as the active channel.
-# 
-# QRis will be a useful tool for digitizing the upper Wetzin'kwa river and prioritizing restoration sites. To start using QRis, follow the instructions for [getting started](https://qris.riverscapes.net/getting-started/).
-```
-
-
-## Aerial Imagery
-
-Scripted processing and serving of UAV imagery collected during the project is available at https://github.com/NewGraphEnvironment/stac_uav_bc/ [@irvine2025NewGraphEnvironmentstac_uav_bc]. [`OpenDroneMap`](https://github.com/OpenDroneMap/ODM) was utilized to produce orthomosaics, digital surface models (DSMs), and digital terrain models (DTMs) [@opendronemapauthors2025OpenDroneMapODM]. To support efficient web-based access - imagery products were converted to cloud-optimized GeoTIFFs (COGs) using `rio-cogeo`, then collated accordiong to the [SpatioTemporal Asset Catalog  (STAC)](https://github.com/radiantearth/stac-spec) specification with `pystac` and uploaded to S3 storage [@cogeotiff2025cogeotiffriocogeo; @radiantearth2024STACSpatioTemporal; @pystacauthors2025stacutilspystac, @amazonwebservices2025awsawscli]. A `titiler` tile server was set up to facilitate interactive viewing of the orthoimagery and an Application Program Interface (API) leveraging `stac-fastapi-pgstac` is served at https://images.a11s.one to enable linking of collection images through QGIS as well as remote spatial and temporal querying using open source software such as `rstac` [@developmentseed2025developmentseedtitiler; @stac-utils2025stacutilsstacfastapipgstac; @simoes_etal2021Rstacpackage].  
-
-## Open Source Reporting Framework
-
-This report is produced using open-source tools (R, bookdown) with full version control via git, enabling iterative updates as restoration planning progresses. All code, data, and revision history are publicly accessible in the [project repository](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024), with ongoing tasks tracked via GitHub [issues](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues).
-
-
-## Data Sourcing from Skeena Salmon Data Centre
-
-Whenever possible, data was sourced from existing government infrastructure in the Skeena region by downloading directly from the [Skeena Salmon Data Centre](https://data.skeenasalmon.info/) using the application programming interface to their [CKAN](https://ckan.org/features/api) database.
-
-
-## Historic Information Regarding Impacts and Restoration Initiatives
-Historic information regarding impacts and restoration initiatives, prescriptions and activities is an important component of the restoration planning process. A wealth of information is present for the Neexdzii Kwah however it is located in many different locations and not always spatially represented.  To address this, a comprehensive review of past impact indentification and restoration recommendations is underway. This review included a review of the literature, interviews with local experts, and a review of the restoration prescriptions and activities that have been conducted in the Neexdzii Kwah. For information regarding relatively recent restoration efforts such as physical works conducted through Healthy Watersheds Initiative, representatives from the Morice Watershed Monitoring Trust amalgamated all information located on physical drives and either provided emails with the data attached or provided links to the data for the study team for download and review.  This information was then subsequently downloaded and re-uploaded to a `OneDrive` folder for the study team to access.
-
-
-## Benthic Invertebrate Sampling
+### Benthic Invertebrate Sampling
 
 Benthic invertebrate sampling was conducted following the Canadian Aquatic Biomonitoring Network (CABIN) wadeable streams protocol [@environmentcanada2012Canadianaquatic]. Samples were collected using the traveling kick-net method with a 400 μm mesh net. At each site, a 3-minute timed sample was collected by traversing a zigzag pattern in an upstream direction within the erosional zone (riffle, rapid, or fast-flowing run habitat).
 
@@ -67,29 +23,80 @@ Three sites were sampled on the Neexdzii Kwah mainstem within known high-value C
 Samples were preserved in 10% formalin and submitted to Cordillera Consulting Inc. (Summerland, BC) for sorting and taxonomic identification to genus/species level. Results will be uploaded to the federal CABIN database.
 
 
-## Future Restoration Site Selection
+## Collaborative Data Management
 
-### Evaluation of Historic and Current Imagery
+### GIS Environment
+
+Geographical Information Systems are essential for developing and communicating restoration plans as well as the reasons they are required and how they are developed. Without the ability to visualize the landscape and the data that is used to make decisions it is difficult to conduct and communicate the need for restoration, the details of past and future plans as well as and the potential results of physical works.
+
+<br>
+
+To facilitate the planning and implementation of restoration activities in the Neexdzii Kwah (and elsewhere within the Widzin Kwah Water Sustainability Project area), a collaborative GIS environment (titled `restoration_wedzin_kwa`) has been established using [QGIS](https://qgis.org/en/site/) and [Mergin Maps](https://merginmaps.com/) (source code [here](https://github.com/MerginMaps). This environment is intended to be a space where project team members can access and view and contribute to the amalgamation of background spatial data and the development of restoration as well as monitoring for the project. The collaborative GIS environment allows users to view, edit, and analyze shared up to date spatial data on personal computers in an office setting as well as phones and tablets in the field. At the time of reporting, the environment was being used to develop and share maps, conduct spatial analyses, communicate restoration plans to stakeholders as well as to provide a central place to store methodologies and tools for conducting field assessments on standardized pre-developed digital forms. The platform can also be used to track the progress of restoration activities and monitor changes in the landscape over time helping encourage the record keeping of past and future restoration activities in a coordinated manner.
+
+<br>
+
+The shared QGIS project was created using scripts currently kept in [`dff-2022`](https://github.com/NewGraphEnvironment/dff-2022) with the precise calls to project creation scripts tracked in the `project_creation_and_permissions.txt` document kept in the main QGIS project directory. Information about how GIS project creation and update scripts function can be viewed [here](https://github.com/NewGraphEnvironment/dff-2022/tree/master/scripts/qgis) with outcomes of their use summarized below:
+
+  - download and clip user specified layers from the [BC Data Catalougue](https://catalogue.data.gov.bc.ca/) as well as data layers stored in custom Amazon Web Services buckets for an area of interest defined by a list of watershed groups and load to a geopackage called `background_layers.gpkg` stored in the main directory of the project.  An additional `lateral_habitat.tiff` layer is also clipped to the user defined area and loaded to the project.
+  - A project directory is created to hold the spatial data and `QGIS` project information (ie. layer symbology and naming conventions, metadata, etc.).
+  - Metadata for individual project spatial layers is kept in the `rfp_tracking` table within the `background_layers.gpkg` along with tables related to user supplied stream width/gradient inputs to `bcfishpass` to model potentially high value habitat that is accessible to fish species of interest.
+
+```{r qris, eval=FALSE}
+## QRis
+# [QGIS Riverscapes Studio](https://qris.riverscapes.net/) (QRis) is a free plugin for QGIS that helps you digitize your riverscape data. QRis is a great planning tool for helping users with spatial representation of riverscapes.
+#
+# QRis has two distinct types of features:
+#
+#   * Static: These are features that are relatively permanent, such as the valley bottom.
+#   * Dynamic: These are features that change over time, such as the active channel.
+#
+# QRis will be a useful tool for digitizing the upper Wetzin'kwa river and prioritizing restoration sites. To start using QRis, follow the instructions for [getting started](https://qris.riverscapes.net/getting-started/).
+```
+
+
+### Data Sourcing
+
+Whenever possible, data was sourced from existing government infrastructure in the Skeena region by downloading directly from the [Skeena Salmon Data Centre](https://data.skeenasalmon.info/) using the application programming interface to their [CKAN](https://ckan.org/features/api) database.
+
+
+### Open Source Reporting Framework
+
+This report is produced using open-source tools (R, bookdown) with full version control via git, enabling iterative updates as restoration planning progresses. All code, data, and revision history are publicly accessible in the [project repository](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024), with ongoing tasks tracked via GitHub [issues](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues).
+
+
+## Remote Sensing & Imagery
+
+### Aerial Imagery
+
+Scripted processing and serving of UAV imagery collected during the project is available at https://github.com/NewGraphEnvironment/stac_uav_bc/ [@irvine2025NewGraphEnvironmentstac_uav_bc]. [`OpenDroneMap`](https://github.com/OpenDroneMap/ODM) was utilized to produce orthomosaics, digital surface models (DSMs), and digital terrain models (DTMs) [@opendronemapauthors2025OpenDroneMapODM]. To support efficient web-based access - imagery products were converted to cloud-optimized GeoTIFFs (COGs) using `rio-cogeo`, then collated accordiong to the [SpatioTemporal Asset Catalog  (STAC)](https://github.com/radiantearth/stac-spec) specification with `pystac` and uploaded to S3 storage [@cogeotiff2025cogeotiffriocogeo; @radiantearth2024STACSpatioTemporal; @pystacauthors2025stacutilspystac, @amazonwebservices2025awsawscli]. A `titiler` tile server was set up to facilitate interactive viewing of the orthoimagery and an Application Program Interface (API) leveraging `stac-fastapi-pgstac` is served at https://images.a11s.one to enable linking of collection images through QGIS as well as remote spatial and temporal querying using open source software such as `rstac` [@developmentseed2025developmentseedtitiler; @stac-utils2025stacutilsstacfastapipgstac; @simoes_etal2021Rstacpackage].
+
+
+## Background Research & Analysis
+
+### Historic Information
+
+Historic information regarding impacts and restoration initiatives, prescriptions and activities is an important component of the restoration planning process. A wealth of information is present for the Neexdzii Kwah however it is located in many different locations and not always spatially represented.  To address this, a comprehensive review of past impact indentification and restoration recommendations is underway. This review included a review of the literature, interviews with local experts, and a review of the restoration prescriptions and activities that have been conducted in the Neexdzii Kwah. For information regarding relatively recent restoration efforts such as physical works conducted through Healthy Watersheds Initiative, representatives from the Morice Watershed Monitoring Trust amalgamated all information located on physical drives and either provided emails with the data attached or provided links to the data for the study team for download and review.  This information was then subsequently downloaded and re-uploaded to a `OneDrive` folder for the study team to access.
+
+
+### Future Restoration Site Selection
+
+#### Evaluation of Historic and Current Imagery
 Evaluation of historic and current imagery to understand and quantify watershed characteristics and morphological changes in the Neexdzii Kwah and its major tributaries over time and guide future restoration efforts. This will require that the study team acquire, georeference, archive and analyze historic imagery for the Neexdzii Kwah watershed and compare with an analysis of recent data to quantify historic changes in stream morphology resulting in loss of quantity and quality of water and fish habitat.  Through this process we hope to highlight areas of historic dredging, realignment, and floodplain disconnections due to infrastructure that have degraded watershed health and fish habitat.
 
-### Fish Passage
+#### Fish Passage
 At the time of writing, extensive work related to fish passage restoration planning was underway in the Neexdzii Kwah watershed
 as well as other areas of the greater Skeena watershed.  Methodology for this work is presented in @irvine_schick2025SkeenaWatershed, @irvine_schick2024SkeenaWatershed, @irvine_wintersheidt2023SkeenaWatershed,
-@irvine_etal2023BulkleyWatershed, @irvine2021BulkleyRiver and @irvine2018AnalysisPrioritya.  Although these references detail work primarily related to linear connectivity 
-(ie. upstream/downstream) there is also ongoing work related to lateral connectivity (ie. floodplain connectivity) with methodology related to disconnections due to the linear infrastructure documented in `bcfishpass` [@norris2024smnorrisbcfishpass] [here](https://github.com/smnorris/bcfishpass/tree/main/model/03_habitat_lateral).  
+@irvine_etal2023BulkleyWatershed, @irvine2021BulkleyRiver and @irvine2018AnalysisPrioritya.  Although these references detail work primarily related to linear connectivity
+(ie. upstream/downstream) there is also ongoing work related to lateral connectivity (ie. floodplain connectivity) with methodology related to disconnections due to the linear infrastructure documented in `bcfishpass` [@norris2024smnorrisbcfishpass] [here](https://github.com/smnorris/bcfishpass/tree/main/model/03_habitat_lateral).
 The results of this analysis and future analysis incorporating major roadways as well (currently under development) will be added to the shared QGIS project and used to inform future restoration activity prioritization.
 
-### Local Knowledge for Riparian Area and Erosion Protection Site Selection
-To facilitate project activities in the short term - the project team conducted site visits to areas of known riparian 
+#### Local Knowledge for Site Selection
+To facilitate project activities in the short term - the project team conducted site visits to areas of known riparian
 removal and bank erosion where landowners are amenable to project activities including erosion protection, installation of cattle exclusion fencing and riparian planting.
 
-
-
-### Delineation of Areas of High Fisheries Values
+#### Delineation of High Fisheries Value Areas
 Past work to spatially delineate areas of high value habitat known to be utilized historically for chinook and sockeye salmon spawning (among other data) undertaken by DFO, Arocha Canada and others has been stored within a secure location and linked within the shared GIS project.  @wilson_rabnett2007FishPassage includes descriptions of traditional Wet'suwet'en Fisheries sites within the Neexdzii Kwah which will be spatialized for the project.
 
-### Parameter Ranking to Select Future Restoration Sites 
+#### Parameter Ranking
 Analysis of background and current data can be used to inform priority ranking criteria used to select sites for restoration activities in the long term. Although the process is ongoing - GIS and user input parameters were selected based on ongoing project team meetings and review of available spatial information to rank future restoration sites.   Using custom functions and scripted workflows based on layers kept within the shared GIS project - we prioritized proposed sites dynamically based on a range of metrics and user defined ranking.  Scripts to conduct the analysis can be found [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/scripts/gis/prioritize.R) with custom functions [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/scripts/functions.R).
-
-  
 

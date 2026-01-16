@@ -38,10 +38,10 @@
 ### 1.2 Methods Section Restructure & Expansion (Issue #97)
 
 **Step 1: Reorganize into logical groupings** (see findings.md for full proposal)
-- [ ] Create "Field Assessments" section grouping
-- [ ] Create "Collaborative Data Management" section grouping
-- [ ] Create "Remote Sensing & Imagery" section grouping
-- [ ] Create "Background Research & Analysis" section grouping
+- [x] Create "Field Assessments" section grouping
+- [x] Create "Collaborative Data Management" section grouping
+- [x] Create "Remote Sensing & Imagery" section grouping
+- [x] Create "Background Research & Analysis" section grouping
 
 **Step 2: Tighten/condense existing content**
 - [x] Condense "Open Source - Iterative Reporting" to 2 sentences
@@ -51,7 +51,7 @@
 - [x] Promote "Data Sourcing" to own ## section, tighten text
 
 **Step 3: Add missing field methods**
-- [x] Benthic invertebrate sampling ✓ (written, needs placement in Field Assessments)
+- [x] Benthic invertebrate sampling ✓ (placed in Field Assessments)
 - [ ] eDNA sampling (awaiting user details)
 - [ ] Stakeholder workshops (landowner + Wet'suwet'en community)
 - [ ] Site reviews / prioritization visits (may already exist, check 0400)
