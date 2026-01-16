@@ -50,10 +50,34 @@
 
 ### Benthic Invertebrate Sampling
 - **Method:** Cabin kick
-- **Citation:** reynoldson_etal2001CABINcanadian (Zotero)
-- **Sites:** 3 locations in Neexdzi Kwah mainstem
-- **Lab:** Cordillera Lab, Summerland BC
+- **Citation:** environmentcanada2012Canadianaquatic (Zotero)
+- **Sites:** 3 locations in Neexdzii Kwah mainstem
+- **Lab:** Cordillera Consulting, Summerland BC
 - **Database:** Federal CABIN database
+
+**Rationale:**
+- Assess aquatic health through species composition/presence metrics
+- Indicates water quality status at different watershed locations
+- Does not explain causation if issues found, but flags potential problems
+- All sites within known high-value Chinook spawning/rearing habitat
+
+**Site 1 - Upstream of Landfill:**
+- Just downstream of Macquarie Creek
+- Upstream of Regional District landfill
+- Reference/control site for comparing to downstream locations
+
+**Site 2 - Downstream of Landfill:**
+- Downstream of McKilligan Road
+- Downstream of landfill
+- Detects potential landfill impacts on aquatic health
+
+**Site 3 - Downstream of Houston:**
+- Downstream of Town of Houston
+- ~200m upstream of North Road overpass
+- Adjacent to rest/picnic area
+- Downstream of Houston sewage treatment plant
+- Existing CABIN site (need to find reference ID)
+- Detects potential municipal wastewater impacts
 
 ### eDNA Sampling
 - **Sites:** Below Bulkley Falls + 1km downstream
@@ -104,9 +128,166 @@
 
 ---
 
+## Phase 1 Analysis: Current Report Structure
+
+### Executive Summary Table (executive_summary.csv)
+Currently 15 rows mixing different types:
+
+**Infrastructure/Tools:**
+- Reporting Framework
+- Collaborative GIS Mapping Tool
+- Code Repository
+- UAV Imagery Viewer
+- Bibliography
+
+**Methodology References:**
+- Historic Imagery workflow
+- Land Cover Analysis
+- Precipitation Analysis
+- State of the Value analysis
+- Scripted Prioritization Ranking
+
+**Deliverables:**
+- Vegetation Monitoring (iPhone LiDAR)
+- Leveraging local Data Hubs
+
+**Already Covered in Methods/Results:**
+- GIS, UAV, Historic Info all have sections already
+
+### Current Methods (0300) Structure
+1. Collaborative GIS Environment
+2. Aerial Imagery (UAV/STAC)
+3. Open Source - Iterative Reporting
+4. Data Sourcing from SKT
+5. Documentation of Workflows
+6. Historic Information review
+7. Future Restoration Site Selection (5 subsections)
+
+### Current Results (0400) Structure
+1. Field Review
+2. Collaborative GIS Environment
+3. Aerial Imagery
+4. Historic Information (5 subsections with detailed summaries)
+5. Future Restoration Site Selection (5 subsections)
+
+### Issues Identified
+- Methods/Results have parallel structures (some overlap)
+- Exec summary table is more "project outputs catalog" than summary
+- Missing methods: benthic, eDNA, iPhone LiDAR, time series, climate anomaly
+- Results needs: site monitoring data, deliverables summary
+
+---
+
+## Proposed Methods Section Restructure
+
+**Date:** 2026-01-15
+**Status:** Draft for review
+
+### Current Structure (0300-methods.Rmd)
+```
+## Methods
+1. Collaborative GIS Environment
+2. Aerial Imagery
+3. Open Source - Iterative Reporting
+   - Issue and Discussion Tracking
+   - Tables and Figures
+4. Data Sourcing from Skeena Salmon Data Centre
+5. Documentation of Workflows
+6. Historic Information Regarding Impacts and Restoration Initiatives
+7. Benthic Invertebrate Sampling ← NEW (orphaned, needs proper placement)
+8. Future Restoration Site Selection
+   - Evaluation of Historic and Current Imagery
+   - Fish Passage
+   - Local Knowledge for Riparian Area and Erosion Protection Site Selection
+   - Delineation of Areas of High Fisheries Values
+   - Parameter Ranking to Select Future Restoration Sites
+```
+
+**Problems with current structure:**
+- No logical grouping (mixes field work, technical infrastructure, analysis)
+- "Open Source - Iterative Reporting" is meta/documentation, not a method
+- Benthic section added but doesn't fit the flow
+- Missing: eDNA, workshops, iPhone LiDAR, time series, climate anomaly
+
+### Proposed Structure
+
+```
+## Methods
+
+### Field Assessments
+- Site Reviews and Prioritization Visits
+- Benthic Invertebrate Sampling ✓
+- eDNA Sampling (pending)
+- Stakeholder Workshops (pending)
+  - Landowner workshop
+  - Wet'suwet'en community members & leadership workshop
+
+### Collaborative Data Management
+- GIS Environment (Mergin Maps / QGIS)
+- Data Sourcing (Skeena Knowledge Trust)
+- Open Source Reporting Framework
+
+### Remote Sensing & Imagery
+- UAV Mapping and STAC Infrastructure
+- iPhone LiDAR Vegetation Monitoring (pending)
+- Time Series Analysis (pending)
+
+### Background Research & Analysis
+- Historic Information Review
+- Climate Anomaly Analysis (→ reference Appendix)
+- Future Restoration Site Selection
+  - Fish Passage Context
+  - Local Knowledge Integration
+  - High Fisheries Value Delineation
+  - Parameter Ranking Methodology
+```
+
+### Rationale for Reorganization
+1. **Field Assessments first** - What we actually did in the watershed
+2. **Collaborative Data Management** - How we organized and shared information
+3. **Remote Sensing & Imagery** - Technical methods for spatial data
+4. **Background Research & Analysis** - Desk-based work and site selection logic
+
+### Content to Tighten/Remove
+- "Open Source - Iterative Reporting" → condense to 1-2 paragraphs about reproducibility
+- "Issue and Discussion Tracking" → likely remove (meta, not methods)
+- "Tables and Figures" → likely remove (meta, not methods)
+- "Documentation of Workflows" → fold into reporting framework paragraph
+
+### Sections to Add
+| Section | Status | Notes |
+|---------|--------|-------|
+| Benthic Invertebrate Sampling | ✅ Done | Move to Field Assessments |
+| eDNA Sampling | ⬜ Pending | Awaiting user details |
+| Stakeholder Workshops | ⬜ Pending | Need to document |
+| iPhone LiDAR Vegetation Monitoring | ⬜ Pending | |
+| Time Series Analysis | ⬜ Pending | Reference new_graphiti post |
+| Climate Anomaly Analysis | ⬜ Pending | Reference Appendix 1 |
+
+### Open Source Reporting Section - Decisions
+- **Memos table:** Remove - blog posts cover workflows better, will be referenced in relevant sections
+- **Issue/Discussion Tracking subsection:** Remove - fold into one sentence with links
+- **Tables and Figures subsection:** Remove - too meta
+- **Documentation of Workflows subsection:** Remove - memos being dropped
+- **R/bookdown references:** Plain text, no hyperlinks (audience isn't R programmers)
+- **Final form:** 3 sentences max with links to repo, issues, discussions
+
+**Draft paragraph:**
+> This report is produced using open-source tools (R, bookdown) with full version control via git, enabling iterative updates as restoration planning progresses. All code, data, and revision history are publicly accessible in the [project repository](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024), with ongoing tasks tracked via GitHub [issues](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues).
+
+### Session Info (to address later)
+- **Issue #98:** Broken link to session_info.csv (fs::path missing /blob/main/)
+- **Question to resolve:** Does `devtools::session_info(to_file = ...)` capture all packages used during build, or just what's loaded at that moment?
+- **Decision:** Keep session info - it's pro-level documentation for reproducibility
+- **Location:** Stays in appendix, optionally reference from Open Source Reporting paragraph
+
+---
+
 ## Discoveries Log
 
 | Date | Finding | Source | Implications |
 |------|---------|--------|--------------|
 | 2026-01-15 | Project mapped to SRED iterations 1 & 4 | sred-2025-2026 repo | Document R&D activities |
+| 2026-01-15 | Exec summary table mixes methods/tools/deliverables | executive_summary.csv | Need to categorize and relocate |
+| 2026-01-15 | Methods/Results have parallel section names | 0300/0400 Rmd | Consider consolidating or clarifying |
 | | | | |

@@ -42,15 +42,51 @@
 
 ---
 
+## Session 2: 2026-01-15 - Benthic Methods Section
+
+### Context Recovery
+- Previous session lost context before saving
+- Strategy: Incremental saves to planning files + frequent commits
+
+### Working On
+- Phase 4.1: Benthic Invertebrate Sampling methods for 0300-methods.Rmd
+
+### Corrections Made
+- Citation key: `reynoldson_etal2001CABINcanadian` → `environmentcanada2012Canadianaquatic`
+
+### Information Captured
+- [x] Which 3 sites were visited and why? ✓
+- [x] Rationale for site selection ✓
+- [ ] Site names/IDs (especially existing CABIN site downstream Houston) - still needed
+- [ ] Exact coordinates for GIS - still needed
+
+### Completed
+- [x] Updated citation key in task_plan.md
+- [x] Updated citation key in findings.md
+- [x] Captured site rationale and locations in findings.md
+- [x] Read CABIN field manual PDF for protocol details
+- [x] Drafted benthic invertebrate sampling methods section
+- [x] Added section to 0300-methods.Rmd (lines 102-116)
+
+### Site Details Captured
+**Rationale:** Assess aquatic health via species composition; all sites in known Chinook habitat
+
+1. **Site 1:** Downstream of Macquarie Creek, upstream of Regional District landfill (reference site)
+2. **Site 2:** Downstream of McKilligan Road and landfill (landfill impact detection)
+3. **Site 3:** Downstream of Houston, ~200m upstream of North Road overpass, downstream of sewage treatment plant (existing CABIN site, municipal impact detection)
+
+---
+
 ## Notes
 
 ### Files Modified This Session
 | File | Action |
 |------|--------|
 | `CLAUDE.md` | Created, then updated with companion repos |
-| `task_plan.md` | Created, then expanded Phase 3 |
+| `task_plan.md` | Created, then expanded Phase 3, updated Phase 4.1 |
 | `findings.md` | Created, then added reference materials |
 | `progress.md` | Created |
+| `0300-methods.Rmd` | Added Benthic Invertebrate Sampling section |
 
 ### Git Status (start of session)
 Modified:

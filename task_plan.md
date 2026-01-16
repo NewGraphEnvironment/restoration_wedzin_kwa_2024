@@ -9,17 +9,57 @@
 ---
 
 ## Phase 1: Report Restructuring
-**Status:** `pending`
+**Status:** `in_progress`
 
-### 1.1 Executive Summary Simplification
-- [ ] Review current executive summary table in `0050-executive-summary.Rmd`
-- [ ] Identify rows to move to Methods vs Results sections
-- [ ] Simplify remaining executive summary content
-- [ ] Consider bookdown "parts" structure for organization
+### 1.1 Executive Summary Updates
+- [x] Review current executive summary table structure
+- [x] Decision: Keep table for technical tools/workflows; add field work narrative separately
 
-### 1.2 Methods Section Expansion
-- [ ] Restructure `0300-methods.Rmd` to receive content from exec summary
-- [ ] Organize by methodology type (field, GIS, lab, remote sensing)
+**Field Work Narrative Paragraph (to add):**
+- [ ] Benthic invertebrate sampling (3 sites, Neexdzii Kwah mainstem)
+- [ ] eDNA sampling (below Bulkley Falls + 1km downstream)
+- [ ] Site reviews (as already described in Results)
+- [ ] UAV mapping extent
+- [ ] Two workshops conducted:
+  - Landowners workshop (input on prioritization)
+  - Wet'suwet'en community members & leadership workshop (input on prioritization)
+
+**Technical Tools Table:**
+- [ ] Rename table caption to "Project Resources & Deliverables" or similar
+- [ ] Add time series analysis workflow
+- [ ] Add climate anomaly tool
+- [ ] Keep existing technical items
+
+**Future improvements (document for later):**
+- Condense URLs to anchor text links
+- Add internal links to corresponding Methods sections
+- Query STAC catalogue to summarize UAV work (number of products, sites mapped, area covered) for exec summary
+
+### 1.2 Methods Section Restructure & Expansion (Issue #97)
+
+**Step 1: Reorganize into logical groupings** (see findings.md for full proposal)
+- [x] Create "Field Assessments" section grouping
+- [x] Create "Collaborative Data Management" section grouping
+- [x] Create "Remote Sensing & Imagery" section grouping
+- [x] Create "Background Research & Analysis" section grouping
+
+**Step 2: Tighten/condense existing content**
+- [x] Condense "Open Source - Iterative Reporting" to 2 sentences
+- [x] Remove "Issue and Discussion Tracking" subsection (meta, not methods)
+- [x] Remove "Tables and Figures" subsection (meta, not methods)
+- [x] Remove "Documentation of Workflows" subsection (memos dropped, blogs used instead)
+- [x] Promote "Data Sourcing" to own ## section, tighten text
+
+**Step 3: Add missing field methods**
+- [x] Benthic invertebrate sampling ✓ (placed in Field Assessments)
+- [ ] eDNA sampling (awaiting user details)
+- [ ] Stakeholder workshops (landowner + Wet'suwet'en community)
+- [ ] Site reviews / prioritization visits (may already exist, check 0400)
+
+**Step 4: Add missing technical methods**
+- [ ] iPhone LiDAR vegetation monitoring methodology
+- [x] Time series analysis workflow (Sentinel-2, Google Earth, BC historic ortho discovery)
+- [ ] Climate anomaly methodology (reference Appendix 1)
 
 ### 1.3 Results Section Expansion
 - [ ] Restructure `0400-results.Rmd` to receive content from exec summary
@@ -27,16 +67,26 @@
 
 ---
 
-## Phase 2: QGIS Project Cleanup & Site Data
+## Phase 2b: QGIS Project Cleanup & Site Data
 **Status:** `pending`
 
-### 2.1 QGIS Review
+### 2b.1 Site Categorization
+- [ ] Add tags/attributes to site data table to categorize:
+  - Sites with past restoration work completed
+  - Sites with existing prescriptions (e.g., NCFDC 1998)
+  - Proposed/conceptual sites from landowners
+  - HWI sites
+  - Wet'suwet'en FN 2016 sites
+- [ ] Query field forms to get total number of sites visited
+- [ ] Summarize site counts by category for Methods section
+
+### 2b.2 QGIS Review
 - [ ] Review comments in `/Users/airvine/Projects/gis/restoration_wedzin_kwa` for errors/omissions
-- [ ] Create summary of monitored field sites
 - [ ] Export site data for report integration
 
-### 2.2 Add Missing Site Locations
-- [ ] Benthic invertebrate sampling sites (3 sites, Neexdzi Kwah mainstem)
+### 2b.3 Add Missing Site Locations
+- [ ] Benthic invertebrate sampling sites (3 sites, Neexdzii Kwah mainstem)
+  - [ ] Find name and reference ID for existing CABIN site (Site 3, downstream Houston)
 - [ ] eDNA sampling sites (below Bulkley Falls + 1km downstream)
 - [ ] Verify all sites have proper attributes
 
@@ -48,7 +98,7 @@
 ### 3.1 Climate Anomaly Analysis
 - [ ] Verify climate anomaly appendix documents bc_climate_anomaly fork (newgraph branch)
 - [ ] Document climate perspective before/during study period
-- [ ] Illustrate climate pattern differences within Neexdzi Kwah watershed
+- [ ] Illustrate climate pattern differences within Neexdzii Kwah watershed
 
 ### 3.2 Precipitation Patterns
 - [ ] Review `../new_graphiti/posts/2024-06-19-precipitation/index.qmd`
@@ -78,11 +128,11 @@
 **Status:** `pending`
 
 ### 4.1 Benthic Invertebrate Sampling
-- [ ] Document cabin kick methods (cite reynoldson_etal2001CABINcanadian from Zotero)
-- [ ] Note 3 sites in Neexdzi Kwah mainstem
-- [ ] Reference Cordillera Lab (Summerland) for sample processing
-- [ ] Note results upload to federal CABIN database
-- [ ] Add methods to `0300-methods.Rmd`
+- [x] Document cabin kick methods (cite environmentcanada2012Canadianaquatic from Zotero)
+- [x] Note 3 sites in Neexdzii Kwah mainstem
+- [x] Reference Cordillera Lab (Summerland) for sample processing
+- [x] Note results upload to federal CABIN database
+- [x] Add methods to `0300-methods.Rmd`
 - [ ] Add results/locations to `0400-results.Rmd`
 
 ### 4.2 eDNA Sampling

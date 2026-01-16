@@ -1,127 +1,103 @@
 # Methods
 
-## Collaborative GIS Environment
-Geographical Information Systems are essential for developing and communicating restoration plans as well as the reasons they are required and how they are developed. Without the ability to visualize the landscape and the data that is used to make decisions it is difficult to conduct and communicate the need for restoration, the details of past and future plans as well as and the potential results of physical works. 
+## Field Assessments
+
+### Benthic Invertebrate Sampling
+
+Benthic invertebrate sampling was conducted following the Canadian Aquatic Biomonitoring Network (CABIN) wadeable streams protocol [@environmentcanada2012Canadianaquatic]. Samples were collected using the traveling kick-net method with a 400 μm mesh net. At each site, a 3-minute timed sample was collected by traversing a zigzag pattern in an upstream direction within the erosional zone (riffle, rapid, or fast-flowing run habitat).
 
 <br>
 
-To facilitate the planning and implementation of restoration activities in the Neexdzii Kwah (and elsewhere within the Widzin Kwah Water Sustainability Project area), a collaborative GIS environment (titled `restoration_wedzin_kwa`) has been established using [QGIS](https://qgis.org/en/site/) and [Mergin Maps](https://merginmaps.com/) (source code [here](https://github.com/MerginMaps). This environment is intended to be a space where project team members can access and view and contribute to the amalgamation of background spatial data and the development of restoration as well as monitoring for the project. The collaborative GIS environment allows users to view, edit, and analyze shared up to date spatial data on personal computers in an office setting as well as phones and tablets in the field. At the time of reporting, the environment was being used to develop and share maps, conduct spatial analyses, communicate restoration plans to stakeholders as well as to provide a central place to store methodologies and tools for conducting field assessments on standardized pre-developed digital forms. The platform can also be used to track the progress of restoration activities and monitor changes in the landscape over time helping encourage the record keeping of past and future restoration activities in a coordinated manner.
+Concurrent with benthic sampling, standardized habitat and water quality data were collected. Substrate composition was characterized using a 100-pebble count, measuring the intermediate axis of randomly selected particles along transects. Embeddedness—the degree to which particles are buried in fine sediments—was assessed for every 10th particle. Channel slope was measured using a lazer level.
 
 <br>
 
-The shared QGIS project was created using scripts currently kept in [`dff-2022`](https://github.com/NewGraphEnvironment/dff-2022) with the precise calls to project creation scripts tracked in the `project_creation_and_permissions.txt` document kept in the main QGIS project directory. Information about how GIS project creation and update scripts function can be viewed [here](https://github.com/NewGraphEnvironment/dff-2022/tree/master/scripts/qgis) with outcomes of their use summarized below:
-
-  - download and clip user specified layers from the [BC Data Catalougue](https://catalogue.data.gov.bc.ca/) as well as data layers stored in custom Amazon Web Services buckets for an area of interest defined by a list of watershed groups and load to a geopackage called `background_layers.gpkg` stored in the main directory of the project.  An additional `lateral_habitat.tiff` layer is also clipped to the user defined area and loaded to the project.
-  - A project directory is created to hold the spatial data and `QGIS` project information (ie. layer symbology and naming conventions, metadata, etc.).  
-  - Metadata for individual project spatial layers is kept in the `rfp_tracking` table within the `background_layers.gpkg` along with tables related to user supplied stream width/gradient inputs to `bcfishpass` to model potentially high value habitat that is accessible to fish species of interest. 
-
-```{r qris, eval=FALSE}
-## QRis
-# [QGIS Riverscapes Studio](https://qris.riverscapes.net/) (QRis) is a free plugin for QGIS that helps you digitize your riverscape data. QRis is a great planning tool for helping users with spatial representation of riverscapes. 
-# 
-# QRis has two distinct types of features:
-#   
-#   * Static: These are features that are relatively permanent, such as the valley bottom.
-#   * Dynamic: These are features that change over time, such as the active channel.
-# 
-# QRis will be a useful tool for digitizing the upper Wetzin'kwa river and prioritizing restoration sites. To start using QRis, follow the instructions for [getting started](https://qris.riverscapes.net/getting-started/).
-```
-
-
-## Aerial Imagery
-
-Scripted processing and serving of UAV imagery collected during the project is available at https://github.com/NewGraphEnvironment/stac_uav_bc/ [@irvine2025NewGraphEnvironmentstac_uav_bc]. [`OpenDroneMap`](https://github.com/OpenDroneMap/ODM) was utilized to produce orthomosaics, digital surface models (DSMs), and digital terrain models (DTMs) [@opendronemapauthors2025OpenDroneMapODM]. To support efficient web-based access - imagery products were converted to cloud-optimized GeoTIFFs (COGs) using `rio-cogeo`, then collated accordiong to the [SpatioTemporal Asset Catalog  (STAC)](https://github.com/radiantearth/stac-spec) specification with `pystac` and uploaded to S3 storage [@cogeotiff2025cogeotiffriocogeo; @radiantearth2024STACSpatioTemporal; @pystacauthors2025stacutilspystac, @amazonwebservices2025awsawscli]. A `titiler` tile server was set up to facilitate interactive viewing of the orthoimagery and an Application Program Interface (API) leveraging `stac-fastapi-pgstac` is served at https://images.a11s.one to enable linking of collection images through QGIS as well as remote spatial and temporal querying using open source software such as `rstac` [@developmentseed2025developmentseedtitiler; @stac-utils2025stacutilsstacfastapipgstac; @simoes_etal2021Rstacpackage].  
-
-## Open Source - Iterative Reporting
-A key question we have been asking ourselves is: 
+Water quality parameters recorded at each site included temperature, pH, and conductivity. Instream habitat features documented included macrophyte coverage (percent cover in categories: 0%, 1–25%, 26–50%, 51–75%, 76–100%), periphyton coverage (5-category scale based on slipperiness and thickness), and canopy cover. Channel dimensions including bankfull width, wetted width, and depths were also recorded.
 
 <br>
 
-    
-  >"What is the most useful way to present information?" 
-  
-<br>
-  
-
-From our perspective - the most useful way to present information is in a version controlled format that allows it to be interactive, reproducible, read online, served out as a static document, updated,  copied, used as a template, etc. Iterative reporting, managed with a version control system such as
-[git](https://docs.github.com/en/get-started/using-git/about-git) (see example of tracking edits [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/commits/main/0300-methods.Rmd))
-with a permissive license is a great way to do all those things.  Although there is a steep learning curve to using programming tools and producing this type of product and although it can be quite time consuming - it then allows leveraging of all the components of the work to future projects for everyone. Licensing is also key for work to be shared. [MIT License](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/LICENSE.md) is an example of a license that promotes collaboration and sharing/leveraging of work while.
+Three sites were sampled on the Neexdzii Kwah mainstem within known high-value Chinook spawning and rearing habitat. Site locations were selected to assess aquatic health upstream and downstream of potential point-source impacts, allowing comparison of species composition and community health metrics across the watershed. Triplicate kick samples were collected at each site to quantify within-site variability and enable statistical distinction between true site differences and natural spatial heterogeneity.
 
 <br>
 
-From our perspective - restoration planning are the type of initiatives that are well suited to an iterative reporting format such as
-can be demonstrated within this [code
-repository](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024) which builds and serves this
-[online report](https://newgraphenvironment.github.io/restoration_wedzin_kwa_2024/). 
+Samples were preserved in 10% formalin and submitted to Cordillera Consulting Inc. (Summerland, BC) for sorting and taxonomic identification to genus/species level. Results will be uploaded to the federal CABIN database.
 
 
-### Issue and Discussion Tracking
-Issues and discussions are effective ways to track tasks, enhancements, and bugs for the  project. Issues can be used to keep track of all the things that need to be done, and can be used to discuss in-line with references to code used to address them linked to the issues through `git` commit messages.  Issues for this project are kept [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues) and
-discussions are kept [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/discussions).
+## Collaborative Data Management
+
+### GIS Environment
+
+A collaborative GIS environment (`restoration_wedzin_kwa`) was established using [QGIS](https://qgis.org/en/site/) and [Mergin Maps](https://merginmaps.com/) to enable project team members to view, edit, and analyze shared spatial data on desktop computers and mobile devices in the field. The environment is used to develop and share maps, conduct spatial analyses, communicate restoration plans to stakeholders, and provide standardized digital forms for field assessments. The platform also tracks restoration activity progress and monitors landscape changes over time.
+
+<br>
+
+The QGIS project was created using scripts in [`dff-2022`](https://github.com/NewGraphEnvironment/dff-2022) that:
+
+  - download and clip layers from the [BC Data Catalogue](https://catalogue.data.gov.bc.ca/) and custom AWS buckets for the watershed area of interest
+  - create a project directory with layer symbology, naming conventions, and metadata
+  - store layer metadata in the `rfp_tracking` table within `background_layers.gpkg`, along with user-supplied stream width/gradient inputs to `bcfishpass` for modeling high-value fish habitat
 
 
+### Data Sourcing
 
-### Tables and Figures
-There are many tables within this document that can take a long time to format.  Within this document the tables have been imported often as simple csv files or pages of an excel workbook and pulled into the project using scripts. This allows others to access the data and use it in their own projects.  These tables can also then be easily updated with new data as it becomes available often with the formatting for presentation to reader handled by the scripting. Any figures used in the reporting are saved in the project [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/fig/) and can be leveraged by others.  
-
-```{r kable-resources, eval = FALSE}
-# An example of this can be
-# seen here in Table \@ref(tab:kable-resources) with the actual file served
-# [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/tree/main/data):
-
-read_csv("data/aquatic_restoration_resources.csv") %>%
-  fpr::fpr_kable(caption_text = "Aquatic Restoration Resources.")
-```
+Whenever possible, data was sourced from existing government infrastructure in the Skeena region by downloading directly from the [Skeena Salmon Data Centre](https://data.skeenasalmon.info/) using the application programming interface to their [CKAN](https://ckan.org/features/api) database.
 
 
+### Open Source Reporting Framework
 
-### Data Sourceing from Skeena Salmon Data Centre
-Whenever possible we have attempted to tie into existing data govenment infrastructure in the Skeena region by downloading data directly from the [Skeena Salmon Data Centre](https://data.skeenasalmon.info/) using the application programming interface to their [CKAN](https://ckan.org/features/api) database. To facilitate and simlify this process we developed a function to download data from the CKAN database and load it into local versions of the project repository. This `fetch_package` function is kept in the `scripts/functions.R` file of the project and can be used to download entire "packages" of data from the Skeena Salmon Data Centre.
-
-### Documentation of Workflows
-Select workflows were documented in memo format to illustrate the process used for others and promote reproducibility/leverageing of Neexdzii Kwah.  The memos are stored in the `memo` directory of the project [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/tree/main/memos) and can be viewed in Table Table \@ref(tab:tab-memos) by downloading the `.html` documents to a local computer and opening in a web browser such as `Chrome` (usually a double click of the document will open it in the browser).  
-
-```{r tab-memos}
-
-## make a tibble of the list and display it as a fpr_kable
-list.files("memos", full.names = FALSE) %>% 
-  tibble::tibble(memo_name = .) %>% 
-  fpr::fpr_kable(caption_text = "Memos stored at https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/tree/main/memos.",
-                 scroll = FALSE,
-                 scroll_box_height = "300px"
-                 )
-
-```
+This report is produced using open-source tools (R, bookdown) with full version control via git, enabling iterative updates as restoration planning progresses. All code, data, and revision history are publicly accessible in the [project repository](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024), with ongoing tasks tracked via GitHub [issues](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues).
 
 
+## Remote Sensing & Imagery
 
-## Historic Information Regarding Impacts and Restoration Initiatives
-Historic information regarding impacts and restoration initiatives, prescriptions and activities is an important component of the restoration planning process. A wealth of information is present for the Neexdzii Kwah however it is located in many different locations and not always spatially represented.  To address this, a comprehensive review of past impact indentification and restoration recommendations is underway. This review included a review of the literature, interviews with local experts, and a review of the restoration prescriptions and activities that have been conducted in the Neexdzii Kwah. For information regarding relatively recent restoration efforts such as physical works conducted through Healthy Watersheds Initiative, representatives from the Morice Watershed Monitoring Trust amalgamated all information located on physical drives and either provided emails with the data attached or provided links to the data for the study team for download and review.  This information was then subsequently downloaded and re-uploaded to a `OneDrive` folder for the study team to access. 
+### Aerial Imagery
+
+Scripted processing and serving of UAV imagery collected during the project is available at https://github.com/NewGraphEnvironment/stac_uav_bc/ [@irvine2025NewGraphEnvironmentstac_uav_bc]. [`OpenDroneMap`](https://github.com/OpenDroneMap/ODM) was utilized to produce orthomosaics, digital surface models (DSMs), and digital terrain models (DTMs) [@opendronemapauthors2025OpenDroneMapODM]. To support efficient web-based access - imagery products were converted to cloud-optimized GeoTIFFs (COGs) using `rio-cogeo`, then collated accordiong to the [SpatioTemporal Asset Catalog  (STAC)](https://github.com/radiantearth/stac-spec) specification with `pystac` and uploaded to S3 storage [@cogeotiff2025cogeotiffriocogeo; @radiantearth2024STACSpatioTemporal; @pystacauthors2025stacutilspystac, @amazonwebservices2025awsawscli]. A `titiler` tile server was set up to facilitate interactive viewing of the orthoimagery and an Application Program Interface (API) leveraging `stac-fastapi-pgstac` is served at https://images.a11s.one to enable linking of collection images through QGIS as well as remote spatial and temporal querying using open source software such as `rstac` [@developmentseed2025developmentseedtitiler; @stac-utils2025stacutilsstacfastapipgstac; @simoes_etal2021Rstacpackage].
 
 
-## Future Restoration Site Selection
+### Time Series Analysis
 
-### Evaluation of Historic and Current Imagery
+Three approaches were developed for tracking land cover and stream morphology changes over time in floodplain and riparian areas.
+
+<br>
+
+**Satellite Imagery Composites:** A reproducible workflow was developed to generate annual orthomosaic composites from Sentinel-2 imagery (10m resolution) using STAC queries and `gdalcubes` [@appel_pebesma2019OnDemandProcessing; @simoes_etal2021Rstacpackage]. Cloud-free summer imagery (June–July, ≤20% cloud cover) is sourced from Microsoft's Planetary Computer for each year from 2016 to present, with median composites created to minimize atmospheric artifacts. The workflow is demonstrated at Maxam Creek near Bulkley Lake confluence, with detailed documentation at [new_graphiti](https://newgraphenvironment.github.io/new_graphiti/posts/2026-01-08-stac-ortho-mosaics/).
+
+<br>
+
+**Historic Aerial Imagery Comparison:** At select restoration sites, historic aerial imagery was accessed via Google Earth's time slider feature and exported to document land cover changes adjacent to areas where restoration activities have since occurred.
+
+<br>
+
+**Provincial Historic Orthophoto Discovery:** A workflow was developed to query the BC Data Catalogue and identify available historic aerial photographs with their spatial coverage relative to the study area. This enables targeted ordering of high-resolution historic imagery from the province for detailed change analysis. The workflow is documented at [new_graphiti](https://newgraphenvironment.github.io/new_graphiti/posts/2024-11-15-bcdata-ortho-historic/).
+
+
+## Background Research & Analysis
+
+### Historic Information
+
+Historic information regarding impacts and restoration initiatives, prescriptions and activities is an important component of the restoration planning process. A wealth of information is present for the Neexdzii Kwah however it is located in many different locations and not always spatially represented.  To address this, a comprehensive review of past impact indentification and restoration recommendations is underway. This review included a review of the literature, interviews with local experts, and a review of the restoration prescriptions and activities that have been conducted in the Neexdzii Kwah. For information regarding relatively recent restoration efforts such as physical works conducted through Healthy Watersheds Initiative, representatives from the Morice Watershed Monitoring Trust amalgamated all information located on physical drives and either provided emails with the data attached or provided links to the data for the study team for download and review.  This information was then subsequently downloaded and re-uploaded to a `OneDrive` folder for the study team to access.
+
+
+### Future Restoration Site Selection
+
+#### Evaluation of Historic and Current Imagery
 Evaluation of historic and current imagery to understand and quantify watershed characteristics and morphological changes in the Neexdzii Kwah and its major tributaries over time and guide future restoration efforts. This will require that the study team acquire, georeference, archive and analyze historic imagery for the Neexdzii Kwah watershed and compare with an analysis of recent data to quantify historic changes in stream morphology resulting in loss of quantity and quality of water and fish habitat.  Through this process we hope to highlight areas of historic dredging, realignment, and floodplain disconnections due to infrastructure that have degraded watershed health and fish habitat.
 
-### Fish Passage
+#### Fish Passage
 At the time of writing, extensive work related to fish passage restoration planning was underway in the Neexdzii Kwah watershed
 as well as other areas of the greater Skeena watershed.  Methodology for this work is presented in @irvine_schick2025SkeenaWatershed, @irvine_schick2024SkeenaWatershed, @irvine_wintersheidt2023SkeenaWatershed,
-@irvine_etal2023BulkleyWatershed, @irvine2021BulkleyRiver and @irvine2018AnalysisPrioritya.  Although these references detail work primarily related to linear connectivity 
-(ie. upstream/downstream) there is also ongoing work related to lateral connectivity (ie. floodplain connectivity) with methodology related to disconnections due to the linear infrastructure documented in `bcfishpass` [@norris2024smnorrisbcfishpass] [here](https://github.com/smnorris/bcfishpass/tree/main/model/03_habitat_lateral).  
+@irvine_etal2023BulkleyWatershed, @irvine2021BulkleyRiver and @irvine2018AnalysisPrioritya.  Although these references detail work primarily related to linear connectivity
+(ie. upstream/downstream) there is also ongoing work related to lateral connectivity (ie. floodplain connectivity) with methodology related to disconnections due to the linear infrastructure documented in `bcfishpass` [@norris2024smnorrisbcfishpass] [here](https://github.com/smnorris/bcfishpass/tree/main/model/03_habitat_lateral).
 The results of this analysis and future analysis incorporating major roadways as well (currently under development) will be added to the shared QGIS project and used to inform future restoration activity prioritization.
 
-### Local Knowledge for Riparian Area and Erosion Protection Site Selection
-To facilitate project activities in the short term - the project team conducted site visits to areas of known riparian 
+#### Local Knowledge for Site Selection
+To facilitate project activities in the short term - the project team conducted site visits to areas of known riparian
 removal and bank erosion where landowners are amenable to project activities including erosion protection, installation of cattle exclusion fencing and riparian planting.
 
+#### Delineation of High Fisheries Value Areas
+Past work to spatially delineate areas of high value habitat known to be utilized historically for chinook and sockeye salmon spawning (among other data) undertaken by DFO, Arocha Canada and others has been stored within a secure location and linked within the shared GIS project.  @wilson_rabnett2007FishPassage includes descriptions of traditional Wet'suwet'en Fisheries sites within the Neexdzii Kwah which will be spatialized for the project.
 
-
-### Delineation of Areas of High Fisheries Values
-Past work to spatially delineate areas of high value habitat known to be utilized historically for chinook and sockeye salmon spawning (among other data) undertaken by DFO, Arocha Canada and others has been stored within a secure location and linked within the shared GIS project.  @wilson_rabnett2007FishPassage includes descriptions of traditional Wet'suwet'en Fisheries sites within the Neexdzi Kwa which will be spatialized for the project.
-
-### Parameter Ranking to Select Future Restoration Sites 
+#### Parameter Ranking
 Analysis of background and current data can be used to inform priority ranking criteria used to select sites for restoration activities in the long term. Although the process is ongoing - GIS and user input parameters were selected based on ongoing project team meetings and review of available spatial information to rank future restoration sites.   Using custom functions and scripted workflows based on layers kept within the shared GIS project - we prioritized proposed sites dynamically based on a range of metrics and user defined ranking.  Scripts to conduct the analysis can be found [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/scripts/gis/prioritize.R) with custom functions [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/scripts/functions.R).
-
-  
 
