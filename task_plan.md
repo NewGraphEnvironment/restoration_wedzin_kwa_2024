@@ -58,7 +58,7 @@
 
 **Step 4: Add missing technical methods**
 - [ ] iPhone LiDAR vegetation monitoring methodology
-- [ ] Time series analysis workflow
+- [x] Time series analysis workflow (Sentinel-2, Google Earth, BC historic ortho discovery)
 - [ ] Climate anomaly methodology (reference Appendix 1)
 
 ### 1.3 Results Section Expansion
