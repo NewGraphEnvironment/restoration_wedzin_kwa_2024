@@ -490,16 +490,35 @@ Currently 0400 has Field Review results but 0300 has no corresponding methods.
 - Appendix 2 ("Potential Restoration Site Review and Effectiveness Monitoring Data - 2024") contains interim version
 - **Now out of date** - needs updating with amalgamated file
 
+**Data Structure (26 features total):**
+
+Key fields for categorization:
+- `source` - which form file
+- `site_id` - site identifier
+- `citation_key` - links to historic reports
+- `new_site` - yes/null flag
+- `works_completed` - yes/null flag
+
+**Preliminary Site Categorization:**
+
+| # | site_id | Date | Source | Category |
+|---|---------|------|--------|----------|
+| 1-2 | BR1-2021, BR2-2021 | 2024-09 | form_monitoring_ree_2024 | HWI past work |
+| 3 | BR04-2016 | 2024-09 | form_monitoring_ree_2024 | HWI/WFN 2016 past work |
+| 4 | Meints_01 | 2024-10 | form_monitoring_ree_2024 | New proposed (new_site=yes) |
+| 5-6 | Mickilligan Rd Upper/middle | 2024-10 | form_monitoring_ree_2024 | Stream walk reconnaissance |
+| 7-9 | bulkley_wilson_01/02/03 | 2024-09 | form_monitoring_ree_20240923 | New proposed (Wilson property, new_site=yes) |
+| 10-12 | bulkley_meints_craker_rd_* | 2024-09 | form_monitoring_ree_20240923 | Stream walk (Meints/Craker Rd access) |
+| 13-17 | chilako_*, keneth_ds | 2024-10 | form_fiss_site_fraser_2024 | Fraser erosion sites |
+| 18 | Foxy Maxan Confluence | 2025-06 | form_monitoring_ree_2025 | New proposed (new_site=yes) |
+| 19-23 | buc7, Bul38, bul32, Buc207, Buc172 | 2025-06 | form_monitoring_ree_2025 | NCFDC 1998 prescriptions (citation_key) |
+| 24 | MX2 | 2025-06 | form_monitoring_ree_2025 | Maxan reconnaissance |
+| 25-26 | MX1, Br5 | 2025-06 | form_monitoring_ree_2025 | Gaboury/Smith completed (works=yes, citation_key) |
+
 **Tasks Needed:**
-- [ ] Review geojson columns to understand available attributes
-- [ ] Categorize each site by visit purpose/method:
-  - NCFDC 1998 prescription sites
-  - Wet'suwet'en FN 2016 proposed sites
-  - Completed restoration sites (Smith & Gaboury)
-  - HWI sites
-  - Newly proposed sites (landowner engagement)
-  - Stream walks (public access reconnaissance)
-  - Fraser erosion sites
+- [x] Review geojson columns to understand available attributes
+- [ ] Confirm/refine site categorization above
+- [ ] Add category field to data or document in methods
 - [ ] Determine best presentation format for results
 - [ ] Update Appendix 2 or move data directly to Results section
 - [ ] Ensure methods section documents rationale for each site category
