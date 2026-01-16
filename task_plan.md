@@ -52,9 +52,11 @@
 
 **Step 3: Add missing field methods**
 - [x] Benthic invertebrate sampling ✓ (placed in Field Assessments)
+- [x] Site Reviews section added ✓ (Issue #100 for forms table)
 - [ ] eDNA sampling (awaiting user details)
 - [ ] Stakeholder workshops (landowner + Wet'suwet'en community)
-- [ ] Site reviews / prioritization visits (may already exist, check 0400)
+- [ ] Digital forms table (Issue #100) - document fields captured
+- [ ] Spring 2025 site visits - confirm data organized, add to report
 
 **Step 4: Add missing technical methods**
 - [ ] iPhone LiDAR vegetation monitoring methodology

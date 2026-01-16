@@ -109,6 +109,37 @@
 
 ---
 
+## Session 4: 2026-01-16 - Background/Methods/Results Reorganization
+
+### Completed
+- [x] Analyzed 0400-results.Rmd structure - identified mixing of background, methods, results
+- [x] Added "Historic Restoration Context" section to 0200-background.Rmd
+- [x] Reframed "Historic Information" as "Historic Data Products" in 0400-results.Rmd
+- [x] Documented NCFDC 1998 extraction methodology in findings.md (both scripts analyzed)
+- [x] Added Site Reviews methods section to 0300-methods.Rmd
+- [x] Created Issue #100 for digital forms table documentation
+- [x] Created branch `reorganize-background-methods-results`
+- [x] Committed reorganization changes with SRED tracking
+
+### Issues Created
+- #100: Document digital field forms in Methods section
+
+### Commits
+- 9522d50: reorganize report: separate background context from deliverables
+
+### Still Remaining
+- Digital forms table (Issue #100)
+- Spring 2025 site visits documentation - need to confirm data is organized
+- eDNA sampling methods
+- Stakeholder workshops methods
+
+### Notes
+- User confirmed Gaboury/Smith sites are in `sites_wfn_proposed` layer in sites_restoration.gpkg
+- Spring 2025 site visits occurred but data status needs confirmation before documenting
+- NCFDC 1998 work involved two scripts: prescription text extraction + riparian polygon spatialization via FWA
+
+---
+
 ## Notes
 
 ### Files Modified This Session
