@@ -470,6 +470,40 @@ Currently 0400 has Field Review results but 0300 has no corresponding methods.
 - [ ] Add stream walks methods to 0300-methods.Rmd
 - [ ] Add stream walks results/summary to 0400-results.Rmd (may already be partially covered)
 
+---
+
+### Site Visit Data - Amalgamated Dataset (2026-01-16)
+
+**Amalgamated Data Location:**
+- GIS: `/Users/airvine/Projects/gis/restoration_wedzin_kwa/data_field/sites_reviewed_2024_202506.geojson`
+- Repo: `data/gis/sites_reviewed_2024_202506.geojson`
+
+**Script:** `scripts/forms_amalgamate.R`
+
+**Source Forms Combined:**
+1. `form_monitoring_ree_2024.gpkg` - 2024 monitoring
+2. `form_monitoring_ree_20240923.gpkg` - Sept 2024 stream walks
+3. `form_fiss_site_fraser_2024.gpkg` - Fraser sites
+4. `form_monitoring_ree_2025.gpkg` - 2025 monitoring (June)
+
+**Current State:**
+- Appendix 2 ("Potential Restoration Site Review and Effectiveness Monitoring Data - 2024") contains interim version
+- **Now out of date** - needs updating with amalgamated file
+
+**Tasks Needed:**
+- [ ] Review geojson columns to understand available attributes
+- [ ] Categorize each site by visit purpose/method:
+  - NCFDC 1998 prescription sites
+  - Wet'suwet'en FN 2016 proposed sites
+  - Completed restoration sites (Smith & Gaboury)
+  - HWI sites
+  - Newly proposed sites (landowner engagement)
+  - Stream walks (public access reconnaissance)
+  - Fraser erosion sites
+- [ ] Determine best presentation format for results
+- [ ] Update Appendix 2 or move data directly to Results section
+- [ ] Ensure methods section documents rationale for each site category
+
 ### Site Categories (from 0400 Field Review)
 
 | Category | Count | Notes |

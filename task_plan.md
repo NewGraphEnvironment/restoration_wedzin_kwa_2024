@@ -60,6 +60,11 @@
 - [ ] Stream walks methods & results - summarize locations and add to report
   - **Data:** `Projects/gis/restoration_wedzin_kwa/data_field/2024/form_monitoring_ree_20240923.gpkg|layername=form_monitoring_ree`
   - **Purpose:** Understand high-value salmon habitat, visit past prescription sites, identify publicly accessible points for field technicians to connect with Bulkley River mainstem and Buck Creek to build knowledge of conditions, ecological values, degradation issues (restoration/conservation potential)
+- [ ] Site visit data amalgamation & categorization
+  - **Amalgamated data:** `data/gis/sites_reviewed_2024_202506.geojson` (made by `scripts/forms_amalgamate.R`)
+  - **Sources:** form_monitoring_ree_2024, form_monitoring_ree_20240923, form_fiss_site_fraser_2024, form_monitoring_ree_2025
+  - **Issue:** Appendix 2 is out of date - needs updating with amalgamated file
+  - **Task:** Categorize sites by visit purpose, update results presentation
 
 **Step 4: Add missing technical methods**
 - [ ] iPhone LiDAR vegetation monitoring methodology
