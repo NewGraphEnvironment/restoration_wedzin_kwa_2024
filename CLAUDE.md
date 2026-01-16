@@ -1,5 +1,7 @@
 # Restoration Neexdzii Kwah (Upper Bulkley River) 2024
 
+Check `task_plan.md`, `findings.md`, `progress.md` for active task context before starting work.
+
 ## Company Vision
 
 **New Graph Environment** - With integrity, using sound science and open communication, we build productive relationships between First Nations, regulators, non-profits, proponents, scientists, and stewardship groups. Our value-added deliverables include open-source, collaborative GIS environments and interactive online reporting.

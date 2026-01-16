@@ -294,6 +294,12 @@ Currently 15 rows mixing different types:
 
 ---
 
+## Maintenance Notes
+
+**CLAUDE.md ↔ PWF Sync:** Review `CLAUDE.md` after completing major PWF milestones to ensure project context stays accurate. These files are interrelated - task progress may change project state described in CLAUDE.md.
+
+---
+
 ## Discoveries Log
 
 | Date | Finding | Source | Implications |
