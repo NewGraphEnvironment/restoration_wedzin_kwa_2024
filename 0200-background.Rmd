@@ -438,6 +438,48 @@ fiss_species_table |>
 ```
 
 
+## Historic Restoration Context
+
+Understanding how we arrived at our current ecological and cultural state is essential for guiding present-day restoration and future sustainability efforts. This section provides high-level summaries of selected foundational references that document impacts to ecosystems and communities, as well as associated restoration initiatives. These works do not represent an exhaustive review but offer critical perspectives and historical context.
+
+### @morin2016NiwhtsideniHibiiten - Niwhts'ide'nï Hibi'itën: The Ways of Our Ancestors
+
+@morin2016NiwhtsideniHibiiten documents Witsuwit'en history, land relationships, and governance through the words and teachings of Hereditary Chiefs and Elders. It emphasizes the importance of oral histories, place-based knowledge, and language, following the Witsuwit'en system of writing (orthography) for names and terms. The work provides essential context for understanding long-term stewardship and the impacts of colonial policies on Witsuwit'en lands and governance.
+
+
+### @mitchell1997RiparianInStream - Riparian and In-stream Assessment of the Bulkley River System
+
+In the late 1990s, Nortech Consulting reported to the Department of Fisheries and Oceans on 68 tributaries of the Bulkley River located between Bulkley Lake and Boulder Creek. Boulder Creek flows into the main stem of the Bulkley River approximately 11 km north of Moricetown and about 120 km north of the confluence of the Neexdzii Kwa and Wetzin Kwa Rivers. The 68 streams were assessed using topographic maps and air photo interpretation to evaluate the degree and nature of impacts from transportation and hydroelectric corridors, powerlines, agriculture, grazing, and municipal land use. The most significant sources of impact were identified as agricultural/rangeland and municipal development [@mitchell1997RiparianInStream].
+
+<br>
+
+Streams were prioritized into six categories (1 through 6) based on the number and severity of impacts, the length of potential fish habitat, and the presence of significant (e.g., salmonid or regionally important) fish populations. Neexdzi Kwa tributaries ranked in the highest two priority categories (highly or severely degraded) included Buck Creek, Maxxan Creek, Watson Creek, Airport Creek, Cesford Creek, Richfield Creek, Byman Creek, and McQuarrie Creek. Those falling into categories 3 and 4 (moderately degraded) included Foxy Creek, Jonny David Creek, Barren Creek, Crow Creek, and the Sunset-Elwin system, among others. Tributaries within the lowest two priority categories included Aitken Creek and McKilligan Creek [@mitchell1997RiparianInStream].
+
+
+### @price2014UpperBulkleya - Upper Bulkley Floodplain Habitat
+
+@price2014UpperBulkleya documented human-induced modifications to floodplain habitat and river channelization, investigated potential barriers to fish migration, and assessed areas of upwelling groundwater in the Upper Bulkley mainstem having potential importance to salmonids.
+
+
+### @ncfdc1998MidBulkleyDetailed - Mid-Bulkley Detailed Fish Habitat/Riparian/Channel Assessment
+
+@ncfdc1998MidBulkleyDetailed utilized detailed fish and fish habitat assessments to inform restoration planning in the Neexdzii Kwah with numerous detailed prescriptions included within their reporting and digital deliverables.
+
+
+### @gaboury_smith2016DevelopmentAquatic - Aquatic Restoration Designs and On-Farm Cattle Management
+
+@gaboury_smith2016DevelopmentAquatic outlines four general types of aquatic restoration designs aimed at improving fish habitat and passage in the Bulkley River system: installing large woody debris and rock groin structures at eroding meanders, constructing riffles in channelized sections, adding riffles at backwater culverts to enhance connectivity, and reconstructing a fish bypass channel. These approaches focus on supporting habitat for steelhead, chinook, coho, trout, and char. Funding for the project was provided by Fisheries and Oceans Canada's Fish Habitat Restoration Initiative and through in-kind support from landowners and West Fraser. Yinka Dene Economic Development Limited Partnership Inc. (YLP), in collaboration with LGL Limited, developed designs and management plans for 16 high-priority sites in Wet'suwet'en First Nation territory between 2015 and 2019. Related construction efforts are documented in @smith_gaboury2016BUILTREPORT and @smith_gaboury2017ASBUILTREPORT, including work at four of these sites in 2016 as well as Johnny David Creek at Highway 16 in 2017.
+
+
+### @skeenasustainabilityassessmentforum2021Skeenasustainability - State of the Value Report
+
+The Skeena Sustainability Assessment Forum (SSAF) is a collaborative environmental stewardship initiative established under the Environmental Stewardship Initiative (ESI), bringing together 10 Skeena Nations and the Province of British Columbia. The SSAF supports shared decision-making by integrating Indigenous knowledge, scientific data, and local values to assess the state and trends of key environmental resources, including fish and fish habitat [@environmentalstewardshipinitiative2019Skeenasustainability].
+
+<br>
+
+As part of this work, the SSAF State of the Value Report for Fish and Fish Habitat summarized conditions across the study area using data available up to 2018. The analysis was completed at the [assessment watershed level](https://catalogue.data.gov.bc.ca/dataset/freshwater-atlas-assessment-watersheds) and considered a range of environmental indicators related to land and water use, natural watershed features, and salmon presence. This first phase of work is designed to be built upon with improved monitoring and data over time [@governmentofbritishcolumbia2023Environmentalstewardship; @skeenasustainabilityassessmentforum2021Skeenasustainability].
+
+
 ## Restoration Philosophy
 
 ### Process-based Restoration

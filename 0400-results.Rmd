@@ -141,46 +141,13 @@ uav_tab |>
   my_dt_table(cols_freeze_left = 0, escape = FALSE)
 ```
 
-## Historic Information Regarding Impacts and Restoration Initiatives
+## Historic Data Products
 
-Understanding how we arrived at our current ecological and cultural state is essential for guiding present-day restoration and future sustainability efforts. This section provides high-level summaries of selected foundational references that document impacts to ecosystems and communities, as well as associated restoration initiatives. These works do not represent an exhaustive review but offer critical perspectives and historical context. We particularly highlight:
+A key deliverable of this project was the compilation, extraction, and spatialization of historic restoration data from multiple sources. This work involved extracting tabular data from PDF reports, converting site coordinates to spatial formats, and linking descriptions to GIS layers within the shared `restoration_wedzin_kwa` project. Background context for these historic reports is provided in the [Historic Restoration Context](#historic-restoration-context) section. The resulting spatial layers are stored in `sites_restoration.gpkg` within the collaborative GIS project.
 
--   Niwhts’ide’nï Hibi’itën: The Ways of Our Ancestors (@morin2016NiwhtsideniHibiiten)
+### @price2014UpperBulkleya - Extracted Waypoints
 
--   Development Of Aquatic Restoration Designs And On-Farm Cattle Management Improvements Within the Wet’suwet’en First Nation Territory (@gaboury_smith2016DevelopmentAquatic)
-
--   Mid-Bulkley Detailed Fish Habitat/Riparian/Channel Assessment for Watershed Restoration (@ncfdc1998MidBulkleyDetailed)
-
--   Upper Bulkley Floodplain Habitat: Modifications, Physical Barriers, and Sites of Potential Importance to Salmonids (@price2014UpperBulkleya)
-
--   Riparian and In-Stream Assessment of the Bulkley River System: An Examination and Prioritization of Impacts on the Tributaries to the Bulkley River Mainstem (@mitchell1997RiparianInStream)
-
-```{r tab-sites-restoration-gpkg-tracking, eval = FALSE}
-
-
-# Information amalgamated from past restoration initiatives has been added to the `restoration_wedzin_kwa` project in spatial formats through the `sites_restoration.gpkg` with details of source document locations, geometry type, description of the source document amalgamated, etc. documented in the `sites_restoration_gpkg_tracking.csv` file located [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/sites_restoration_gpkg_tracking.csv) with results presented in Table \@ref(tab:tab-sites-restoration-gpkg-tracking).
-readr::read_csv(
-  "data/sites_restoration_gpkg_tracking.csv"
-) %>% 
-  fpr::fpr_kable(caption_text = "Summary of past restoration initiatives added to the `sites_restoration.gpkg` geopackage of the `restoration_wedzin_kwa` project. Work in progress.")
-```
-
-### @morin2016NiwhtsideniHibiiten - Niwhts’ide’nï Hibi’itën: The Ways of Our Ancestors
-
-@morin2016NiwhtsideniHibiiten documents Witsuwit’en history, land relationships, and governance through the words and teachings of Hereditary Chiefs and Elders. It emphasizes the importance of oral histories, place-based knowledge, and language, following the Witsuwit’en system of writing (orthography) for names and terms. The work provides essential context for understanding long-term stewardship and the impacts of colonial policies on Witsuwit’en lands and governance.
-
-
-### @mitchell1997RiparianInStream - Riparian and In-stream Assessment of the Bulkley River System - An Examination and Priorization of Impacts on the Tributaries to the Bulkley River Mainstem
-
-In the late 1990s, Nortech Consulting reported to the Department of Fisheries and Oceans on 68 tributaries of the Bulkley River located between Bulkley Lake and Boulder Creek. Boulder Creek flows into the main stem of the Bulkley River approximately 11 km north of Moricetown and about 120 km north of the confluence of the Neexdzii Kwa and Wetzin Kwa Rivers. The 68 streams were assessed using topographic maps and air photo interpretation to evaluate the degree and nature of impacts from transportation and hydroelectric corridors, powerlines, agriculture, grazing, and municipal land use. The most significant sources of impact were identified as agricultural/rangeland and municipal development [@mitchell1997RiparianInStream].
-
-<br>
-
-Streams were prioritized into six categories (1 through 6) based on the number and severity of impacts, the length of potential fish habitat, and the presence of significant (e.g., salmonid or regionally important) fish populations. Neexdzi Kwa tributaries ranked in the highest two priority categories (highly or severely degraded) included Buck Creek, Maxxan Creek, Watson Creek, Airport Creek, Cesford Creek, Richfield Creek, Byman Creek, and McQuarrie Creek. Those falling into categories 3 and 4 (moderately degraded) included Foxy Creek, Jonny David Creek, Barren Creek, Crow Creek, and the Sunset-Elwin system, among others. Tributaries within the lowest two priority categories included Aitken Creek and McKilligan Creek [@mitchell1997RiparianInStream].
-
-### @price2014UpperBulkleya - Upper Bulkley floodplain habitat: modifications, physical barriers, and sites of potential importance to salmonids
-
-@price2014UpperBulkleya documented human-induced modifications to floodplain habitat and river channelization, investigated potential barriers to fish migration, and assessed areas of upwelling groundwater in the Upper Bulkley mainstem having potential importance to salmonids. The coordinates of points of interest were extracted from a pdf version of the report and are included in the `price_2014_waypoints.csv` file located [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/inputs_extracted/price_2014_waypoints.csv) and were added to the `sites_restoration.gpkg` (layer name = price_2014). Individual waypoint information is also presented in Table \@ref(tab:tab-price-2014-waypoints).
+Coordinates of points of interest documented in @price2014UpperBulkleya were extracted from the PDF report using `tabulapdf` and converted to a spatial layer (`sites_restoration.gpkg`, layer name = `price_2014`). The extracted data includes locations of river channelization, potential barriers to fish migration, and areas of upwelling groundwater. Individual waypoint information is presented in Table \@ref(tab:tab-price-2014-waypoints) and available in [price_2014_waypoints.csv](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/inputs_extracted/price_2014_waypoints.csv).
 
 ```{r extract-price2014, eval = F}
 path <- "/Users/airvine/zotero/storage/7JCL42Y3/price_2014_upper_bulkley_floodplain_habitat_-_modifications,_physical_barriers,_and_sites.pdf"
@@ -299,9 +266,15 @@ price_2014 %>%
   fpr::fpr_kable(caption_text = "Summary of Price (2014) waypoints for the Upper Bulkley floodplain including locations of river channelization, potential barriers to fish migration, and assessed areas of upwelling groundwater having potential importance to salmonids.")
 ```
 
-### @ncfdc1998MidBulkleyDetailed - Mid-Bulkley Detailed Fish Habitat/Riparian/Channel Assessment for Watershed Restoration
+### @ncfdc1998MidBulkleyDetailed - Extracted Prescriptions and Riparian Polygons
 
-@ncfdc1998MidBulkleyDetailed utilized detailed fish and fish habitat assessments to inform restoration planning in the Neexdzii Kwah with numerous detailed prescriptions included within their reporting and digital deliverables. Summarized details of this prioritization work and prescription locations and details extracted from the pdf and included in the `ncfdc_1998_prescriptions.csv` file located and viewable [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/ncfdc_1998_prescriptions.csv). A summary of prioritization for sub-basins in the region are included in Table \@ref(tab:tab-ncfdc-1998-priority) with detailed prioritization information in Table \@ref(tab:tab-ncfdc-1998-pres) and details of individual prescriptions presented in Table \@ref(tab:tab-ncfdc-1998-priority-detailed) and stored [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/inputs_extracted/ncfdc_1998_prescriptions.csv). The prescription dataset has also been converted to a spatial file and added to the `restoration_wedzin_kwa` shared GIS project through the `sites_restoration.gpkg` file (layer name - `ncfdc_1998_prescriptions`).
+Restoration prescriptions and riparian polygon data from @ncfdc1998MidBulkleyDetailed were extracted and spatialized through two complementary workflows:
+
+**Prescription Text Extraction:** Complex regex patterns were used to parse unstructured PDF text, extracting 18 fields per prescription including location, UTM coordinates, impact descriptions, goals, and proposed works. Manual correction was required to fix coordinate errors in the original document. Results are available in [ncfdc_1998_prescriptions.csv](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/inputs_extracted/ncfdc_1998_prescriptions.csv) and as the `ncfdc_1998_prescriptions_raw` layer in `sites_restoration.gpkg`.
+
+**Riparian Prescription Spatialization:** Appendix maps from the original report were georeferenced in QGIS to identify reach break locations. Prescriptions in the original report used chainage (distance upstream from reach breaks) rather than coordinates. Using `fwapgr` (a wrapper for `fwapg`), reach breaks were indexed to the BC Freshwater Atlas to obtain downstream route measures, which were then combined with prescription chainage values to geolocate each riparian polygon along the stream network. Results are stored as the `ncfdc_1998_riparian_raw` layer in `sites_restoration.gpkg`.
+
+A summary of sub-basin prioritization is presented in Table \@ref(tab:tab-ncfdc-1998-priority), detailed prioritization scores in Table \@ref(tab:tab-ncfdc-1998-priority-detailed), and individual prescription details in Table \@ref(tab:tab-ncfdc-1998-pres).
 
 <br>
 
@@ -396,17 +369,15 @@ ncfdc_1998_cleaned %>%
 # https://chatgpt.com/c/674459e0-6c30-800c-8fe1-ad49e8b53979
 ```
 
-### @gaboury_smith2016DevelopmentAquatic - Development of Aquatic Restoration Designs and On-Farm Cattle Management Improvements within the Wet'suwet'en irst Nation Territory
+### @gaboury_smith2016DevelopmentAquatic - Extracted Site Locations
 
-@gaboury_smith2016DevelopmentAquatic outlines four general types of aquatic restoration designs aimed at improving fish habitat and passage in the bulkley river system: installing large woody debris and rock groin structures at eroding meanders, constructing riffles in channelized sections, adding riffles at backwater culverts to enhance connectivity, and reconstructing a fish bypass channel. These approaches focus on supporting habitat for steelhead, chinook, coho, trout, and char. Funding for the project was provided by Fisheries and Oceans Canada’s Fish Habitat Restoration Initiative and through in-kind support from landowners and West Fraser. Yinka Dene Economic Development Limited Partnership Inc. (YLP), in collaboration with LGL Limited, developed designs and management plans for 16 high-priority sites in Wet’suwet’en First Nation territory between 2015 and 2019. Related construction efforts are documented in @smith_gaboury2016BUILTREPORT and @smith_gaboury2017ASBUILTREPORT, including work at at four of these sites in 2016 as well as Johnny David Creek at Highway 16 in 2017. Site locations and associated data from this report have been added to the shared GIS project.
+Site locations and associated design data from @gaboury_smith2016DevelopmentAquatic have been extracted and added to the shared GIS project (`sites_restoration.gpkg`, layer name = `sites_wfn_proposed`). Background context for this work is provided in the [Historic Restoration Context](#historic-restoration-context) section.
 
-### @skeenasustainabilityassessmentforum2021Skeenasustainability - State of the Value Report for Fish and Fish Habitat
 
-The Skeena Sustainability Assessment Forum (SSAF) is a collaborative environmental stewardship initiative established under the Environmental Stewardship Initiative (ESI), bringing together 10 Skeena Nations and the Province of British Columbia. The SSAF supports shared decision-making by integrating Indigenous knowledge, scientific data, and local values to assess the state and trends of key environmental resources, including fish and fish habitat [@environmentalstewardshipinitiative2019Skeenasustainability].
+### State of the Value Data Integration
 
-<br>
+Amalgamated results from the SSAF State of the Value Report for Fish and Fish Habitat [@skeenasustainabilityassessmentforum2021Skeenasustainability] have been integrated into the shared GIS project. A summary table of indicators and spatial output field descriptions is included in [Appendix – State of the Value – Fish and Fish Habitat](#app-esi).
 
-As part of this work, the SSAF State of the Value Report for Fish and Fish Habitat summarized conditions across the study area using data available up to 2018. The analysis was completed at the [assessment watershed level](https://catalogue.data.gov.bc.ca/dataset/freshwater-atlas-assessment-watersheds) and considered a range of environmental indicators related to land and water use, natural watershed features, and salmon presence. This first phase of work is designed to be built upon with improved monitoring and data over time. The amalgamated results have been integrated into the shared GIS project, and a summary table of indicators and spatial output field descriptions is included in Appendix – State of the Value – Fish and Fish Habitat (#app-esi) [@governmentofbritishcolumbia2023Environmentalstewardship; @skeenasustainabilityassessmentforum2021Skeenasustainability].
 
 ## Future Restoration Site Selection
 
