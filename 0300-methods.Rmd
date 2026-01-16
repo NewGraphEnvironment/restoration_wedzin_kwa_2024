@@ -10,6 +10,7 @@ Field site reviews were conducted in September and early October 2024 to assess 
 - Sites proposed for restoration by the Wet'suwet'en First Nation [@gaboury_smith2016DevelopmentAquatic]
 - Sites with completed restoration work [@smith_gaboury2016BUILTREPORT]
 - Past Healthy Watersheds Initiative restoration sites
+- Locations of documented traditional use fishing sites [@gottesfeld_rabnett2007SkeenaFish; @wilson_rabnett2007FishPassage]
 - Newly proposed sites identified through landowner engagement and local knowledge
 - Erosion protection sites in the Fraser watershed for comparison
 
