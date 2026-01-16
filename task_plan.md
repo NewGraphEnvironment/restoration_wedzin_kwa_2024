@@ -67,16 +67,26 @@
 
 ---
 
-## Phase 2: QGIS Project Cleanup & Site Data
+## Phase 2b: QGIS Project Cleanup & Site Data
 **Status:** `pending`
 
-### 2.1 QGIS Review
+### 2b.1 Site Categorization
+- [ ] Add tags/attributes to site data table to categorize:
+  - Sites with past restoration work completed
+  - Sites with existing prescriptions (e.g., NCFDC 1998)
+  - Proposed/conceptual sites from landowners
+  - HWI sites
+  - Wet'suwet'en FN 2016 sites
+- [ ] Query field forms to get total number of sites visited
+- [ ] Summarize site counts by category for Methods section
+
+### 2b.2 QGIS Review
 - [ ] Review comments in `/Users/airvine/Projects/gis/restoration_wedzin_kwa` for errors/omissions
-- [ ] Create summary of monitored field sites
 - [ ] Export site data for report integration
 
-### 2.2 Add Missing Site Locations
+### 2b.3 Add Missing Site Locations
 - [ ] Benthic invertebrate sampling sites (3 sites, Neexdzii Kwah mainstem)
+  - [ ] Find name and reference ID for existing CABIN site (Site 3, downstream Houston)
 - [ ] eDNA sampling sites (below Bulkley Falls + 1km downstream)
 - [ ] Verify all sites have proper attributes
 
@@ -118,7 +128,7 @@
 **Status:** `pending`
 
 ### 4.1 Benthic Invertebrate Sampling
-- [ ] Document cabin kick methods (cite reynoldson_etal2001CABINcanadian from Zotero)
+- [ ] Document cabin kick methods (cite environmentcanada2012Canadianaquatic from Zotero)
 - [ ] Note 3 sites in Neexdzii Kwah mainstem
 - [ ] Reference Cordillera Lab (Summerland) for sample processing
 - [ ] Note results upload to federal CABIN database

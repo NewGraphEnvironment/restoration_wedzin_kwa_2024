@@ -50,10 +50,34 @@
 
 ### Benthic Invertebrate Sampling
 - **Method:** Cabin kick
-- **Citation:** reynoldson_etal2001CABINcanadian (Zotero)
-- **Sites:** 3 locations in Neexdzi Kwah mainstem
-- **Lab:** Cordillera Lab, Summerland BC
+- **Citation:** environmentcanada2012Canadianaquatic (Zotero)
+- **Sites:** 3 locations in Neexdzii Kwah mainstem
+- **Lab:** Cordillera Consulting, Summerland BC
 - **Database:** Federal CABIN database
+
+**Rationale:**
+- Assess aquatic health through species composition/presence metrics
+- Indicates water quality status at different watershed locations
+- Does not explain causation if issues found, but flags potential problems
+- All sites within known high-value Chinook spawning/rearing habitat
+
+**Site 1 - Upstream of Landfill:**
+- Just downstream of Macquarie Creek
+- Upstream of Regional District landfill
+- Reference/control site for comparing to downstream locations
+
+**Site 2 - Downstream of Landfill:**
+- Downstream of McKilligan Road
+- Downstream of landfill
+- Detects potential landfill impacts on aquatic health
+
+**Site 3 - Downstream of Houston:**
+- Downstream of Town of Houston
+- ~200m upstream of North Road overpass
+- Adjacent to rest/picnic area
+- Downstream of Houston sewage treatment plant
+- Existing CABIN site (need to find reference ID)
+- Detects potential municipal wastewater impacts
 
 ### eDNA Sampling
 - **Sites:** Below Bulkley Falls + 1km downstream
