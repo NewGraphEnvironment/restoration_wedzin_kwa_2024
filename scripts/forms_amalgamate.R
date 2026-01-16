@@ -9,9 +9,12 @@ forms_ls <- c(
   "~/Projects/gis/restoration_wedzin_kwa/data_field/2024/form_monitoring_ree_2024.gpkg",
   "~/Projects/gis/restoration_wedzin_kwa/data_field/2024/form_monitoring_ree_20240923.gpkg",
   "~/Projects/gis/restoration_wedzin_kwa/data_field/2024/form_fiss_site_fraser_2024.gpkg",
+#   stream walks
   # "~/Projects/gis/restoration_wedzin_kwa/data_field/2024/form_fiss_site_2024.gpkg",
   "~/Projects/gis/restoration_wedzin_kwa/data_field/2025/form_monitoring_ree_2025.gpkg"
 )
+
+
 
 form_prep <- forms_ls |>
   purrr::map(
@@ -88,6 +91,7 @@ form <- form_prep |>
     dplyr::all_of(cols_photos)
   )
 
+
 # burn to the project
 # first remove the old layer if exists
 
@@ -111,3 +115,4 @@ form |>
     path_repo,
     append=FALSE
   )
+
