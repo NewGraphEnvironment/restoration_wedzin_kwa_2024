@@ -461,9 +461,9 @@ Streams were prioritized into six categories (1 through 6) based on the number a
 @price2014UpperBulkleya documented human-induced modifications to floodplain habitat and river channelization, investigated potential barriers to fish migration, and assessed areas of upwelling groundwater in the Upper Bulkley mainstem having potential importance to salmonids.
 
 
-### @ncfdc1998MidBulkleyDetailed - Mid-Bulkley Detailed Fish Habitat/Riparian/Channel Assessment
+### @mackay_etal1998MidBulkleyDetailed - Mid-Bulkley Detailed Fish Habitat/Riparian/Channel Assessment
 
-@ncfdc1998MidBulkleyDetailed utilized detailed fish and fish habitat assessments to inform restoration planning in the Neexdzii Kwah with numerous detailed prescriptions included within their reporting and digital deliverables.
+@mackay_etal1998MidBulkleyDetailed utilized detailed fish and fish habitat assessments to inform restoration planning in the Neexdzii Kwah with numerous detailed prescriptions included within their reporting and digital deliverables.
 
 
 ### @gaboury_smith2016DevelopmentAquatic - Aquatic Restoration Designs and On-Farm Cattle Management

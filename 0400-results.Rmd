@@ -4,7 +4,7 @@
 
 In the field in September and early October 2024 we were able to survey approximately 12 km of Bulkley and Buck mainstem along with 1.5 km of Johnny David and Richfield. Within those areas and elsewhere we reviewed:
 
--   14 past prescription sites from @ncfdc1998MidBulkleyDetailed
+-   14 past prescription sites from @mackay_etal1998MidBulkleyDetailed
 
 -   6 prescription locations from the Wet'suwet'en First Nation 2016 report (2 sites were mapped in high resolution with a drone),
 
@@ -266,9 +266,9 @@ price_2014 %>%
   fpr::fpr_kable(caption_text = "Summary of Price (2014) waypoints for the Upper Bulkley floodplain including locations of river channelization, potential barriers to fish migration, and assessed areas of upwelling groundwater having potential importance to salmonids.")
 ```
 
-### @ncfdc1998MidBulkleyDetailed - Extracted Prescriptions and Riparian Polygons
+### @mackay_etal1998MidBulkleyDetailed - Extracted Prescriptions and Riparian Polygons
 
-Restoration prescriptions and riparian polygon data from @ncfdc1998MidBulkleyDetailed were extracted and spatialized through two complementary workflows:
+Restoration prescriptions and riparian polygon data from @mackay_etal1998MidBulkleyDetailed were extracted and spatialized through two complementary workflows:
 
 **Prescription Text Extraction:** Complex regex patterns were used to parse unstructured PDF text, extracting 18 fields per prescription including location, UTM coordinates, impact descriptions, goals, and proposed works. Manual correction was required to fix coordinate errors in the original document. Results are available in [ncfdc_1998_prescriptions.csv](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/inputs_extracted/ncfdc_1998_prescriptions.csv) and as the `ncfdc_1998_prescriptions_raw` layer in `sites_restoration.gpkg`.
 

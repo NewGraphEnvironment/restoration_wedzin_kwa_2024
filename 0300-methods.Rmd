@@ -6,7 +6,7 @@
 
 Field site reviews were conducted in September and early October 2024 to assess current conditions at historic prescription sites, past restoration locations, and newly proposed sites. Sites were selected based on:
 
-- Locations with documented historic prescriptions from @ncfdc1998MidBulkleyDetailed
+- Locations with documented historic prescriptions from @mackay_etal1998MidBulkleyDetailed
 - Sites proposed for restoration by the Wet'suwet'en First Nation [@gaboury_smith2016DevelopmentAquatic]
 - Sites with completed restoration work [@smith_gaboury2016BUILTREPORT]
 - Past Healthy Watersheds Initiative restoration sites
