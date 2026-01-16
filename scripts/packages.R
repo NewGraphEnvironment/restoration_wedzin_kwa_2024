@@ -16,12 +16,12 @@ pkgs_cran <- c(
   'fishbc',
   'DT',
   'desc',
-  'kableExtra'
+  'kableExtra',
+  "rstac"
 )
 
 pkgs_gh <- c(
   "newgraphenvironment/fpr",
-  # "haozhu233/kableExtra@a9c509a",
   "poissonconsulting/readwritesqlite"
 )
 
