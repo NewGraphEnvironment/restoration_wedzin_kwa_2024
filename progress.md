@@ -64,6 +64,9 @@
 - [x] Updated citation key in task_plan.md
 - [x] Updated citation key in findings.md
 - [x] Captured site rationale and locations in findings.md
+- [x] Read CABIN field manual PDF for protocol details
+- [x] Drafted benthic invertebrate sampling methods section
+- [x] Added section to 0300-methods.Rmd (lines 102-116)
 
 ### Site Details Captured
 **Rationale:** Assess aquatic health via species composition; all sites in known Chinook habitat
@@ -80,9 +83,10 @@
 | File | Action |
 |------|--------|
 | `CLAUDE.md` | Created, then updated with companion repos |
-| `task_plan.md` | Created, then expanded Phase 3 |
+| `task_plan.md` | Created, then expanded Phase 3, updated Phase 4.1 |
 | `findings.md` | Created, then added reference materials |
 | `progress.md` | Created |
+| `0300-methods.Rmd` | Added Benthic Invertebrate Sampling section |
 
 ### Git Status (start of session)
 Modified:

@@ -178,6 +178,94 @@ Currently 15 rows mixing different types:
 
 ---
 
+## Proposed Methods Section Restructure
+
+**Date:** 2026-01-15
+**Status:** Draft for review
+
+### Current Structure (0300-methods.Rmd)
+```
+## Methods
+1. Collaborative GIS Environment
+2. Aerial Imagery
+3. Open Source - Iterative Reporting
+   - Issue and Discussion Tracking
+   - Tables and Figures
+4. Data Sourcing from Skeena Salmon Data Centre
+5. Documentation of Workflows
+6. Historic Information Regarding Impacts and Restoration Initiatives
+7. Benthic Invertebrate Sampling ← NEW (orphaned, needs proper placement)
+8. Future Restoration Site Selection
+   - Evaluation of Historic and Current Imagery
+   - Fish Passage
+   - Local Knowledge for Riparian Area and Erosion Protection Site Selection
+   - Delineation of Areas of High Fisheries Values
+   - Parameter Ranking to Select Future Restoration Sites
+```
+
+**Problems with current structure:**
+- No logical grouping (mixes field work, technical infrastructure, analysis)
+- "Open Source - Iterative Reporting" is meta/documentation, not a method
+- Benthic section added but doesn't fit the flow
+- Missing: eDNA, workshops, iPhone LiDAR, time series, climate anomaly
+
+### Proposed Structure
+
+```
+## Methods
+
+### Field Assessments
+- Site Reviews and Prioritization Visits
+- Benthic Invertebrate Sampling ✓
+- eDNA Sampling (pending)
+- Stakeholder Workshops (pending)
+  - Landowner workshop
+  - Wet'suwet'en community members & leadership workshop
+
+### Collaborative Data Management
+- GIS Environment (Mergin Maps / QGIS)
+- Data Sourcing (Skeena Knowledge Trust)
+- Open Source Reporting Framework
+
+### Remote Sensing & Imagery
+- UAV Mapping and STAC Infrastructure
+- iPhone LiDAR Vegetation Monitoring (pending)
+- Time Series Analysis (pending)
+
+### Background Research & Analysis
+- Historic Information Review
+- Climate Anomaly Analysis (→ reference Appendix)
+- Future Restoration Site Selection
+  - Fish Passage Context
+  - Local Knowledge Integration
+  - High Fisheries Value Delineation
+  - Parameter Ranking Methodology
+```
+
+### Rationale for Reorganization
+1. **Field Assessments first** - What we actually did in the watershed
+2. **Collaborative Data Management** - How we organized and shared information
+3. **Remote Sensing & Imagery** - Technical methods for spatial data
+4. **Background Research & Analysis** - Desk-based work and site selection logic
+
+### Content to Tighten/Remove
+- "Open Source - Iterative Reporting" → condense to 1-2 paragraphs about reproducibility
+- "Issue and Discussion Tracking" → likely remove (meta, not methods)
+- "Tables and Figures" → likely remove (meta, not methods)
+- "Documentation of Workflows" → fold into reporting framework paragraph
+
+### Sections to Add
+| Section | Status | Notes |
+|---------|--------|-------|
+| Benthic Invertebrate Sampling | ✅ Done | Move to Field Assessments |
+| eDNA Sampling | ⬜ Pending | Awaiting user details |
+| Stakeholder Workshops | ⬜ Pending | Need to document |
+| iPhone LiDAR Vegetation Monitoring | ⬜ Pending | |
+| Time Series Analysis | ⬜ Pending | Reference new_graphiti post |
+| Climate Anomaly Analysis | ⬜ Pending | Reference Appendix 1 |
+
+---
+
 ## Discoveries Log
 
 | Date | Finding | Source | Implications |

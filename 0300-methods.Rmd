@@ -96,7 +96,28 @@ list.files("memos", full.names = FALSE) %>%
 
 
 ## Historic Information Regarding Impacts and Restoration Initiatives
-Historic information regarding impacts and restoration initiatives, prescriptions and activities is an important component of the restoration planning process. A wealth of information is present for the Neexdzii Kwah however it is located in many different locations and not always spatially represented.  To address this, a comprehensive review of past impact indentification and restoration recommendations is underway. This review included a review of the literature, interviews with local experts, and a review of the restoration prescriptions and activities that have been conducted in the Neexdzii Kwah. For information regarding relatively recent restoration efforts such as physical works conducted through Healthy Watersheds Initiative, representatives from the Morice Watershed Monitoring Trust amalgamated all information located on physical drives and either provided emails with the data attached or provided links to the data for the study team for download and review.  This information was then subsequently downloaded and re-uploaded to a `OneDrive` folder for the study team to access. 
+Historic information regarding impacts and restoration initiatives, prescriptions and activities is an important component of the restoration planning process. A wealth of information is present for the Neexdzii Kwah however it is located in many different locations and not always spatially represented.  To address this, a comprehensive review of past impact indentification and restoration recommendations is underway. This review included a review of the literature, interviews with local experts, and a review of the restoration prescriptions and activities that have been conducted in the Neexdzii Kwah. For information regarding relatively recent restoration efforts such as physical works conducted through Healthy Watersheds Initiative, representatives from the Morice Watershed Monitoring Trust amalgamated all information located on physical drives and either provided emails with the data attached or provided links to the data for the study team for download and review.  This information was then subsequently downloaded and re-uploaded to a `OneDrive` folder for the study team to access.
+
+
+## Benthic Invertebrate Sampling
+
+Benthic invertebrate sampling was conducted following the Canadian Aquatic Biomonitoring Network (CABIN) wadeable streams protocol [@environmentcanada2012Canadianaquatic]. Samples were collected using the traveling kick-net method with a 400 μm mesh net. At each site, a 3-minute timed sample was collected by traversing a zigzag pattern in an upstream direction within the erosional zone (riffle, rapid, or fast-flowing run habitat).
+
+<br>
+
+Concurrent with benthic sampling, standardized habitat and water quality data were collected. Substrate composition was characterized using a 100-pebble count, measuring the intermediate axis of randomly selected particles along transects. Embeddedness—the degree to which particles are buried in fine sediments—was assessed for every 10th particle. Channel slope was measured using a lazer level.
+
+<br>
+
+Water quality parameters recorded at each site included temperature, pH, and conductivity. Instream habitat features documented included macrophyte coverage (percent cover in categories: 0%, 1–25%, 26–50%, 51–75%, 76–100%), periphyton coverage (5-category scale based on slipperiness and thickness), and canopy cover. Channel dimensions including bankfull width, wetted width, and depths were also recorded.
+
+<br>
+
+Three sites were sampled on the Neexdzii Kwah mainstem within known high-value Chinook spawning and rearing habitat. Site locations were selected to assess aquatic health upstream and downstream of potential point-source impacts, allowing comparison of species composition and community health metrics across the watershed. Triplicate kick samples were collected at each site to quantify within-site variability and enable statistical distinction between true site differences and natural spatial heterogeneity.
+
+<br>
+
+Samples were preserved in 10% formalin and submitted to Cordillera Consulting Inc. (Summerland, BC) for sorting and taxonomic identification to genus/species level. Results will be uploaded to the federal CABIN database.
 
 
 ## Future Restoration Site Selection

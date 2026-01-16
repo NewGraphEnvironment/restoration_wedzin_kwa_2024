@@ -35,31 +35,30 @@
 - Add internal links to corresponding Methods sections
 - Query STAC catalogue to summarize UAV work (number of products, sites mapped, area covered) for exec summary
 
-### 1.2 Methods Section Expansion & Cleanup (Issue #97)
-**Review & Cleanup:**
-- [ ] Review all current methods sections for redundancy
-- [ ] Remove unnecessary content
-- [ ] Restructure for clarity and flow
-- [ ] Tighten language throughout
+### 1.2 Methods Section Restructure & Expansion (Issue #97)
 
-**Field Methods to Add:**
-- [ ] Benthic invertebrate sampling (cabin kick, Cordillera Lab, CABIN database)
-- [ ] eDNA sampling (below Bulkley Falls + 1km downstream)
-- [ ] Workshops documentation (landowner + Wet'suwet'en community)
+**Step 1: Reorganize into logical groupings** (see findings.md for full proposal)
+- [ ] Create "Field Assessments" section grouping
+- [ ] Create "Collaborative Data Management" section grouping
+- [ ] Create "Remote Sensing & Imagery" section grouping
+- [ ] Create "Background Research & Analysis" section grouping
 
-**Technical Methods to Add/Expand:**
+**Step 2: Tighten/condense existing content**
+- [ ] Condense "Open Source - Iterative Reporting" to 1-2 paragraphs
+- [ ] Remove "Issue and Discussion Tracking" subsection (meta, not methods)
+- [ ] Remove "Tables and Figures" subsection (meta, not methods)
+- [ ] Fold "Documentation of Workflows" into reporting framework paragraph
+
+**Step 3: Add missing field methods**
+- [x] Benthic invertebrate sampling ✓ (written, needs placement in Field Assessments)
+- [ ] eDNA sampling (awaiting user details)
+- [ ] Stakeholder workshops (landowner + Wet'suwet'en community)
+- [ ] Site reviews / prioritization visits (may already exist, check 0400)
+
+**Step 4: Add missing technical methods**
 - [ ] iPhone LiDAR vegetation monitoring methodology
 - [ ] Time series analysis workflow
 - [ ] Climate anomaly methodology (reference Appendix 1)
-
-**Existing Methods to Review:**
-- Collaborative GIS Environment
-- Aerial Imagery (UAV/STAC)
-- Open Source Iterative Reporting
-- Data Sourcing from SKT
-- Documentation of Workflows
-- Historic Information review
-- Future Restoration Site Selection
 
 ### 1.3 Results Section Expansion
 - [ ] Restructure `0400-results.Rmd` to receive content from exec summary
@@ -128,11 +127,11 @@
 **Status:** `pending`
 
 ### 4.1 Benthic Invertebrate Sampling
-- [ ] Document cabin kick methods (cite environmentcanada2012Canadianaquatic from Zotero)
-- [ ] Note 3 sites in Neexdzii Kwah mainstem
-- [ ] Reference Cordillera Lab (Summerland) for sample processing
-- [ ] Note results upload to federal CABIN database
-- [ ] Add methods to `0300-methods.Rmd`
+- [x] Document cabin kick methods (cite environmentcanada2012Canadianaquatic from Zotero)
+- [x] Note 3 sites in Neexdzii Kwah mainstem
+- [x] Reference Cordillera Lab (Summerland) for sample processing
+- [x] Note results upload to federal CABIN database
+- [x] Add methods to `0300-methods.Rmd`
 - [ ] Add results/locations to `0400-results.Rmd`
 
 ### 4.2 eDNA Sampling
