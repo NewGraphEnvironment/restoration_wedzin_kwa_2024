@@ -44,10 +44,11 @@
 - [ ] Create "Background Research & Analysis" section grouping
 
 **Step 2: Tighten/condense existing content**
-- [ ] Condense "Open Source - Iterative Reporting" to 1-2 paragraphs
-- [ ] Remove "Issue and Discussion Tracking" subsection (meta, not methods)
-- [ ] Remove "Tables and Figures" subsection (meta, not methods)
-- [ ] Fold "Documentation of Workflows" into reporting framework paragraph
+- [x] Condense "Open Source - Iterative Reporting" to 2 sentences
+- [x] Remove "Issue and Discussion Tracking" subsection (meta, not methods)
+- [x] Remove "Tables and Figures" subsection (meta, not methods)
+- [x] Remove "Documentation of Workflows" subsection (memos dropped, blogs used instead)
+- [x] Promote "Data Sourcing" to own ## section, tighten text
 
 **Step 3: Add missing field methods**
 - [x] Benthic invertebrate sampling ✓ (written, needs placement in Field Assessments)

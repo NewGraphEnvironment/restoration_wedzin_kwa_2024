@@ -32,67 +32,14 @@ The shared QGIS project was created using scripts currently kept in [`dff-2022`]
 
 Scripted processing and serving of UAV imagery collected during the project is available at https://github.com/NewGraphEnvironment/stac_uav_bc/ [@irvine2025NewGraphEnvironmentstac_uav_bc]. [`OpenDroneMap`](https://github.com/OpenDroneMap/ODM) was utilized to produce orthomosaics, digital surface models (DSMs), and digital terrain models (DTMs) [@opendronemapauthors2025OpenDroneMapODM]. To support efficient web-based access - imagery products were converted to cloud-optimized GeoTIFFs (COGs) using `rio-cogeo`, then collated accordiong to the [SpatioTemporal Asset Catalog  (STAC)](https://github.com/radiantearth/stac-spec) specification with `pystac` and uploaded to S3 storage [@cogeotiff2025cogeotiffriocogeo; @radiantearth2024STACSpatioTemporal; @pystacauthors2025stacutilspystac, @amazonwebservices2025awsawscli]. A `titiler` tile server was set up to facilitate interactive viewing of the orthoimagery and an Application Program Interface (API) leveraging `stac-fastapi-pgstac` is served at https://images.a11s.one to enable linking of collection images through QGIS as well as remote spatial and temporal querying using open source software such as `rstac` [@developmentseed2025developmentseedtitiler; @stac-utils2025stacutilsstacfastapipgstac; @simoes_etal2021Rstacpackage].  
 
-## Open Source - Iterative Reporting
-A key question we have been asking ourselves is: 
+## Open Source Reporting Framework
 
-<br>
-
-    
-  >"What is the most useful way to present information?" 
-  
-<br>
-  
-
-From our perspective - the most useful way to present information is in a version controlled format that allows it to be interactive, reproducible, read online, served out as a static document, updated,  copied, used as a template, etc. Iterative reporting, managed with a version control system such as
-[git](https://docs.github.com/en/get-started/using-git/about-git) (see example of tracking edits [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/commits/main/0300-methods.Rmd))
-with a permissive license is a great way to do all those things.  Although there is a steep learning curve to using programming tools and producing this type of product and although it can be quite time consuming - it then allows leveraging of all the components of the work to future projects for everyone. Licensing is also key for work to be shared. [MIT License](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/LICENSE.md) is an example of a license that promotes collaboration and sharing/leveraging of work while.
-
-<br>
-
-From our perspective - restoration planning are the type of initiatives that are well suited to an iterative reporting format such as
-can be demonstrated within this [code
-repository](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024) which builds and serves this
-[online report](https://newgraphenvironment.github.io/restoration_wedzin_kwa_2024/). 
+This report is produced using open-source tools (R, bookdown) with full version control via git, enabling iterative updates as restoration planning progresses. All code, data, and revision history are publicly accessible in the [project repository](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024), with ongoing tasks tracked via GitHub [issues](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues).
 
 
-### Issue and Discussion Tracking
-Issues and discussions are effective ways to track tasks, enhancements, and bugs for the  project. Issues can be used to keep track of all the things that need to be done, and can be used to discuss in-line with references to code used to address them linked to the issues through `git` commit messages.  Issues for this project are kept [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues) and
-discussions are kept [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/discussions).
+## Data Sourcing from Skeena Salmon Data Centre
 
-
-
-### Tables and Figures
-There are many tables within this document that can take a long time to format.  Within this document the tables have been imported often as simple csv files or pages of an excel workbook and pulled into the project using scripts. This allows others to access the data and use it in their own projects.  These tables can also then be easily updated with new data as it becomes available often with the formatting for presentation to reader handled by the scripting. Any figures used in the reporting are saved in the project [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/fig/) and can be leveraged by others.  
-
-```{r kable-resources, eval = FALSE}
-# An example of this can be
-# seen here in Table \@ref(tab:kable-resources) with the actual file served
-# [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/tree/main/data):
-
-read_csv("data/aquatic_restoration_resources.csv") %>%
-  fpr::fpr_kable(caption_text = "Aquatic Restoration Resources.")
-```
-
-
-
-### Data Sourceing from Skeena Salmon Data Centre
-Whenever possible we have attempted to tie into existing data govenment infrastructure in the Skeena region by downloading data directly from the [Skeena Salmon Data Centre](https://data.skeenasalmon.info/) using the application programming interface to their [CKAN](https://ckan.org/features/api) database. To facilitate and simlify this process we developed a function to download data from the CKAN database and load it into local versions of the project repository. This `fetch_package` function is kept in the `scripts/functions.R` file of the project and can be used to download entire "packages" of data from the Skeena Salmon Data Centre.
-
-### Documentation of Workflows
-Select workflows were documented in memo format to illustrate the process used for others and promote reproducibility/leverageing of Neexdzii Kwah.  The memos are stored in the `memo` directory of the project [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/tree/main/memos) and can be viewed in Table Table \@ref(tab:tab-memos) by downloading the `.html` documents to a local computer and opening in a web browser such as `Chrome` (usually a double click of the document will open it in the browser).  
-
-```{r tab-memos}
-
-## make a tibble of the list and display it as a fpr_kable
-list.files("memos", full.names = FALSE) %>% 
-  tibble::tibble(memo_name = .) %>% 
-  fpr::fpr_kable(caption_text = "Memos stored at https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/tree/main/memos.",
-                 scroll = FALSE,
-                 scroll_box_height = "300px"
-                 )
-
-```
-
+Whenever possible, data was sourced from existing government infrastructure in the Skeena region by downloading directly from the [Skeena Salmon Data Centre](https://data.skeenasalmon.info/) using the application programming interface to their [CKAN](https://ckan.org/features/api) database.
 
 
 ## Historic Information Regarding Impacts and Restoration Initiatives

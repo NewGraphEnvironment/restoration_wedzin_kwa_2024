@@ -264,6 +264,23 @@ Currently 15 rows mixing different types:
 | Time Series Analysis | ⬜ Pending | Reference new_graphiti post |
 | Climate Anomaly Analysis | ⬜ Pending | Reference Appendix 1 |
 
+### Open Source Reporting Section - Decisions
+- **Memos table:** Remove - blog posts cover workflows better, will be referenced in relevant sections
+- **Issue/Discussion Tracking subsection:** Remove - fold into one sentence with links
+- **Tables and Figures subsection:** Remove - too meta
+- **Documentation of Workflows subsection:** Remove - memos being dropped
+- **R/bookdown references:** Plain text, no hyperlinks (audience isn't R programmers)
+- **Final form:** 3 sentences max with links to repo, issues, discussions
+
+**Draft paragraph:**
+> This report is produced using open-source tools (R, bookdown) with full version control via git, enabling iterative updates as restoration planning progresses. All code, data, and revision history are publicly accessible in the [project repository](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024), with ongoing tasks tracked via GitHub [issues](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues).
+
+### Session Info (to address later)
+- **Issue #98:** Broken link to session_info.csv (fs::path missing /blob/main/)
+- **Question to resolve:** Does `devtools::session_info(to_file = ...)` capture all packages used during build, or just what's loaded at that moment?
+- **Decision:** Keep session info - it's pro-level documentation for reproducibility
+- **Location:** Stays in appendix, optionally reference from Open Source Reporting paragraph
+
 ---
 
 ## Discoveries Log
