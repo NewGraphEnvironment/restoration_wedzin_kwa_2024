@@ -275,6 +275,17 @@ Currently 15 rows mixing different types:
 **Draft paragraph:**
 > This report is produced using open-source tools (R, bookdown) with full version control via git, enabling iterative updates as restoration planning progresses. All code, data, and revision history are publicly accessible in the [project repository](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024), with ongoing tasks tracked via GitHub [issues](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues).
 
+### Version Release Workflow (do after major changes)
+1. Add tight summary to `NEWS.md`
+2. Bump version number in `index.Rmd` YAML
+3. Run build (`scripts/run.R`) - triggers `my_news_to_appendix()` which adds NEWS to changelog appendix
+4. Commit docs/ with simple "rebuild book" message
+5. Push
+
+**Upstream documentation needed:**
+- [ ] Document in `mybookdown-template`
+- [ ] Document in `fish_passage_template_reporting`
+
 ### Session Info (to address later)
 - **Issue #98:** Broken link to session_info.csv (fs::path missing /blob/main/)
 - **Question to resolve:** Does `devtools::session_info(to_file = ...)` capture all packages used during build, or just what's loaded at that moment?
