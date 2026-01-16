@@ -77,6 +77,38 @@
 
 ---
 
+## Session 3: 2026-01-15 - Methods Restructure & Expansion
+
+### Completed
+- [x] Restructured methods into 4 logical groupings (Field Assessments, Collaborative Data Management, Remote Sensing & Imagery, Background Research & Analysis)
+- [x] Tightened Open Source Reporting section (60 lines → 8 lines)
+- [x] Tightened GIS Environment section (30 lines → 11 lines)
+- [x] Added Time Series Analysis section (3 approaches: Sentinel-2, Google Earth, BC historic ortho discovery)
+- [x] Removed meta subsections (Issue Tracking, Tables/Figures, Documentation of Workflows)
+- [x] Created PR #99, merged to main
+- [x] Documented version release workflow in findings.md
+
+### Issues Created
+- #98: Broken link to session_info.csv
+
+### Commits (PR #99)
+- d877209: add benthic methods section, document methods restructure proposal
+- 728681a: tighten Open Source Reporting section, remove meta subsections
+- 8c08d5d: reorganize methods section into 4 logical groupings
+- 07053ba: tighten GIS Environment section
+- 09dfeb1: add Time Series Analysis section with three approaches
+
+### Still Remaining
+- Step 3: eDNA sampling, stakeholder workshops, site reviews
+- Step 4: iPhone LiDAR, climate anomaly
+- Results section work
+- Executive summary updates
+
+### Notes
+- `gh issue view <num> --repo NewGraphEnvironment/sred-2025-2026` throws GraphQL error about Projects Classic deprecation. Use `gh issue list` instead.
+
+---
+
 ## Notes
 
 ### Files Modified This Session
