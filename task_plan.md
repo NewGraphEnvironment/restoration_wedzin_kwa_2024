@@ -58,7 +58,8 @@
 - [ ] Digital forms table (Issue #100) - document fields captured
 - [ ] Spring 2025 site visits - confirm data organized, add to report
 - [ ] Stream walks methods & results - summarize locations and add to report
-  - **Data:** `Projects/gis/restoration_wedzin_kwa/data_field/2024/form_monitoring_ree_20240923.gpkg|layername=form_monitoring_ree`
+  - **Data:** `~/Projects/gis/restoration_wedzin_kwa/data_field/2024/form_fiss_site_2024.gpkg`
+  - **Note:** Different form type than monitoring forms - NOT included in amalgamated geojson
   - **Purpose:** Understand high-value salmon habitat, visit past prescription sites, identify publicly accessible points for field technicians to connect with Bulkley River mainstem and Buck Creek to build knowledge of conditions, ecological values, degradation issues (restoration/conservation potential)
 - [ ] Site visit data amalgamation & categorization
   - **Amalgamated data:** `data/gis/sites_reviewed_2024_202506.geojson` (made by `scripts/forms_amalgamate.R`)

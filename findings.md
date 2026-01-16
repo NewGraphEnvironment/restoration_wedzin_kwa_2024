@@ -453,7 +453,9 @@ Currently 0400 has Field Review results but 0300 has no corresponding methods.
 
 ### Stream Walks - Methods & Results Needed
 
-**Data Location:** `Projects/gis/restoration_wedzin_kwa/data_field/2024/form_monitoring_ree_20240923.gpkg|layername=form_monitoring_ree`
+**Data Location:** `~/Projects/gis/restoration_wedzin_kwa/data_field/2024/form_fiss_site_2024.gpkg`
+
+**Note:** This is a different form type than the monitoring forms, so it is NOT included in the amalgamated `sites_reviewed_2024_202506.geojson`. The stream walks data uses `form_fiss_site` structure rather than `form_monitoring_ree`.
 
 **Purpose of Stream Walks:**
 - Understand areas of high-value salmon habitat
@@ -506,9 +508,9 @@ Key fields for categorization:
 | 1-2 | BR1-2021, BR2-2021 | 2024-09 | form_monitoring_ree_2024 | HWI past work |
 | 3 | BR04-2016 | 2024-09 | form_monitoring_ree_2024 | HWI/WFN 2016 past work |
 | 4 | Meints_01 | 2024-10 | form_monitoring_ree_2024 | New proposed (new_site=yes) |
-| 5-6 | Mickilligan Rd Upper/middle | 2024-10 | form_monitoring_ree_2024 | Stream walk reconnaissance |
+| 5-6 | Mickilligan Rd Upper/middle | 2024-10 | form_monitoring_ree_2024 | Site reconnaissance |
 | 7-9 | bulkley_wilson_01/02/03 | 2024-09 | form_monitoring_ree_20240923 | New proposed (Wilson property, new_site=yes) |
-| 10-12 | bulkley_meints_craker_rd_* | 2024-09 | form_monitoring_ree_20240923 | Stream walk (Meints/Craker Rd access) |
+| 10-12 | bulkley_meints_craker_rd_* | 2024-09 | form_monitoring_ree_20240923 | Site reconnaissance (Meints/Craker Rd access) |
 | 13-17 | chilako_*, keneth_ds | 2024-10 | form_fiss_site_fraser_2024 | Fraser erosion sites |
 | 18 | Foxy Maxan Confluence | 2025-06 | form_monitoring_ree_2025 | New proposed (new_site=yes) |
 | 19-23 | buc7, Bul38, bul32, Buc207, Buc172 | 2025-06 | form_monitoring_ree_2025 | NCFDC 1998 prescriptions (citation_key) |
