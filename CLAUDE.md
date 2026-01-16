@@ -21,6 +21,8 @@ Restoration planning report for the Neexdzii Kwah (Upper Bulkley River) watershe
 
 **Build:** `scripts/run.R` orchestrates builds (bookdown gitbook)
 
+**Build Artifacts:** The `docs/` directory contains rendered HTML output. Commits to `docs/` should use simple messages (e.g., "rebuild book") and are NOT linked to issues or SRED tracking - they are just build outputs.
+
 ## Companion Repositories
 
 ### Recommendations Shiny App
