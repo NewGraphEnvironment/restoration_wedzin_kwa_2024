@@ -57,6 +57,9 @@
 - [ ] Stakeholder workshops (landowner + Wet'suwet'en community)
 - [ ] Digital forms table (Issue #100) - document fields captured
 - [ ] Spring 2025 site visits - confirm data organized, add to report
+- [ ] Stream walks methods & results - summarize locations and add to report
+  - **Data:** `Projects/gis/restoration_wedzin_kwa/data_field/2024/form_monitoring_ree_20240923.gpkg|layername=form_monitoring_ree`
+  - **Purpose:** Understand high-value salmon habitat, visit past prescription sites, identify publicly accessible points for field technicians to connect with Bulkley River mainstem and Buck Creek to build knowledge of conditions, ecological values, degradation issues (restoration/conservation potential)
 
 **Step 4: Add missing technical methods**
 - [ ] iPhone LiDAR vegetation monitoring methodology

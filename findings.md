@@ -447,6 +447,29 @@ Currently 0400 has Field Review results but 0300 has no corresponding methods.
   - Newly proposed sites
   - Fraser erosion sites
 
+**Status:** Site Reviews methods section added (2026-01-16)
+
+---
+
+### Stream Walks - Methods & Results Needed
+
+**Data Location:** `Projects/gis/restoration_wedzin_kwa/data_field/2024/form_monitoring_ree_20240923.gpkg|layername=form_monitoring_ree`
+
+**Purpose of Stream Walks:**
+- Understand areas of high-value salmon habitat
+- Visit sites where past prescriptions were developed
+- Find publicly accessible points for field technicians to connect with Bulkley River mainstem and Buck Creek systems
+- Build state of knowledge regarding:
+  - Current conditions
+  - Ecological values
+  - Degradation issues
+  - Restoration and conservation potential
+
+**Tasks:**
+- [ ] Summarize stream walk start locations from gpkg
+- [ ] Add stream walks methods to 0300-methods.Rmd
+- [ ] Add stream walks results/summary to 0400-results.Rmd (may already be partially covered)
+
 ### Site Categories (from 0400 Field Review)
 
 | Category | Count | Notes |
