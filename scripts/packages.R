@@ -20,7 +20,8 @@ pkgs_cran <- c(
   "rstac",
   "leaflet",
   "leafem",
-  "leaflet.extras"
+  "leaflet.extras",
+  "fledge"
 )
 
 pkgs_gh <- c(
