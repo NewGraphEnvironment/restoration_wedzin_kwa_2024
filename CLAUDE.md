@@ -123,6 +123,35 @@ R&D activities tracked in `sred-2025-2026` repository.
 3. Create/link issues in `sred-2025-2026`
 4. Cross-reference commits with: `Relates to NewGraphEnvironment/sred-2025-2026#<issue>`
 
+## Slash Command Configuration
+
+Project-specific values for global slash commands (in `~/.claude/commands/`).
+
+### Repository
+| Key | Value |
+|-----|-------|
+| Repo | `NewGraphEnvironment/restoration_wedzin_kwa_2024` |
+| Co-Author | `Claude Opus 4.5 <noreply@anthropic.com>` |
+
+### SRED Tracking (`/commit-sred`, `/push-pr`)
+| Key | Value |
+|-----|-------|
+| SRED Repo | `NewGraphEnvironment/sred-2025-2026` |
+| SRED Issue | `#4` |
+
+### Mergin Sync (`/mergin-sync`)
+| Key | Value |
+|-----|-------|
+| GIS Project Path | `/Users/airvine/Projects/gis/restoration_wedzin_kwa` |
+| Tracking Issue | `#41` |
+| Conda Environment | `dff2` |
+
+### Build (`/push-pr`)
+| Key | Value |
+|-----|-------|
+| Build Script | `scripts/run.R` |
+| Test Plan | Report builds, no rendering errors, cross-refs resolve |
+
 ## Report Structure
 
 **Chapter ordering (by prefix):**
