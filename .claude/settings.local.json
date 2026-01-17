@@ -4,7 +4,12 @@
       "Bash(ls:*)",
       "Bash(gh issue list:*)",
       "Bash(gh issue view:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(sqlite3:*)",
+      "Skill(commit-sred)",
+      "Bash(grep:*)",
+      "Bash(cat:*)",
+      "Skill(push-pr)"
     ]
   }
 }

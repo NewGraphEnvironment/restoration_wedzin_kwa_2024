@@ -17,7 +17,11 @@ pkgs_cran <- c(
   'DT',
   'desc',
   'kableExtra',
-  "rstac"
+  "rstac",
+  "leaflet",
+  "leafem",
+  "leaflet.extras",
+  "fledge"
 )
 
 pkgs_gh <- c(

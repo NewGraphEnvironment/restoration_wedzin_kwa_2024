@@ -2,6 +2,26 @@
 
 ## Field Assessments
 
+### Site Reviews
+
+Field site reviews were conducted in September and early October 2024 to assess current conditions at historic prescription sites, past restoration locations, and newly proposed sites. Sites were selected based on:
+
+- Locations with documented historic prescriptions from @mackay_etal1998MidBulkleyDetailed
+- Sites proposed for restoration by the Wet'suwet'en First Nation [@gaboury_smith2016DevelopmentAquatic]
+- Sites with completed restoration work [@smith_gaboury2016BUILTREPORT]
+- Past Healthy Watersheds Initiative restoration sites
+- Locations of documented traditional use fishing sites [@gottesfeld_rabnett2007SkeenaFish; @wilson_rabnett2007FishPassage]
+- Newly proposed sites identified through landowner engagement and local knowledge
+- Erosion protection sites in the Fraser watershed for comparison
+
+<br>
+
+At each site, field crews documented current riparian conditions, evidence of cattle access and bank erosion, existing infrastructure, and restoration potential. Standardized digital forms were developed for the project and deployed within the collaborative GIS environment (Mergin Maps), with photos georeferenced and linked to site records. UAV flights were conducted at select sites to provide high-resolution baseline imagery for monitoring. Raw field data is stored within the shared QGIS project in the `Project Specific/Field Data/2024` group.
+
+<!-- TODO: Add table describing digital form fields (Issue #100) -->
+<!-- TODO: Add spring 2025 site visits - confirm data is organized and ready to include -->
+
+
 ### Benthic Invertebrate Sampling
 
 Benthic invertebrate sampling was conducted following the Canadian Aquatic Biomonitoring Network (CABIN) wadeable streams protocol [@environmentcanada2012Canadianaquatic]. Samples were collected using the traveling kick-net method with a 400 μm mesh net. At each site, a 3-minute timed sample was collected by traversing a zigzag pattern in an upstream direction within the erosional zone (riffle, rapid, or fast-flowing run habitat).
@@ -45,7 +65,7 @@ Whenever possible, data was sourced from existing government infrastructure in t
 
 ### Open Source Reporting Framework
 
-This report is produced using open-source tools (R, bookdown) with full version control via git, enabling iterative updates as restoration planning progresses. All code, data, and revision history are publicly accessible in the [project repository](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024), with ongoing tasks tracked via GitHub [issues](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues).
+This report is produced using open-source tools (R, bookdown) with full version control via git, enabling iterative updates as restoration planning progresses. All code, data, and revision history are publicly accessible in the [project repository](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024), with ongoing tasks tracked via GitHub [issues](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues) and version history maintained in the [project changelog](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/NEWS.md).
 
 
 ## Remote Sensing & Imagery
