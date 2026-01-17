@@ -9,7 +9,8 @@
       "Skill(commit-sred)",
       "Bash(grep:*)",
       "Bash(cat:*)",
-      "Skill(push-pr)"
+      "Skill(push-pr)",
+      "Bash(gh pr list:*)"
     ]
   }
 }
