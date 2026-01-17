@@ -8,7 +8,8 @@
       "Bash(sqlite3:*)",
       "Skill(commit-sred)",
       "Bash(grep:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Skill(push-pr)"
     ]
   }
 }
