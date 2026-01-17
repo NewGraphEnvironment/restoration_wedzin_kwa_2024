@@ -6,7 +6,9 @@
       "Bash(gh issue view:*)",
       "Bash(git add:*)",
       "Bash(sqlite3:*)",
-      "Skill(commit-sred)"
+      "Skill(commit-sred)",
+      "Bash(grep:*)",
+      "Bash(cat:*)"
     ]
   }
 }
