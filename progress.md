@@ -140,6 +140,58 @@
 
 ---
 
+## Session 5: 2026-01-16 - Version Bump, Changelog Cleanup, PR Merge
+
+### Completed
+- [x] Reviewed missing methods sections (eDNA, workshops, forms table, stream walks, iPhone LiDAR, climate anomaly still pending)
+- [x] Confirmed spring 2025 site visits content already added
+- [x] Bumped version to 0.1.3
+- [x] Updated NEWS.md with linked issues ([#102], [#103], [#97], [#100], [#105])
+- [x] Removed changelog appendix from report (issue #105)
+  - Deleted `2090-report-change-log.Rmd`
+  - Deleted `docs/changelog.html`
+  - Commented out `my_news_to_appendix()` in `scripts/run.R`
+  - Removed from `scripts/utils.R` and regenerated `staticimports.R`
+- [x] Added NEWS.md link to Open Source Reporting section in methods
+- [x] Added fledge to packages.R
+- [x] Created PR #104, merged to main
+- [x] Created upstream issues for template repos:
+  - mybookdown-template#70: Remove changelog appendix
+  - mybookdown-template#71: Document fledge workflow
+  - fish_passage_template_reporting#148: Propagate changes
+
+### Issues Created/Closed
+- #105: Remove changelog appendix (created and closed via PR merge)
+
+### Key Decisions
+- **Fledge:** Keep using for versioning, but don't render NEWS in report
+- **NEWS.md:** Link from Open Source Reporting section instead of appendix
+- **Commit conventions:** Use `-` prefix for newsworthy changes (fledge requirement)
+- **Issue links in NEWS:** Use full URLs for clickability outside GitHub
+
+### Files Modified
+| File | Action |
+|------|--------|
+| `DESCRIPTION` | Bumped to 0.1.3 |
+| `NEWS.md` | Added v0.1.3 entry with linked issues |
+| `0300-methods.Rmd` | Added NEWS.md link to Open Source Reporting |
+| `scripts/run.R` | Commented out my_news_to_appendix() |
+| `scripts/utils.R` | Removed my_news_to_appendix import |
+| `scripts/staticimports.R` | Regenerated without my_news_to_appendix |
+| `scripts/packages.R` | Added fledge |
+| `2090-report-change-log.Rmd` | Deleted |
+| `docs/changelog.html` | Deleted |
+
+### PR #104 Summary
+- Reorganize background/methods/results sections
+- Add Site Reviews methods section
+- Field Review rewritten with accurate site counts
+- Spring 2025 site visits documented
+- Changelog appendix removed
+- Version 0.1.3
+
+---
+
 ## Notes
 
 ### Files Modified This Session

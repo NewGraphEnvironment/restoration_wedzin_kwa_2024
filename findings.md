@@ -276,15 +276,17 @@ Currently 15 rows mixing different types:
 > This report is produced using open-source tools (R, bookdown) with full version control via git, enabling iterative updates as restoration planning progresses. All code, data, and revision history are publicly accessible in the [project repository](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024), with ongoing tasks tracked via GitHub [issues](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues).
 
 ### Version Release Workflow (do after major changes)
-1. Add tight summary to `NEWS.md`
-2. Bump version number in `index.Rmd` YAML
-3. Run build (`scripts/run.R`) - triggers `my_news_to_appendix()` which adds NEWS to changelog appendix
-4. Commit docs/ with simple "rebuild book" message
+1. Add tight summary to `NEWS.md` (use full issue links for clickability)
+2. Bump version number in `DESCRIPTION`
+3. Run build (`scripts/run.R`)
+4. Commit docs/ with simple "rebuild book vX.Y.Z" message
 5. Push
 
+**Note:** Changelog appendix removed (#105) - NEWS.md linked in Open Source Reporting section instead.
+
 **Upstream documentation needed:**
-- [ ] Document in `mybookdown-template`
-- [ ] Document in `fish_passage_template_reporting`
+- [x] Document in `mybookdown-template` (issues #70, #71)
+- [x] Document in `fish_passage_template_reporting` (issue #148)
 
 ### Session Info (to address later)
 - **Issue #98:** Broken link to session_info.csv (fs::path missing /blob/main/)
@@ -308,6 +310,8 @@ Currently 15 rows mixing different types:
 | 2026-01-15 | Exec summary table mixes methods/tools/deliverables | executive_summary.csv | Need to categorize and relocate |
 | 2026-01-15 | Methods/Results have parallel section names | 0300/0400 Rmd | Consider consolidating or clarifying |
 | 2026-01-16 | Results section mixing background, methods, and results | 0400-results.Rmd | Major reorganization needed |
+| 2026-01-16 | Changelog appendix adds noise to report | PR #104 | Removed appendix, link to NEWS.md in methods instead |
+| 2026-01-16 | Fledge workflow requires `-` prefix on commit messages | fledge docs | Continue using fledge, document conventions |
 
 ---
 

@@ -56,7 +56,7 @@
 - [ ] eDNA sampling (awaiting user details)
 - [ ] Stakeholder workshops (landowner + Wet'suwet'en community)
 - [ ] Digital forms table (Issue #100) - document fields captured
-- [ ] Spring 2025 site visits - confirm data organized, add to report
+- [x] Spring 2025 site visits - confirmed data organized and added to report
 - [ ] Stream walks methods & results - summarize locations and add to report
   - **Data:** `~/Projects/gis/restoration_wedzin_kwa/data_field/2024/form_fiss_site_2024.gpkg`
   - **Note:** Different form type than monitoring forms - NOT included in amalgamated geojson
