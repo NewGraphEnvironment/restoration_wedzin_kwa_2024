@@ -23,7 +23,9 @@ Restoration planning report for the Neexdzii Kwah (Upper Bulkley River) watershe
 
 **Build:** `scripts/run.R` orchestrates builds (bookdown gitbook)
 
-**Build Artifacts:** The `docs/` directory contains rendered HTML output. Commits to `docs/` should use simple messages (e.g., "rebuild book") and are NOT linked to issues or SRED tracking - they are just build outputs.
+**Build Artifacts:** The `docs/` directory contains rendered HTML output. Commits to `docs/` should use simple messages (e.g., "rebuild book v0.1.3") and are NOT linked to issues or SRED tracking - they are just build outputs.
+
+**Versioning:** Uses `fledge` package for version management. Commit messages starting with `-` or `*` are pulled into NEWS.md by `fledge::finalize_version()`. NEWS.md is linked from the Open Source Reporting section in methods (changelog appendix removed in v0.1.3).
 
 ## Companion Repositories
 
