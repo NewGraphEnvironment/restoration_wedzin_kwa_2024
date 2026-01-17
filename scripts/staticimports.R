@@ -52,24 +52,6 @@ my_leaflet <- function(height = 650, width = 970){
     leaflet.extras::addFullscreenControl()
 }
 
-# write the contents of the NEWS.md file to a RMD file that will be included as an appendix
-my_news_to_appendix <- function(
-    md_name = "NEWS.md",
-    rmd_name = "2090-report-change-log.Rmd",
-    appendix_title = "# Changelog") {
-
-  # Read and modify the contents of the markdown file
-  news_md <- readLines(md_name)
-  news_md <- stringr::str_replace(news_md, "^#", "###") |>
-    stringr::str_replace_all("(^(### .*?$))", "\\1 {-}")
-
-  # Write the title, a blank line, and the modified contents to the Rmd file
-  writeLines(
-    c(paste0(appendix_title, " {-}"), "", news_md),
-    rmd_name
-  )
-}
-
 #https://stackoverflow.com/questions/49819892/cross-referencing-dtdatatable-in-bookdown
 my_tab_caption <- function(
     caption_text = my_caption,
@@ -91,12 +73,4 @@ my_tab_caption <- function(
     "</table>",
     sep = "\n"
   )
-}
-
-str_replace <- function(text, pattern, replacement) {
-  sub(pattern = pattern, replacement = replacement, x = text, perl = TRUE)
-}
-
-str_replace_all <- function(text, pattern, replacement) {
-  gsub(pattern = pattern, replacement = replacement, x = text, perl = TRUE)
 }
