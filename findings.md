@@ -480,7 +480,7 @@ Currently 0400 has Field Review results but 0300 has no corresponding methods.
 - GIS: `/Users/airvine/Projects/gis/restoration_wedzin_kwa/data_field/sites_reviewed_2024_202506.geojson`
 - Repo: `data/gis/sites_reviewed_2024_202506.geojson`
 
-**Script:** `scripts/forms_amalgamate.R`
+**Script:** `scripts/gis/amalgamate_field_forms.R`
 
 **Source Forms Combined:**
 1. `form_monitoring_ree_2024.gpkg` - 2024 monitoring

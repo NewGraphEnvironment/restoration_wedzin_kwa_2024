@@ -157,7 +157,7 @@ Modified:
 - data/backup/form_fiss_site_fraser_2024.csv
 - data/backup/form_monitoring_ree_2024.csv
 - data/backup/form_monitoring_ree_2025.csv
-- scripts/forms_amalgamate.R
+- scripts/gis/amalgamate_field_forms.R (was scripts/forms_amalgamate.R)
 - scripts/gis/lidar_dl_split.R
 - scripts/gis/trad_fish_dist.R
 

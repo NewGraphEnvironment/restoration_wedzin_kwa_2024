@@ -1,7 +1,17 @@
 
 
-# **Appendix 2 - Effectiveness Monitoring Data and Potential Restoration Site Review** {-}
+# **Appendix 2 - Effectiveness Monitoring Data and Potential Restoration Site Review** {-#app-eff-mon}
 
+<!--
+To update this table:
+1. Ensure QGIS project (restoration_wedzin_kwa) is synced and up to date locally
+2. Run scripts/gis/amalgamate_field_forms.R to regenerate:
+   - /Users/airvine/Projects/gis/restoration_wedzin_kwa/data_field/sites_reviewed_2024_202506.geojson
+   - data/gis/sites_reviewed_2024_202506.geojson
+3. Rebuild the report
+-->
+
+Site locations are available as a downloadable [`sites_reviewed_2024_202506.geojson`](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/gis/sites_reviewed_2024_202506.geojson) which renders as an interactive map on GitHub.
 
 ```{r tab-ree1-caption, results="asis"}
 # Table \@ref(tab:tab-ree1-caption)

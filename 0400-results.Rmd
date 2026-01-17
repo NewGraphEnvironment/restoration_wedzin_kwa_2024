@@ -2,25 +2,38 @@
 
 ## Field Review
 
-In the field in September and early October 2024 we were able to survey approximately 12 km of Bulkley and Buck mainstem along with 1.5 km of Johnny David and Richfield. Within those areas and elsewhere we reviewed:
+Field site reviews were conducted in 2024 and 2025, with assessments documented at 26 locations. Sites were categorized by visit purpose and restoration status:
 
--   14 past prescription sites from @mackay_etal1998MidBulkleyDetailed
+**Effectiveness Monitoring Sites (9 assessments):**
 
--   6 prescription locations from the Wet'suwet'en First Nation 2016 report (2 sites were mapped in high resolution with a drone),
+-   4 Healthy Watersheds Initiative sites with completed restoration work
+-   3 sites with works completed from Wet'suwet'en First Nation restoration planning [@gaboury_smith2016DevelopmentAquatic; @smith_gaboury2016BUILTREPORT]
+-   1 site with erosion protection completed from @mackay_etal1998MidBulkleyDetailed prescriptions
 
--   6 past Healthy Watersheds Initiative sites
+**Potential Restoration Sites (12 assessments):**
 
--   7 newly proposed sites including both Groot fencing locations, 3 sites on the Wilson property and 2 previously undocumented sites on Mients' property (3 sites were mapped in high resolution with a drone)
 
--   3 erosion protection sites in the Fraser (on the Lower Chilako River) completed by Chelton VanGloven (2 sites were mapped in high resolution with a drone)
+-   4 historic prescription sites from @mackay_etal1998MidBulkleyDetailed where works have not yet been implemented
+-   3 prescription locations from @gaboury_smith2016DevelopmentAquatic where works have not yet been implemented
+-   4 newly proposed sites identified through landowner engagement (Wilson property, Meints property)
+-   1 site adjacent to documented traditional fishing locations [@gottesfeld_rabnett2007SkeenaFish]
 
-At the time of writing - most of the raw information from this fieldwork was viewable within layers stored the shared QGIS project in the `Project Specific/Field Data/2024` group. Many of the photos from site visits documented in those layers are within the GIS project as well (in desktop QGIS project they are in the `ignore_mobile/photos` directory).
+**Fraser Erosion Comparison Sites (5 assessments):**
 
-A brief summary of result is below:
+-   5 erosion protection sites on the Lower Chilako River and Kenneth Creek visited to inform Upper Bulkley restoration planning approaches
 
--   A recurring theme we observed where prescriptions were drafted and/or where work has been completed or proposed was obvious impacts related to riparian/floodplain vegetation removal and damage to sensitive areas due to cattle trampling and cattle waste products.
+<br>
+
+UAV flights were conducted at the majority of sites to provide high-resolution baseline imagery for monitoring. Orthomosaics for mapped sites are accessible via the imagery catalog detailed in [Aerial Imagery](#aerial-imagery). Raw field data is stored within the shared QGIS project in the `Project Specific/Field Data/2024` group, with photos in the `ignore_mobile/photos` directory. Site locations are available as a downloadable [`sites_reviewed_2024_202506.geojson`](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/gis/sites_reviewed_2024_202506.geojson) which renders as an interactive map on GitHub. Detailed site assessment data including classifications, visit rationale, and assessment comments are provided in [Appendix 2 - Effectiveness Monitoring Data and Potential Restoration Site Review](#app-eff-mon).
+
+<br>
+
+A brief summary of key observations:
+
+-   A recurring theme observed where prescriptions were drafted and/or where work has been completed or proposed was obvious impacts related to riparian/floodplain vegetation removal and damage to sensitive areas due to cattle trampling and cattle waste products.
 -   At past sites where investments have been made - there were insignificant widths set aside for riparian/floodplain vegetation restoration/recovery.
 -   The protection of road and rail infrastructure through streambank armoring is not adequately incorporating best practices for vegetating riprap, soft armouring where possible and establishing/restoring effective riparian buffers.
+
 
 ## Collaborative GIS Environment
 

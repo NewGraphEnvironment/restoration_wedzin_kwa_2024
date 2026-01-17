@@ -154,7 +154,7 @@ R&D activities tracked in `sred-2025-2026` repository.
 | `scripts/packages.R` | Package dependencies |
 | `scripts/functions.R` | Custom utility functions |
 | `scripts/api_skt.R` | Skeena Knowledge Trust API access |
-| `scripts/forms_amalgamate.R` | Combine field survey forms |
+| `scripts/gis/amalgamate_field_forms.R` | Combine field survey forms |
 | `scripts/gis/prioritize.R` | Site prioritization algorithm |
 | `scripts/gis/uav_process.Rmd` | UAV imagery → STAC pipeline |
 

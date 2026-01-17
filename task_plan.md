@@ -62,7 +62,7 @@
   - **Note:** Different form type than monitoring forms - NOT included in amalgamated geojson
   - **Purpose:** Understand high-value salmon habitat, visit past prescription sites, identify publicly accessible points for field technicians to connect with Bulkley River mainstem and Buck Creek to build knowledge of conditions, ecological values, degradation issues (restoration/conservation potential)
 - [ ] Site visit data amalgamation & categorization
-  - **Amalgamated data:** `data/gis/sites_reviewed_2024_202506.geojson` (made by `scripts/forms_amalgamate.R`)
+  - **Amalgamated data:** `data/gis/sites_reviewed_2024_202506.geojson` (made by `scripts/gis/amalgamate_field_forms.R`)
   - **Sources:** form_monitoring_ree_2024, form_monitoring_ree_20240923, form_fiss_site_fraser_2024, form_monitoring_ree_2025
   - **Issue:** Appendix 2 is out of date - needs updating with amalgamated file
   - **Task:** Categorize sites by visit purpose, update results presentation
