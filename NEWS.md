@@ -1,5 +1,13 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# restoration_wedzin_kwa_2024 DRAFT 0.1.3 (2026-01-16)
+
+- rewrite Field Review with accurate site counts and geojson links ([#102](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/102), [#103](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/103))
+- add Site Reviews methods section ([#97](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/97), [#100](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/100))
+- add NEWS.md link to Open Source Reporting section ([#105](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/105))
+- reorganize report: separate background context from deliverables
+
+
 # restoration_wedzin_kwa_2024 DRAFT 0.1.2 (2025-06-10)
 
 - update section on traditional fishing sites
