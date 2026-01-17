@@ -1,52 +1,102 @@
 
 
-# **Appendix 2 - Potential Restoration Site Review and Effectiveness Monitoring Data - 2024** {-}
+# **Appendix 2 - Effectiveness Monitoring Data and Potential Restoration Site Review** {-}
 
-Table \@ref(tab:tab-ree1-caption)
-
-
-
-```{r ld-ree1, eval=params$update_gis}
-
-# grab the table from the QGIS project and burn to a csv then read in and present
-path <- "~/Projects/gis/restoration_wedzin_kwa/data_field/2024/form_monitoring_ree_20240923.gpkg"
-ree1_raw <- sf::st_read(
-  path
-)
-
-
-ree1_raw |> 
-  readr::write_csv(
-    file = "data/inputs_extracted/ree_2024_01.csv",
-    na = ""
-  )
-```
 
 ```{r tab-ree1-caption, results="asis"}
-my_caption <- ("Draft partial summary of results from potential restoration site review and effectiveness monitoring data - 2024")
+# Table \@ref(tab:tab-ree1-caption)
+my_caption <- ("Results from effectiveness monitoring data collected in 2024 and 2025")
 my_tab_caption()
+```
+
+```{r citation-convert, eval = FALSE}
+# clean up the citations -  just doing this once bc it is really slow!!!
+path_gis <- "/Users/airvine/Projects/gis/restoration_wedzin_kwa/data_field/sites_reviewed_2024_202506.geojson"
+path_repo <- "data/gis/sites_reviewed_2024_202506.geojson"
+
+dat <- sf::st_read(
+  path_repo
+)
+
+dat |> 
+  sf::st_drop_geometry() |> 
+  dplyr::mutate(
+    date = as.Date(date_time_start)
+  ) |> 
+  dplyr::select(
+    # date_time_start,
+    site_id,
+    date,
+    reference = citation_key,
+    uav_flight,
+    works_completed,
+    new_site,
+    assessment_comment
+  ) |> 
+  xciter::xct_keys_to_inline_table_col(col_format = "reference") |> 
+  #   clean up when NA ends up in citation column
+  dplyr::mutate(
+    reference = dplyr::if_else(
+      reference == "NA",
+      "",
+      reference
+    )
+  ) |> 
+  # purrr::set_names(~ tools::toTitleCase(gsub("_", " ", .x)))
+  readr::write_csv("data/inputs_extracted/monitoring_2024_2025.csv", na = "")
+
 ```
 
 
 ```{r tab-ree1}
 
-ree1_raw <- readr::read_csv(
-  "data/inputs_extracted/ree_2024_01.csv"
-)
+dat_raw <- readr::read_csv(
+  "data/inputs_extracted/monitoring_2024_2025.csv"
+) 
 
-ree1_raw |> 
-  sf::st_drop_geometry() |> 
+dat <- dat_raw |>
+  dplyr::mutate(
+    type = dplyr::case_when(
+      works_completed == "yes" &
+        !grepl("mud|kenneth", site_id, ignore.case = TRUE) ~
+        "Effectiveness Monitoring",
+      
+      works_completed == "yes" &
+        grepl("mud|kenneth", site_id, ignore.case = TRUE) ~
+        "Fraser Site",
+      
+      
+      TRUE ~ "Potential Site"
+    ),
+    type = factor(type, levels = c("Effectiveness Monitoring", "Potential Site", "Fraser Site"))
+  ) |>
+  dplyr::mutate(
+    assessment_comment = dplyr::case_when(
+      reference == "Gottesfeld and Rabnett (2007)" ~
+        paste0("Newly proposed site adjacent to traditional fishing site. ", assessment_comment),
+      new_site == "yes" ~
+        paste0("Newly proposed site. ", assessment_comment),
+      TRUE ~ assessment_comment
+    ),
+    uav_flight = dplyr::if_else(
+      uav_flight == "No",
+      NA_character_,
+      uav_flight
+    ) 
+  )|> 
+  dplyr::arrange(type, site_id) |> 
   dplyr::select(
-    # date_time_start,
-    site_name,
-    assessment_comment,
-    riparian_notes,
-    stability_notes,
-    revegetation_notes,
-    cover_notes,
-    uav_mapping = uav_flight
+    site_id,
+    date,
+    type,
+    reference,
+    uav_flight,
+    assessment_comment
   ) |> 
-  my_dt_table(cols_freeze_left = 0)
+  tibble::rowid_to_column()
+
+dat |> 
+  my_dt_table(cols_freeze_left = 2)
   
 
 ```

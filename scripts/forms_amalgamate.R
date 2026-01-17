@@ -20,6 +20,7 @@ form_prep <- forms_ls |>
   purrr::map(
     ~ fpr::fpr_sp_gpkg_backup(
       path_gpkg = .x,
+#       need this bc we move br4 to br5 as that was an error
       update_utm = TRUE,
       return_object = TRUE,
       write_to_rdata = FALSE
@@ -91,6 +92,18 @@ form <- form_prep |>
     dplyr::all_of(cols_photos)
   )
 
+# little form to review
+# t <- form |>
+#   dplyr::select(
+#     site_id,
+#     source,
+#     date_time_start,
+#     uav_flight,
+#     works_completed,
+#     new_site,
+#     citation_key,
+#     assessment_comment
+#   )
 
 # burn to the project
 # first remove the old layer if exists
