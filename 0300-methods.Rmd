@@ -65,7 +65,7 @@ Whenever possible, data was sourced from existing government infrastructure in t
 
 ### Open Source Reporting Framework
 
-This report is produced using open-source tools (R, bookdown) with full version control via git, enabling iterative updates as restoration planning progresses. All code, data, and revision history are publicly accessible in the [project repository](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024), with ongoing tasks tracked via GitHub [issues](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues).
+This report is produced using open-source tools (R, bookdown) with full version control via git, enabling iterative updates as restoration planning progresses. All code, data, and revision history are publicly accessible in the [project repository](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024), with ongoing tasks tracked via GitHub [issues](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues) and version history maintained in the [project changelog](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/NEWS.md).
 
 
 ## Remote Sensing & Imagery
