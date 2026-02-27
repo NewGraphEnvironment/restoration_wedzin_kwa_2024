@@ -16,7 +16,7 @@ To support long-term watershed resilience in Neexdzii Kwah, we recommend a coord
 
 <br>
 
-This report should be considered a living document, with ongoing revisions and updates tracked through the Changelog section. We are humbled by the depth of knowledge that exists for this region, both through traditional knowledge and scientific study. We acknowledge that this report is far from complete, and that the work of restoring and sustaining ecosystem values will require many decades—if not centuries—of dedication. It is our hope that this effort can serve as a catalyst for positive change and foster genuine, open collaboration. Table \@ref(tab:tab-exec-sum-cap) outlines some of the tools and resources developed as part of this project to date.
+This report should be considered a living document, with ongoing revisions and updates tracked in the [project changelog](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/NEWS.md). We are humbled by the depth of knowledge that exists for this region, both through traditional knowledge and scientific study. We acknowledge that this report is far from complete, and that the work of restoring and sustaining ecosystem values will require many decades—if not centuries—of dedication. It is our hope that this effort can serve as a catalyst for positive change and foster genuine, open collaboration. Table \@ref(tab:tab-exec-sum-cap) outlines some of the tools and resources developed as part of this project to date.
 
 <br>
 
@@ -32,10 +32,7 @@ exec_summary_raw <- readr::read_csv(
   "data/inputs_raw/executive_summary.csv"
 ) 
 
-exec_summary <- exec_summary_raw |> 
-  # remove the row with the R packages
-  dplyr::filter(resource != "Custom R Packages and code repositories") |> 
-  dplyr::filter(resource != "Additional Aquatic Restoration Resources") |> 
+exec_summary <- exec_summary_raw |>
   purrr::set_names(nm = stringr::str_to_title(names(exec_summary_raw)))
 ```
 
