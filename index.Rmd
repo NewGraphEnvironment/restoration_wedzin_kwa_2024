@@ -14,7 +14,9 @@ author: |
 
 date: |
  |
- | DRAFT Version `r desc::desc_get_version()` `r format(Sys.Date(), "%Y-%m-%d")`
+ | Version `r desc::desc_get_version()` DRAFT `r format(Sys.Date(), "%Y-%m-%d")`
+ |
+ | *Claude Opus 4.6 (Anthropic) assisted with literature synthesis, drafting, and technical writing. All scientific interpretation, data analysis, and conclusions are the responsibility of the authors.*
 toc-title: Table of Contents
 site: bookdown::bookdown_site
 output: 
@@ -104,13 +106,12 @@ knitr::write_bib(c(
 
 # Acknowledgement {.front-matter .unnumbered}
 
+We understand our well-being as inseparable from the health of the land and waters we work within. When we care for ecosystems, we care for ourselves and for the communities connected to them.
 
-Modern civilization has a long journey ahead to acknowledge and address the historic and ongoing impacts of colonialism that have resulted in harm to the cultures and livelihoods living interconnected with our ecosystems for many thousands of years. 
-
-
+This work takes place within the Yintah of the Wet'suwet'en people, who have governed these lands and waters through their hereditary chief system for thousands of years. The Neexdzii Kwa (Upper Bulkley River) and its tributaries sustain salmon, steelhead, and the communities connected to them. We are grateful to the Office of the Wet'suwet'en for their partnership and guidance in this work.
 
 ```{js, logo-header, echo = FALSE, eval= T}
 title=document.getElementById('header');
-title.innerHTML = '<img src="fig/logo_sern/SERNbc-Logo-HALF.jpg" alt="SERNbc">' + title.innerHTML
+title.innerHTML = '<div style="text-align:center"><img src="fig/logo_sern/SERNbc-Logo-HALF.jpg" alt="SERNbc" width="750px"></div>' + title.innerHTML
 ```
 

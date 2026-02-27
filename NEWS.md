@@ -3,6 +3,9 @@
 # restoration_wedzin_kwa_2024 DRAFT 0.1.4 (2026-02-26)
 
 - rewrite executive summary: remove tools table, streamline prose
+- rewrite acknowledgement with Wet'suwet'en territorial context
+- add AI disclosure to title block
+- remove social media sharing buttons, resize logo
 - add second 3D model to Attachment 1 (3 growing seasons), shorten captions
 - fix 6 broken citation keys
 - add chapter preview utility (scripts/setup.R)
