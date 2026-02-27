@@ -24,6 +24,7 @@ tab:tab-esi-indicators-cap
 tab:tab-esi-fields-cap
 tab:tab-sites-ranked-cap
 fig:model-riparian-caption
+fig:model2-riparian-caption
 introduction
 wetsuweten
 widzin-kwah-water-sustainability-project
@@ -48,7 +49,7 @@ fish-species
 historic-restoration-context
 morin2016niwhtsidenihibiiten---niwhtsidenï-hibiitën-the-ways-of-our-ancestors
 mitchell1997riparianinstream---riparian-and-in-stream-assessment-of-the-bulkley-river-system
-price2014upperbulkleya---upper-bulkley-floodplain-habitat
+price2014upperbulkley---upper-bulkley-floodplain-habitat
 mackay_etal1998midbulkleydetailed---mid-bulkley-detailed-fish-habitatriparianchannel-assessment
 gaboury_smith2016developmentaquatic---aquatic-restoration-designs-and-on-farm-cattle-management
 skeenasustainabilityassessmentforum2021skeenasustainability---state-of-the-value-report
@@ -80,7 +81,7 @@ collaborative-gis-environment
 methodology
 aerial-imagery-1
 historic-data-products
-price2014upperbulkleya---extracted-waypoints
+price2014upperbulkley---extracted-waypoints
 mackay_etal1998midbulkleydetailed---extracted-prescriptions-and-riparian-polygons
 gaboury_smith2016developmentaquatic---extracted-site-locations
 state-of-the-value-data-integration
