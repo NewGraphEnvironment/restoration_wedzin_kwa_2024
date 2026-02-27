@@ -33,7 +33,7 @@ nocite: |
   @wlrs2024BritishColumbia,
   @moe2024BritishColumbia,
   @skeenaknowledgetrustUBRWater,
-  @price2014UpperBulkleya,
+  @price2014UpperBulkley,
   @oliver2020Analysis2017,
   @ministryofforestsRiparianmanagement,
   @johnston_slaney1996FishHabitat

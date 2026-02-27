@@ -7,7 +7,7 @@ Field site reviews were conducted in 2024 and 2025, with assessments documented 
 **Effectiveness Monitoring Sites (9 assessments):**
 
 -   4 Healthy Watersheds Initiative sites with completed restoration work
--   3 sites with works completed from Wet'suwet'en First Nation restoration planning [@gaboury_smith2016DevelopmentAquatic; @smith_gaboury2016BUILTREPORT]
+-   3 sites with works completed from Wet'suwet'en First Nation restoration planning [@gaboury_smith2016DevelopmentAquatic; @smith_gaboury2016ASBUILTREPORT]
 -   1 site with erosion protection completed from @mackay_etal1998MidBulkleyDetailed prescriptions
 
 **Potential Restoration Sites (12 assessments):**
@@ -158,9 +158,9 @@ uav_tab |>
 
 A key deliverable of this project was the compilation, extraction, and spatialization of historic restoration data from multiple sources. This work involved extracting tabular data from PDF reports, converting site coordinates to spatial formats, and linking descriptions to GIS layers within the shared `restoration_wedzin_kwa` project. Background context for these historic reports is provided in the [Historic Restoration Context](#historic-restoration-context) section. The resulting spatial layers are stored in `sites_restoration.gpkg` within the collaborative GIS project.
 
-### @price2014UpperBulkleya - Extracted Waypoints
+### @price2014UpperBulkley - Extracted Waypoints
 
-Coordinates of points of interest documented in @price2014UpperBulkleya were extracted from the PDF report using `tabulapdf` and converted to a spatial layer (`sites_restoration.gpkg`, layer name = `price_2014`). The extracted data includes locations of river channelization, potential barriers to fish migration, and areas of upwelling groundwater. Individual waypoint information is presented in Table \@ref(tab:tab-price-2014-waypoints) and available in [price_2014_waypoints.csv](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/inputs_extracted/price_2014_waypoints.csv).
+Coordinates of points of interest documented in @price2014UpperBulkley were extracted from the PDF report using `tabulapdf` and converted to a spatial layer (`sites_restoration.gpkg`, layer name = `price_2014`). The extracted data includes locations of river channelization, potential barriers to fish migration, and areas of upwelling groundwater. Individual waypoint information is presented in Table \@ref(tab:tab-price-2014-waypoints) and available in [price_2014_waypoints.csv](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/inputs_extracted/price_2014_waypoints.csv).
 
 ```{r extract-price2014, eval = F}
 path <- "/Users/airvine/zotero/storage/7JCL42Y3/price_2014_upper_bulkley_floodplain_habitat_-_modifications,_physical_barriers,_and_sites.pdf"
