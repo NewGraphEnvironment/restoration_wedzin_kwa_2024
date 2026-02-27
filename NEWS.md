@@ -1,5 +1,12 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# restoration_wedzin_kwa_2024 DRAFT 0.1.4 (2026-02-26)
+
+- rewrite executive summary: remove tools table, streamline prose
+- add second 3D model to Attachment 1 (3 growing seasons), shorten captions
+- fix 6 broken citation keys
+- add chapter preview utility (scripts/setup.R)
+
 # restoration_wedzin_kwa_2024 DRAFT 0.1.3 (2026-01-16)
 
 - rewrite Field Review with accurate site counts and geojson links ([#102](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/102), [#103](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/103))

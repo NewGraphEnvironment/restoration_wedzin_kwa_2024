@@ -1,51 +1,15 @@
 # Executive Summary {-}
 
-The Neexdzii Kwah watershed  has been extensively impacted by land clearing/alterations/pollution related to agricultural activities and resource extraction
-as well as by the development of linear corridors of CN Rail, Highway 16, resource extraction roads, and utility infrastructure.  Furthermore the area
-has also been impacted by the legacy of colonization. Recovery efforts must go beyond technical interventions and include a 
-commitment to learning from the vast body of knowledge held by the Wetsuwet'en people. This includes understanding cultural 
-practices, oral tradition (Kungax), Wet'suwet'en Law (Ink Nu'at'en), place names, family connections, house groups (Yihk), 
-poles (Ts'an), the feast system (Bahlats), etc [@harris2011Yinkadinii]. There is extensive literature documenting these 
-histories, including `r ngr::ngr_str_link_url(url_base = "https://open.library.ubc.ca/collections/delgamuukw", anchor_text = "records from the Delgamuukw & Gisday Wa land claims")`  and within the book "Niwhts’ide’ni Hibi’it’ën: The Ways Of Our Ancestors. Witsuwit’en History & Culture 
-Throughout The Millennia" available through  `r ngr::ngr_str_link_url(url_base = "https://www.sd54.bc.ca/contact-us/", anchor_text = "School District #54")`
-, which can begin to provide a foundation for understanding the cultural significance of this landscape [@universityofbritishcolumbialibraryDelgamuukwTrial; @morin2016NiwhtsideniHibiiten].
+The Neexdzii Kwah watershed has been extensively impacted by land clearing, pollution, and alterations related to agricultural activities and resource extraction, as well as by the development of linear corridors including CN Rail, Highway 16, resource extraction roads, and utility infrastructure. The area has also been impacted by the legacy of colonization. Recovery efforts must go beyond technical interventions and include a commitment to learning from the vast body of knowledge held by the Wetsuwet’en people. This includes understanding cultural practices, oral tradition (Kungax), Wet’suwet’en Law (Ink Nu’at’en), place names, family connections, house groups (Yihk), poles (Ts’an), the feast system (Bahlats), etc [@harris2011Yinkadinii]. There is extensive literature documenting these histories, including `r ngr::ngr_str_link_url(url_base = "https://open.library.ubc.ca/collections/delgamuukw", anchor_text = "records from the Delgamuukw & Gisday Wa land claims")` and within the book "Niwhts’ide’ni Hibi’it’ën: The Ways Of Our Ancestors. Witsuwit’en History & Culture Throughout The Millennia" available through `r ngr::ngr_str_link_url(url_base = "https://www.sd54.bc.ca/contact-us/", anchor_text = "School District #54")`, which can begin to provide a foundation for understanding the cultural significance of this landscape [@universityofbritishcolumbialibraryDelgamuukwTrial; @morin2016NiwhtsideniHibiiten].
 
 <br>
 
-To support long-term watershed resilience in Neexdzii Kwah, we recommend a coordinated strategy that includes implementing a cost-effective, culturally grounded ecosystem health monitoring program; adapting range use practices to reduce cattle impacts on water quality and riparian habitats; expanding community education programs that center Wet’suwet’en knowledge and values; and restoring floodplain function through process based restoration including riparian revegetation, recovery of wetland areas and stream reconnection. These efforts draw on past recommendations and aim to align ecological science with Indigenous stewardship for a healthy, sustainable watershed (see the [Recommendations section](https://www.newgraphenvironment.com/restoration_wedzin_kwa_2024/recommendations.html) for more details).
+To support long-term watershed resilience in Neexdzii Kwah, we recommend a coordinated strategy that includes implementing a cost-effective, culturally grounded ecosystem health monitoring program; adapting range use practices to reduce cattle impacts on water quality and riparian habitats; expanding community education programs that center Wet’suwet’en knowledge and values; and restoring floodplain function through process-based restoration including riparian revegetation, recovery of wetland areas, and stream reconnection. These efforts draw on past recommendations and aim to align ecological science with Indigenous stewardship for a healthy, sustainable watershed (see the [Recommendations section](https://www.newgraphenvironment.com/restoration_wedzin_kwa_2024/recommendations.html) for more details).
 
 <br>
 
-This report should be considered a living document, with ongoing revisions and updates tracked in the [project changelog](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/NEWS.md). We are humbled by the depth of knowledge that exists for this region, both through traditional knowledge and scientific study. We acknowledge that this report is far from complete, and that the work of restoring and sustaining ecosystem values will require many decades—if not centuries—of dedication. It is our hope that this effort can serve as a catalyst for positive change and foster genuine, open collaboration. Table \@ref(tab:tab-exec-sum-cap) outlines some of the tools and resources developed as part of this project to date.
+In 2024, field activities included benthic invertebrate sampling at three sites on the Neexdzii Kwah mainstem using kick-net methods, with samples sent to Cordillera Consulting for taxonomic analysis and results to be uploaded to the federal CABIN database. Environmental DNA (eDNA) sampling was conducted below Bulkley Falls and approximately 1 km downstream. Extensive UAV mapping was completed across the watershed to support change detection, floodplain modeling, and restoration site monitoring. Additionally, two workshops were held to gather community input on the restoration site prioritization process — one with local landowners and one with Wet’suwet’en community members and leadership. A scripted site prioritization framework was developed to rank candidate restoration sites based on weighted criteria including riparian condition, fish habitat value, and feasibility.
 
 <br>
 
-Developing comprehensive restoration planning for the Neexdzii Kwah watershed will help ensure that the restoration activities address the underlying drivers of the degradation necessitating restoration. Through partnerships, education, and resource-sharing, stakeholders can work together to align ecological goals with economic interests, ensuring long-term benefits for the watershed. The following recommendations are provided to try to ensure that the restoration activities are most effective by addressing the underlying drivers of the degradation. At the time of writing this can be considered a partial list as the project is still in development and the recommendations are subject to change as the project progresses - often informed by issues and discussions partially tracked [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues) and through the resources documented within Table \@ref(tab:tab-exec-sum-cap).
-
-<br>
-
-In 2024, field activities included benthic invertebrate sampling at three sites on the Neexdzii Kwah mainstem using cabin kick methods, with samples sent to Cordillera Consulting for analysis and results to be uploaded to the federal CABIN database. Environmental DNA (eDNA) sampling was conducted below Bulkley Falls and approximately 1 km downstream. Extensive UAV mapping was completed across the watershed. Additionally, two workshops were held to gather community input on the restoration site prioritization process—one with local landowners and one with Wet'suwet'en community members and leadership.
-
-```{r ld-exec}
-# read in the exec summary
-exec_summary_raw <- readr::read_csv(
-  "data/inputs_raw/executive_summary.csv"
-) 
-
-exec_summary <- exec_summary_raw |>
-  purrr::set_names(nm = stringr::str_to_title(names(exec_summary_raw)))
-```
-
-```{r tab-exec-sum-cap, results="asis"}
-my_caption <- "Technical tools and resources developed as part of the Neexdzii Kwah Restoration Planning project."
-my_tab_caption()
-```
-
-```{r tab-exec-sum}
-exec_summary |> 
-  dplyr::mutate(Url = ngr::ngr_str_link_url(url_base = Url, anchor_text = Url)) |> 
-  my_dt_table( cols_freeze_left = 1, page_length = 13, escape = FALSE)
-
-```
-
-
+This report is a living document, with ongoing revisions and updates tracked in the [project changelog](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/NEWS.md). We are humbled by the depth of knowledge that exists for this region, both through traditional knowledge and scientific study. We acknowledge that this report is far from complete, and that the work of restoring and sustaining ecosystem values will require many decades — if not centuries — of dedication. It is our hope that this effort can serve as a catalyst for positive change and foster genuine, open collaboration.
