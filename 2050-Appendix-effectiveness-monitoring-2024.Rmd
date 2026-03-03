@@ -127,8 +127,8 @@ dat |>
 
 
 ```{r photo-setup, include=FALSE}
-dir_photos <- "/Users/airvine/Projects/gis/restoration_wedzin_kwa/ignore_mobile/photos/sites"
-path_sites_geojson <- "/Users/airvine/Projects/gis/restoration_wedzin_kwa/data_field/sites_reviewed_2024_202506.geojson"
+dir_photos <- "data/photos/sites"
+path_sites_geojson <- "data/gis/sites_reviewed_2024_202506.geojson"
 
 sites_all <- sf::st_read(path_sites_geojson, quiet = TRUE) |>
   dplyr::distinct(site_id, .keep_all = TRUE)
