@@ -1,4 +1,9 @@
-<!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
+
+# restoration_wedzin_kwa_2024 DRAFT 0.1.5 (2026-03-02)
+
+- add study area map with site locations and keymap inset ([#108](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/108))
+- add study area map to Results field review section
+- expand Appendix 2 with per-site summary tables, photos, and UAV viewer links for all 21 sites
 
 # restoration_wedzin_kwa_2024 DRAFT 0.1.4 (2026-02-26)
 
