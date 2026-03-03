@@ -10,7 +10,10 @@
       "Bash(grep:*)",
       "Bash(cat:*)",
       "Skill(push-pr)",
-      "Bash(gh pr list:*)"
+      "Bash(gh pr list:*)",
+      "Bash(open:*)",
+      "Bash(pg_isready:*)",
+      "WebSearch"
     ]
   }
 }
