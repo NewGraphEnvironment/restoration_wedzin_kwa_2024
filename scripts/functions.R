@@ -402,3 +402,210 @@ priority_scorer <- function(dat_values, dat_ranks, col_rank, col_filter = "sourc
 
   dat_out
 }
+
+
+# --- Site photo helpers -------------------------------------------------------
+# Reusable functions for rendering field photos in bookdown tabs.
+# Photo filenames follow: YYYYMMDD_HHMMSS_tag.JPG
+
+#' Standard caption lookup — ordered by display priority
+photo_captions <- c(
+  upstream                = "View of upstream end of site",
+  downstream              = "View of downstream end of site",
+  inlet                   = "View of upstream end of site",
+  outlet                  = "View of downstream end of site",
+  riparian                = "Riparian regrowth within site",
+  revegetation            = "Revegetation status",
+  substrate               = "Substrate composition",
+  flow_depth              = "Flow depth",
+  stability               = "Bank stability",
+  cover                   = "Fish cover",
+  condition               = "Structure condition",
+  velocity                = "Flow velocity",
+  maintenance             = "Maintenance requirements",
+  barrel                  = "Barrel condition",
+  access                  = "Access route",
+  beaver                  = "Beaver activity",
+  beaverdam               = "Beaver dam",
+  beaverdanbreached        = "Breached beaver dam",
+  cattledamage            = "Cattle damage",
+  constriction            = "Channel constriction",
+  cottonwoodoldgrowth     = "Old growth cottonwood",
+  culvert                 = "Culvert",
+  dambreachus             = "Dam breach upstream",
+  dambreachds             = "Dam breach downstream",
+  deeppool                = "Deep pool",
+  ditchingbyroad          = "Ditching by road",
+  dukevegremoved          = "Vegetation removed at dyke",
+  dykeds                  = "Dyke downstream",
+  gravelsatdownstreamend  = "Gravels at downstream end",
+  haymulch                = "Hay mulch revegetation",
+  incision                = "Channel incision",
+  incisionus              = "Channel incision upstream",
+  incisionds              = "Channel incision downstream",
+  location                = "Site location overview",
+  lwd                     = "Large woody debris",
+  lwdacross               = "Large woody debris across channel",
+  midslopeus              = "Mid-slope upstream",
+  newchannelus            = "New channel upstream",
+  newchannelinlet         = "New channel inlet",
+  newchannelda            = "New channel downstream",
+  plants                  = "Planted vegetation",
+  powerline               = "Powerline crossing",
+  swallowholes            = "Swallow holes",
+  toeds                   = "Toe of slope downstream",
+  uavsurveyplan           = "UAV survey plan"
+)
+
+#' Standard display order (extras appended alphabetically)
+photo_order <- names(photo_captions)
+
+#' Extract description tag from photo filename
+#' @param f Character vector of file paths
+#' @return Character vector of tags
+photo_tag <- function(f) {
+  gsub("\\.[Jj][Pp][Gg]$", "", gsub("^[0-9]+_[0-9]+_", "", basename(f)))
+}
+
+#' Auto-caption from tag — uses lookup, falls back to splitting on
+#' camelCase boundaries and underscores, then title-casing
+#' @param tag Character vector of tags
+#' @return Character vector of captions
+photo_caption <- function(tag) {
+  fallback <- tag |>
+    gsub("([a-z])([A-Z])", "\\1 \\2", x = _) |>
+    gsub("([a-z])(\\d)", "\\1 \\2", x = _) |>
+    gsub("_", " ", x = _) |>
+    tools::toTitleCase()
+  ifelse(tag %in% names(photo_captions), photo_captions[tag], fallback)
+}
+
+#' List photos for a site in standard display order
+#' @param site_id Character site identifier matching folder name
+#' @param dir_photos Character path to parent photos directory
+#' @return Character vector of full file paths, ordered
+photo_list <- function(site_id, dir_photos) {
+  files <- list.files(file.path(dir_photos, site_id),
+                      pattern = "\\.[Jj][Pp][Gg]$", full.names = TRUE)
+  tags <- photo_tag(files)
+  ordered_idx <- match(photo_order, tags) |> na.omit()
+  extra_idx <- setdiff(seq_along(tags), match(photo_order, tags)) |> sort()
+  files[c(ordered_idx, extra_idx)]
+}
+
+#' Render all photos for a site using knitr sub-chunks with fig.cap
+#' @param site_id Character site identifier matching folder name
+#' @param dir_photos Character path to parent photos directory
+#' @param label_prefix Character prefix for chunk labels (must be unique per site)
+photo_render <- function(site_id, dir_photos, label_prefix = NULL) {
+  if (is.null(label_prefix)) label_prefix <- tolower(gsub("[^a-zA-Z0-9]", "-", site_id))
+  photos <- photo_list(site_id, dir_photos)
+  for (i in seq_along(photos)) {
+    tag <- photo_tag(photos[i])
+    cap <- photo_caption(tag)
+    chunk_label <- paste0("photo-", label_prefix, "-", sprintf("%02d", i))
+    src <- paste0(
+      "```{r ", chunk_label, ", fig.cap='", gsub("'", "\\\\'", cap),
+      "', out.width='100%', echo=FALSE}\n",
+      "knitr::include_graphics('", photos[i], "')\n",
+      "```\n\n"
+    )
+    cat(knitr::knit_child(text = src, envir = parent.frame(), quiet = TRUE))
+  }
+}
+
+
+# --- Per-site summary table -------------------------------------------------
+
+#' Compact two-column summary table for a site
+#' @param site_sf sf object (one row) with all field form columns
+#' @param font Numeric font size (default 9 for compact display)
+#' @return kableExtra HTML table
+site_summary_table <- function(site_sf, font = 9) {
+  d <- site_sf |>
+    sf::st_drop_geometry() |>
+    dplyr::slice(1)
+
+  rows <- tibble::tribble(
+    ~Field,          ~Value,
+    "Date",          as.character(as.Date(d$date_time_start)),
+    "Stream",        d$stream_name,
+    "Land Owner",    d$land_owner,
+    "UAV Flight",    d$uav_flight,
+    "Width (m)",     as.character(d$width_meters),
+    "Length (m)",    as.character(d$length_meters),
+    "Reference",     d$citation_key,
+    "Assessment",    d$assessment_comment,
+    "Habitat",       d$habitat_comment,
+    "Erosion",       d$erosion_notes,
+    "Condition",     d$condition_notes,
+    "Velocity",      d$velocity_notes,
+    "Substrate",     d$substrate_notes,
+    "Riparian",      d$riparian_notes,
+    "Flow Depth",    d$flow_depth_notes,
+    "Stability",     d$stability_notes,
+    "Revegetation",  d$revegetation_notes,
+    "Cover",         d$cover_notes,
+    "Maintenance",   d$maintenance_notes
+  )
+
+  # Drop rows where value is NA or empty
+  rows <- rows[!is.na(rows$Value) & nchar(trimws(rows$Value)) > 0, ]
+
+  rows |>
+    knitr::kable(col.names = NULL, format = "html", escape = FALSE) |>
+    kableExtra::kable_styling(
+      bootstrap_options = c("condensed", "striped"),
+      full_width = TRUE,
+      font_size = font
+    ) |>
+    kableExtra::column_spec(1, width = "8em", bold = TRUE)
+}
+
+
+# --- STAC UAV viewer link ---------------------------------------------------
+
+#' Find UAV orthophoto viewer URL for a site via STAC spatial query
+#'
+#' Buffers the site point by `radius_m`, queries the STAC API for orthophotos
+#' intersecting that bbox, and returns the viewer URL for the most recent match.
+#'
+#' @param site_sf sf point (one row) for the site location
+#' @param radius_m Numeric buffer radius in metres (default 100)
+#' @param stac_url Character STAC API endpoint
+#' @param collection Character STAC collection ID
+#' @param viewer_base Character base URL for the COG viewer
+#' @return Character viewer URL, or NA if no match
+stac_uav_viewer <- function(site_sf,
+                            radius_m = 100,
+                            stac_url = "https://images.a11s.one/",
+                            collection = "imagery-uav-bc-prod",
+                            viewer_base = "https://viewer.a11s.one/?cog=") {
+  pt <- site_sf |>
+    sf::st_geometry() |>
+    sf::st_transform(3005) |>
+    sf::st_buffer(radius_m) |>
+    sf::st_transform(4326) |>
+    sf::st_bbox()
+
+  q <- rstac::stac(stac_url) |>
+    rstac::stac_search(
+      collections = collection,
+      bbox = as.numeric(pt)
+    ) |>
+    rstac::post_request()
+
+  if (length(q$features) == 0) return(NA_character_)
+
+  # Filter to orthophotos only
+  ortho <- purrr::keep(q$features, function(f) {
+    href <- purrr::pluck(f, "assets", "image", "href", .default = "")
+    grepl("ortho", href, ignore.case = TRUE)
+  })
+
+  if (length(ortho) == 0) return(NA_character_)
+
+  # Take the most recent (last) orthophoto
+  href <- purrr::pluck(ortho[[length(ortho)]], "assets", "image", "href")
+  paste0(viewer_base, href)
+}

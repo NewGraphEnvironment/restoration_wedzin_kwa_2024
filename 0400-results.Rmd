@@ -24,6 +24,12 @@ Field site reviews were conducted in 2024 and 2025, with assessments documented 
 
 <br>
 
+```{r fig-map-study-area, fig.cap='Study area map showing field review site locations within the Neexdzii Kwah (upper Bulkley River) watershed. Sites are classified as effectiveness monitoring (completed restoration works) or potential restoration sites.', out.width="100%"}
+knitr::include_graphics("fig/map_study-area.png")
+```
+
+<br>
+
 UAV flights were conducted at the majority of sites to provide high-resolution baseline imagery for monitoring. Orthomosaics for mapped sites are accessible via the imagery catalog detailed in [Aerial Imagery](#aerial-imagery). Raw field data is stored within the shared QGIS project in the `Project Specific/Field Data/2024` group, with photos in the `ignore_mobile/photos` directory. Site locations are available as a downloadable [`sites_reviewed_2024_202506.geojson`](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/gis/sites_reviewed_2024_202506.geojson) which renders as an interactive map on GitHub. Detailed site assessment data including classifications, visit rationale, and assessment comments are provided in [Appendix 2 - Effectiveness Monitoring Data and Potential Restoration Site Review](#app-eff-mon).
 
 <br>
