@@ -29,3 +29,6 @@ data/lulc/
 
 # Large time series images (regeneratable)
 fig/time_series/*.png
+
+# Leaflet widget support files (regeneratable)
+fig/map_fish-obs-above-falls_files/
