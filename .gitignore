@@ -24,5 +24,8 @@ data/inputs_extracted/fwa_network_trace.rds
 # Cached spatial layers (regenerate via scripts/data_map-study-area.R)
 data/spatial/
 
+# LULC rasters and floodplain outputs (regenerate via scripts/lulc_*.R)
+data/lulc/
+
 # Large time series images (regeneratable)
 fig/time_series/*.png
