@@ -34,6 +34,14 @@ floodplain <- sf::st_read(
   quiet = TRUE
 ) |> sf::st_transform(4326)
 
+# NCFDC 1998 reach breaks (pre-existing)
+ncfdc_breaks_path <- "/Users/airvine/Projects/gis/restoration_wedzin_kwa/ncfdc_1998/ncfdc_1998_reach_breaks.geojson"
+ncfdc_breaks <- if (file.exists(ncfdc_breaks_path)) {
+  sf::st_read(ncfdc_breaks_path, quiet = TRUE) |> sf::st_transform(4326)
+} else {
+  NULL
+}
+
 # --- DB helpers ---
 get_conn <- function() {
   DBI::dbConnect(
@@ -47,7 +55,7 @@ fwa_snap <- function(lon, lat, conn) {
   sql <- sprintf(
     "SELECT blue_line_key, downstream_route_measure, gnis_name,
             distance_to_stream, ST_AsText(geom) as geom_wkt
-     FROM whse_basemapping.fwa_indexpoint(%.6f, %.6f, 4326)",
+     FROM whse_basemapping.fwa_indexpoint(ST_Transform(ST_SetSRID(ST_MakePoint(%.6f, %.6f), 4326), 3005))",
     lon, lat
   )
   DBI::dbGetQuery(conn, sql)
@@ -81,6 +89,9 @@ ui <- fluidPage(
         "Inter-reach polygons are computed automatically",
         "(downstream watershed minus upstream watershed)."
       ),
+      hr(),
+      fileInput("load_csv", "Load Break Points CSV (lon, lat)",
+                accept = ".csv"),
       hr(),
       actionButton("clear_last", "Remove Last Point", class = "btn-warning"),
       actionButton("clear_all", "Clear All", class = "btn-danger"),
@@ -120,12 +131,7 @@ server <- function(input, output, session) {
   )
 
   # DB connection on start
-  observe({
-    rv$conn <- tryCatch(get_conn(), error = function(e) {
-      showNotification(paste("DB connection failed:", e$message), type = "error")
-      NULL
-    })
-  })
+  rv$conn <- tryCatch(get_conn(), error = function(e) NULL)
 
   onStop(function() {
     if (!is.null(rv$conn)) DBI::dbDisconnect(rv$conn)
@@ -133,7 +139,8 @@ server <- function(input, output, session) {
 
   # Base map
   output$map <- renderLeaflet({
-    leaflet() |>
+    m <- leaflet() |>
+      addProviderTiles("OpenTopoMap", group = "Topo") |>
       addProviderTiles("Esri.WorldImagery", group = "Satellite") |>
       addProviderTiles("OpenStreetMap", group = "OSM") |>
       addPolygons(
@@ -148,12 +155,94 @@ server <- function(input, output, session) {
           "BLK: ", blue_line_key
         ),
         group = "Streams"
-      ) |>
-      addLayersControl(
-        baseGroups = c("Satellite", "OSM"),
-        overlayGroups = c("Floodplain", "Streams"),
-        position = "topright"
       )
+
+    if (!is.null(ncfdc_breaks)) {
+      coords <- sf::st_coordinates(ncfdc_breaks)
+      m <- m |> addCircleMarkers(
+        lng = coords[, 1], lat = coords[, 2],
+        radius = 5, color = "orange", fillColor = "orange",
+        fillOpacity = 0.6, weight = 1,
+        label = paste0(ncfdc_breaks$reach_name_corrected,
+                       " (", ncfdc_breaks$stream_name, ")"),
+        group = "NCFDC 1998"
+      )
+    }
+
+    m |> addLayersControl(
+      baseGroups = c("Topo", "Satellite", "OSM"),
+      overlayGroups = c("Floodplain", "Streams", "NCFDC 1998"),
+      position = "topright"
+    )
+  })
+
+  # Load break points from CSV — snap each to FWA
+  observeEvent(input$load_csv, {
+    if (is.null(rv$conn)) {
+      showNotification("No DB connection", type = "error")
+      return()
+    }
+
+    pts <- tryCatch(
+      read.csv(input$load_csv$datapath, stringsAsFactors = FALSE),
+      error = function(e) {
+        showNotification(paste("CSV read failed:", e$message), type = "error")
+        NULL
+      }
+    )
+    if (is.null(pts)) return()
+
+    if (!all(c("lon", "lat") %in% names(pts))) {
+      showNotification("CSV must have 'lon' and 'lat' columns", type = "error")
+      return()
+    }
+
+    n <- nrow(pts)
+    loaded <- 0L
+    withProgress(message = "Snapping points to streams...", value = 0, {
+      for (i in seq_len(n)) {
+        incProgress(1 / n, detail = paste(i, "of", n))
+
+        result <- tryCatch(
+          fwa_snap(pts$lon[i], pts$lat[i], rv$conn),
+          error = function(e) {
+            message("Snap error for point ", i, ": ", e$message)
+            NULL
+          }
+        )
+        if (is.null(result) || nrow(result) == 0) next
+
+        new_id <- nrow(rv$breaks) + 1L
+        new_row <- data.frame(
+          id = new_id,
+          lon = pts$lon[i],
+          lat = pts$lat[i],
+          blk = as.integer(result$blue_line_key),
+          drm = result$downstream_route_measure,
+          gnis_name = result$gnis_name %||% "",
+          dist_m = round(result$distance_to_stream, 1),
+          stringsAsFactors = FALSE
+        )
+        rv$breaks <- rbind(rv$breaks, new_row)
+        loaded <- loaded + 1L
+
+        leafletProxy("map") |>
+          addCircleMarkers(
+            lng = pts$lon[i], lat = pts$lat[i],
+            radius = 8, color = "red", fillColor = "yellow",
+            fillOpacity = 0.9, weight = 2,
+            label = paste0("#", new_id, ": ", result$gnis_name,
+                           " (", round(result$distance_to_stream, 0), "m)"),
+            group = "Break Points",
+            layerId = paste0("break_", new_id)
+          )
+      }
+    })
+
+    showNotification(
+      paste(loaded, "of", n, "points loaded and snapped"),
+      type = "message"
+    )
   })
 
   # Handle map clicks — snap to stream

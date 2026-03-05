@@ -10,7 +10,7 @@
 #
 # Stream network scoping:
 #   - Coho (co) rearing and spawning habitat
-#   - Stream order <= 4
+#   - Stream order >= 4 (4th order and above — streams with floodplains)
 #   - Upstream of Neexdzii Kwa / Wedzin Kwa confluence
 #
 # Requires:
@@ -35,12 +35,13 @@ library(RPostgres)
 library(glue)
 
 sf_use_s2(FALSE)
+terra::terraOptions(threads = 12)
 
 # --- Parameters ---
 # Neexdzii Kwa / Wedzin Kwa confluence on the Bulkley mainstem
 blk <- 360873822
 drm <- 166030.4
-max_order <- 4
+min_order <- 4
 buf <- 2000 # buffer around streams for DEM crop (metres)
 
 # Source rasters from bcfishpass habitat_lateral model
@@ -64,7 +65,7 @@ conn <- DBI::dbConnect(
 )
 
 # --- Query coho rearing/spawning streams upstream of confluence ---
-# Stream order <= max_order to focus on tributaries where coho rear/spawn.
+# Stream order >= min_order to get streams large enough to have floodplains.
 # Uses FWA_Upstream() to get all streams upstream of the Neexdzii Kwa mouth.
 sql <- glue::glue("
   WITH mouth AS (
@@ -82,8 +83,8 @@ sql <- glue::glue("
          s.rearing, s.spawning, s.access, s.geom
   FROM bcfishpass.streams_co_vw s, mouth m
   WHERE s.watershed_group_code = 'BULK'
-    AND s.stream_order <= {max_order}
-    AND (s.rearing IS TRUE OR s.spawning IS TRUE)
+    AND s.stream_order >= {min_order}
+    AND (s.rearing > 0 OR s.spawning > 0)
     AND FWA_Upstream(
       m.wscode, m.localcode,
       s.wscode, s.localcode
@@ -92,7 +93,7 @@ sql <- glue::glue("
 
 message(
   "Querying coho rearing/spawning streams upstream of blk ", blk,
-  " drm ", drm, " (order <= ", max_order, ")..."
+  " drm ", drm, " (order >= ", min_order, ")..."
 )
 streams <- sf::st_read(conn, query = sql) |>
   sf::st_zm(drop = TRUE)
