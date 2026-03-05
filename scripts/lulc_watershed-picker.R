@@ -23,6 +23,8 @@ library(sf)
 library(DBI)
 library(RPostgres)
 
+sf::sf_use_s2(FALSE)
+
 # --- Load data ---
 streams <- sf::st_read(
   here::here("data", "lulc", "streams_neexdzii_co.gpkg"),
@@ -131,10 +133,11 @@ server <- function(input, output, session) {
   )
 
   # DB connection on start
-  rv$conn <- tryCatch(get_conn(), error = function(e) NULL)
+  conn <- tryCatch(get_conn(), error = function(e) NULL)
+  rv$conn <- conn
 
   onStop(function() {
-    if (!is.null(rv$conn)) DBI::dbDisconnect(rv$conn)
+    if (!is.null(conn)) DBI::dbDisconnect(conn)
   })
 
   # Base map
