@@ -1,0 +1,127 @@
+# **Appendix - Land Use Land Cover Change** {-#app-lulc}
+
+```{r setup-app-lulc}
+knitr::opts_chunk$set(fig.path = "fig/app-lulc/", dev = "png")
+```
+
+```{r lulc-load, message=FALSE, warning=FALSE}
+library(drift)
+library(sf)
+library(terra)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+sf::sf_use_s2(FALSE)
+terra::terraOptions(threads = 12)
+
+# Sub-basins from watershed picker
+subbasins <- sf::st_read(
+  here::here("data", "lulc", "subbasins.gpkg"),
+  quiet = TRUE
+)
+
+# Floodplain AOI
+floodplain <- sf::st_read(
+  here::here("data", "lulc", "floodplain_neexdzii_co.gpkg"),
+  quiet = TRUE
+)
+
+# Label sub-basins
+subbasins$label <- paste0(subbasins$gnis_name, " (", subbasins$break_id, ")")
+```
+
+## Floodplain Overview
+
+The floodplain area of interest covers `r round(as.numeric(sf::st_area(sf::st_union(floodplain))) / 1e6, 1)` km² of valley bottom along the Neexdzii Kwa (Bulkley River) and tributaries, delineated using the Valley Confinement Algorithm via the `flooded` package.
+
+```{r map-lulc-subbasins, fig.cap="Sub-basin boundaries used for land cover comparison.", fig.width=10, fig.height=8}
+ggplot() +
+  geom_sf(data = subbasins, aes(fill = label), alpha = 0.3, color = "black") +
+  geom_sf(data = floodplain, fill = NA, color = "darkgreen", linewidth = 0.8) +
+  scale_fill_brewer(palette = "Set2", name = "Sub-basin") +
+  theme_minimal() +
+  labs(title = "Sub-basins and Floodplain Extent")
+```
+
+## Land Cover by Sub-Basin
+
+IO Land Use Land Cover (10 m) is fetched from Planetary Computer for 2017, 2020, and 2023 and classified using the `drift` pipeline. Each sub-basin's floodplain is analyzed independently.
+
+```{r lulc-classify, message=FALSE, warning=FALSE, cache=TRUE}
+# Clip floodplain by each sub-basin and run drift pipeline
+results <- list()
+
+for (i in seq_len(nrow(subbasins))) {
+  sb <- subbasins[i, ]
+  fp_clip <- sf::st_intersection(floodplain, sb)
+
+  if (nrow(fp_clip) == 0 || as.numeric(sf::st_area(sf::st_union(fp_clip))) < 1e4) {
+    message("Skipping ", sb$label, " — no floodplain overlap")
+    next
+  }
+
+  message("Processing: ", sb$label)
+  rasters <- dft_stac_fetch(fp_clip, source = "io-lulc", years = c(2017, 2020, 2023))
+  classified <- dft_rast_classify(rasters, source = "io-lulc")
+  summary <- dft_rast_summarize(classified, unit = "ha")
+  summary$subbasin <- sb$label
+  results[[i]] <- summary
+}
+
+lulc_all <- bind_rows(results)
+```
+
+```{r tab-lulc-wide, results='asis'}
+wide <- lulc_all |>
+  select(subbasin, year, class_name, pct) |>
+  pivot_wider(names_from = year, values_from = pct) |>
+  arrange(subbasin, class_name)
+
+knitr::kable(wide, digits = 1,
+  caption = "Land cover composition (% of floodplain) by sub-basin and year.")
+```
+
+```{r plot-lulc-change, fig.cap="Land cover change by sub-basin (2017-2023).", fig.width=12, fig.height=8}
+# Focus on major classes
+major <- lulc_all |>
+  group_by(class_name) |>
+  summarize(max_pct = max(pct), .groups = "drop") |>
+  filter(max_pct >= 5) |>
+  pull(class_name)
+
+lulc_all |>
+  filter(class_name %in% major) |>
+  mutate(year = factor(year)) |>
+  ggplot(aes(x = year, y = pct, fill = class_name)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~subbasin, scales = "free_y") +
+  scale_fill_brewer(palette = "Set2", name = "Land Cover") +
+  theme_minimal() +
+  labs(
+    y = "% of Floodplain",
+    x = NULL,
+    title = "Land Cover Change by Sub-Basin (IO LULC 10m)"
+  )
+```
+
+## Trees vs Rangeland
+
+The conversion of Trees to Rangeland is a key indicator of riparian disturbance.
+
+```{r plot-lulc-trees-range, fig.cap="Trees and Rangeland proportion by sub-basin over time.", fig.width=12, fig.height=6}
+lulc_all |>
+  filter(class_name %in% c("Trees", "Rangeland")) |>
+  mutate(year = factor(year)) |>
+  ggplot(aes(x = year, y = pct, color = class_name, group = class_name)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 3) +
+  facet_wrap(~subbasin, nrow = 2) +
+  scale_color_manual(values = c("Trees" = "#006400", "Rangeland" = "#FFBB22"), name = NULL) +
+  theme_minimal() +
+  labs(
+    y = "% of Floodplain",
+    x = NULL,
+    title = "Trees vs Rangeland by Sub-Basin"
+  )
+```
