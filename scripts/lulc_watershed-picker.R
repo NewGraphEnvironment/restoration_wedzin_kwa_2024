@@ -95,11 +95,12 @@ ui <- fluidPage(
     sidebarPanel(
       width = 3,
       h4("Break Points"),
+      radioButtons("mode", "Click Mode:",
+                   choices = c("Add" = "add", "Remove" = "remove"),
+                   selected = "add", inline = TRUE),
       helpText(
-        "Click on a stream to place a break point.",
-        "Each break generates an upstream watershed.",
-        "Inter-reach polygons are computed automatically",
-        "(downstream watershed minus upstream watershed)."
+        "Add: click map to place a break point.",
+        "Remove: click a red/yellow marker to delete it."
       ),
       hr(),
       fileInput("load_csv", "Load Break Points CSV (lon, lat)",
@@ -267,8 +268,30 @@ server <- function(input, output, session) {
     )
   })
 
-  # Handle map clicks — snap to stream
+  # Click on existing break marker to remove it (Remove mode only)
+  observeEvent(input$map_marker_click, {
+    if (input$mode != "remove") return()
+    click <- input$map_marker_click
+    if (is.null(click$id)) return()
+    if (!grepl("^break_", click$id)) return()
+
+    rm_id <- as.integer(sub("break_", "", click$id))
+    if (!rm_id %in% rv$breaks$id) return()
+
+    rv$breaks <- rv$breaks[rv$breaks$id != rm_id, ]
+    rv$watersheds[[as.character(rm_id)]] <- NULL
+    rv$subbasins <- NULL
+
+    leafletProxy("map") |>
+      removeMarker(click$id) |>
+      clearGroup("Sub-Basins")
+
+    showNotification(paste0("Removed break #", rm_id), type = "message")
+  })
+
+  # Handle map clicks — snap to stream (Add mode only)
   observeEvent(input$map_click, {
+    if (input$mode != "add") return()
     click <- input$map_click
     if (is.null(rv$conn)) {
       showNotification("No DB connection", type = "error")
@@ -419,10 +442,14 @@ server <- function(input, output, session) {
             upstream_poly <- ws_list[[ubid]]
             if (!is.null(upstream_poly) &&
                 sf::st_intersects(poly, upstream_poly, sparse = FALSE)[1, 1]) {
-              poly <- tryCatch(
-                sf::st_difference(poly, upstream_poly),
-                error = function(e) poly
-              )
+              poly <- tryCatch({
+                d <- sf::st_difference(poly, upstream_poly)
+                # st_difference can return GEOMETRYCOLLECTION — extract polygons
+                if (any(sf::st_geometry_type(d) == "GEOMETRYCOLLECTION")) {
+                  d <- sf::st_collection_extract(d, "POLYGON")
+                }
+                if (nrow(d) > 0) sf::st_union(d) |> sf::st_sf(geometry = _) else poly
+              }, error = function(e) poly)
             }
           }
         }
@@ -438,6 +465,8 @@ server <- function(input, output, session) {
 
       rv$subbasins <- do.call(rbind, subbasin_list)
       sf::st_crs(rv$subbasins) <- 4326
+      # Ensure all geometries are POLYGON/MULTIPOLYGON for leaflet
+      rv$subbasins <- sf::st_cast(rv$subbasins, "MULTIPOLYGON")
     })
 
     # Draw on map
