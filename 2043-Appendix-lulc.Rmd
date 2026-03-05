@@ -27,21 +27,86 @@ floodplain <- sf::st_read(
   quiet = TRUE
 )
 
-# Label sub-basins
-subbasins$label <- paste0(subbasins$gnis_name, " (", subbasins$break_id, ")")
+# Label sub-basins: auto-number by stream name, 1 = mouth (lowest DRM)
+subbasins <- subbasins |>
+  dplyr::arrange(gnis_name, drm) |>
+  dplyr::mutate(
+    stream_short = sub(" (Creek|River|Lake)$", "", gnis_name),
+    seq = ave(seq_len(dplyr::n()), gnis_name, FUN = seq_along),
+    label = paste(stream_short, seq)
+  )
 ```
 
 ## Floodplain Overview
 
 The floodplain area of interest covers `r round(as.numeric(sf::st_area(sf::st_union(floodplain))) / 1e6, 1)` km² of valley bottom along the Neexdzii Kwa (Bulkley River) and tributaries, delineated using the Valley Confinement Algorithm via the `flooded` package.
 
-```{r map-lulc-subbasins, fig.cap="Sub-basin boundaries used for land cover comparison.", fig.width=10, fig.height=8}
+```{r map-lulc-subbasins, fig.cap="Sub-basin boundaries used for land cover comparison.", fig.width=10, fig.height=12}
+cache <- here::here("data", "spatial")
+streams_all <- readRDS(file.path(cache, "streams.rds"))
+roads    <- readRDS(file.path(cache, "roads.rds"))
+railway  <- readRDS(file.path(cache, "railway.rds"))
+
+towns <- sf::st_sf(
+  name = c("Houston", "Smithers", "Burns Lake", "Topley"),
+  geometry = sf::st_sfc(
+    sf::st_point(c(-126.648, 54.398)),
+    sf::st_point(c(-127.176, 54.779)),
+    sf::st_point(c(-125.764, 54.230)),
+    sf::st_point(c(-126.246, 54.566)),
+    crs = 4326
+  )
+)
+
+highways <- roads |> dplyr::filter(road_type == "RH1")
+
+# Sub-basin label points
+sb_labels <- subbasins |>
+  dplyr::mutate(geometry = sf::st_point_on_surface(geom)) |>
+  sf::st_set_geometry("geometry")
+
+map_bbox <- sf::st_bbox(subbasins)
+
 ggplot() +
-  geom_sf(data = subbasins, aes(fill = label), alpha = 0.3, color = "black") +
-  geom_sf(data = floodplain, fill = NA, color = "darkgreen", linewidth = 0.8) +
-  scale_fill_brewer(palette = "Set2", name = "Sub-basin") +
+  geom_sf(data = subbasins, aes(fill = label), alpha = 0.25, color = "grey40",
+          linewidth = 0.5, show.legend = FALSE) +
+  geom_sf(data = floodplain, aes(color = "Floodplain"), fill = "darkgreen", alpha = 0.3,
+          linewidth = 0.6, show.legend = "polygon") +
+  geom_sf(data = streams_all |> dplyr::filter(stream_order >= 5),
+          color = "#7ba7cc", linewidth = 0.4) +
+  geom_sf(data = railway, aes(linetype = "Railway"), color = "grey30",
+          linewidth = 0.6, show.legend = "line") +
+  geom_sf(data = highways, aes(linetype = "Highway"), color = "#c0392b",
+          linewidth = 0.8, show.legend = "line") +
+  geom_sf(data = towns, size = 2.5, shape = 16) +
+  ggrepel::geom_label_repel(
+    data = sb_labels,
+    aes(label = label, geometry = geometry),
+    stat = "sf_coordinates",
+    size = 3, fontface = "bold",
+    fill = "white", alpha = 0.8,
+    label.padding = unit(0.15, "lines"),
+    min.segment.length = 0,
+    max.overlaps = 20
+  ) +
+  geom_sf_text(data = towns, aes(label = name), size = 3, fontface = "bold",
+               nudge_y = 0.02) +
+  coord_sf(xlim = c(map_bbox["xmin"] - 0.04, map_bbox["xmax"] + 0.04),
+           ylim = c(map_bbox["ymin"] - 0.06, map_bbox["ymax"] + 0.06)) +
+  scale_fill_brewer(palette = "Set2", guide = "none") +
+  scale_color_manual(name = NULL, values = c("Floodplain" = "darkgreen"),
+                     guide = guide_legend(order = 1, override.aes = list(fill = "darkgreen", alpha = 0.3))) +
+  scale_linetype_manual(name = NULL, values = c("Highway" = "solid", "Railway" = "dashed"),
+                        guide = guide_legend(order = 2,
+                          override.aes = list(color = c("#c0392b", "grey30")))) +
+  labs(x = NULL, y = NULL) +
   theme_minimal() +
-  labs(title = "Sub-basins and Floodplain Extent")
+  theme(
+    legend.position = c(0.85, 0.15),
+    legend.background = element_rect(fill = "white", color = "grey80"),
+    legend.key.size = unit(0.8, "lines"),
+    panel.grid.minor = element_blank()
+  )
 ```
 
 ## Land Cover by Sub-Basin
@@ -54,9 +119,13 @@ results <- list()
 
 for (i in seq_len(nrow(subbasins))) {
   sb <- subbasins[i, ]
-  fp_clip <- sf::st_intersection(floodplain, sb)
+  fp_clip <- sf::st_intersection(floodplain, sb) |>
+    sf::st_collection_extract("POLYGON") |>
+    sf::st_union() |>
+    sf::st_sf(geometry = _)
+  sf::st_crs(fp_clip) <- sf::st_crs(floodplain)
 
-  if (nrow(fp_clip) == 0 || as.numeric(sf::st_area(sf::st_union(fp_clip))) < 1e4) {
+  if (nrow(fp_clip) == 0 || as.numeric(sf::st_area(fp_clip)) < 1e4) {
     message("Skipping ", sb$label, " — no floodplain overlap")
     next
   }

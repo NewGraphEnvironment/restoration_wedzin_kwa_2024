@@ -44,6 +44,16 @@ ncfdc_breaks <- if (file.exists(ncfdc_breaks_path)) {
   NULL
 }
 
+# Key waterfalls (natural barriers)
+falls <- sf::st_sf(
+  name = c("Bulkley Falls", "Buck Falls"),
+  geometry = sf::st_sfc(
+    sf::st_point(c(-126.2492, 54.46086)),
+    sf::st_point(c(-126.504281, 54.188549)),
+    crs = 4326
+  )
+)
+
 # --- DB helpers ---
 get_conn <- function() {
   DBI::dbConnect(
@@ -160,6 +170,15 @@ server <- function(input, output, session) {
         group = "Streams"
       )
 
+    # Waterfalls
+    falls_coords <- sf::st_coordinates(falls)
+    m <- m |> addMarkers(
+      lng = falls_coords[, 1], lat = falls_coords[, 2],
+      label = falls$name,
+      popup = falls$name,
+      group = "Falls"
+    )
+
     if (!is.null(ncfdc_breaks)) {
       coords <- sf::st_coordinates(ncfdc_breaks)
       m <- m |> addCircleMarkers(
@@ -174,7 +193,7 @@ server <- function(input, output, session) {
 
     m |> addLayersControl(
       baseGroups = c("Topo", "Satellite", "OSM"),
-      overlayGroups = c("Floodplain", "Streams", "NCFDC 1998"),
+      overlayGroups = c("Floodplain", "Streams", "Falls", "NCFDC 1998"),
       position = "topright"
     )
   })
