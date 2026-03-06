@@ -223,6 +223,97 @@ ranking_long |>
   )
 ```
 
+## Agriculture Grouping
+
+IO LULC classifies Crops, Rangeland, and Bare Ground as separate classes, but at 10 m resolution from single-date Sentinel-2 imagery these can represent different phases of the same agricultural land use — actively growing crops, fallow/grazed pasture, and freshly tilled soil. If the combined "Agriculture" proportion is stable while the individual classes swap, the apparent transitions are classification noise rather than real land cover change.
+
+```{r plot-lulc-ag-group, fig.cap="Agriculture superclass (Crops + Rangeland + Bare Ground) vs Trees by sub-basin.", fig.width=12, fig.height=6}
+ag_classes <- c("Crops", "Rangeland", "Bare Ground")
+
+lulc_grouped <- lulc_all |>
+  mutate(
+    group = case_when(
+      class_name == "Trees" ~ "Trees",
+      class_name %in% ag_classes ~ "Agriculture",
+      TRUE ~ NA_character_
+    )
+  ) |>
+  filter(!is.na(group)) |>
+  group_by(subbasin, year, group) |>
+  summarize(pct = sum(pct), .groups = "drop")
+
+lulc_grouped |>
+  mutate(year = factor(year)) |>
+  ggplot(aes(x = year, y = pct, color = group, group = group)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 3) +
+  facet_wrap(~subbasin, nrow = 2) +
+  scale_color_manual(values = c("Trees" = "#006400", "Agriculture" = "#c0392b"), name = NULL) +
+  theme_minimal() +
+  labs(
+    y = "% of Floodplain",
+    x = NULL,
+    title = "Trees vs Agriculture (Crops + Rangeland + Bare Ground)"
+  )
+```
+
+```{r plot-lulc-ag-components, fig.cap="Individual agriculture components by sub-basin over time.", fig.width=12, fig.height=6}
+lulc_all |>
+  filter(class_name %in% ag_classes) |>
+  mutate(year = factor(year)) |>
+  ggplot(aes(x = year, y = pct, color = class_name, group = class_name)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 3) +
+  facet_wrap(~subbasin, nrow = 2) +
+  scale_color_manual(
+    values = c("Crops" = "#E49635", "Rangeland" = "#FFBB22", "Bare Ground" = "#A59B8F"),
+    name = NULL
+  ) +
+  theme_minimal() +
+  labs(
+    y = "% of Floodplain",
+    x = NULL,
+    title = "Agriculture Components by Sub-Basin"
+  )
+```
+
+```{r lulc-ag-stability}
+# Compare stability of grouped vs individual classes
+ag_stability <- lulc_all |>
+  mutate(
+    group = case_when(
+      class_name %in% ag_classes ~ "Agriculture (grouped)",
+      TRUE ~ class_name
+    )
+  ) |>
+  group_by(subbasin, year, group) |>
+  summarize(pct = sum(pct), .groups = "drop") |>
+  filter(group %in% c("Agriculture (grouped)", "Crops", "Rangeland", "Bare Ground", "Trees")) |>
+  group_by(subbasin, group) |>
+  summarize(
+    pct_range = round(max(pct) - min(pct), 1),
+    .groups = "drop"
+  ) |>
+  pivot_wider(names_from = group, values_from = pct_range) |>
+  arrange(subbasin)
+```
+
+```{r tab-lulc-ag-stability-cap, results="asis", eval=gitbook_on}
+my_caption <- "Range of % floodplain cover across years (2017-2023) for individual classes vs grouped Agriculture. A small range for the grouped class with large ranges for components suggests classification swapping."
+
+my_tab_caption()
+```
+
+```{r tab-lulc-ag-stability, eval=gitbook_on}
+ag_stability |>
+  my_dt_table(cols_freeze_left = 1, page_length = 10)
+```
+
+```{r tab-lulc-ag-stability-static, eval=identical(gitbook_on, FALSE)}
+knitr::kable(ag_stability, digits = 1,
+  caption = "Range of % floodplain cover across years (2017-2023) for individual classes vs grouped Agriculture.")
+```
+
 ## Class Transitions
 
 To understand whether tree loss is primarily converting to rangeland or also shifting to other classes (e.g., Built Area, Crops), we examine all class changes across the study period.
