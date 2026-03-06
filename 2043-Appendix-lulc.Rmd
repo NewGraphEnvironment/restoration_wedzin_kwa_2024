@@ -312,6 +312,8 @@ lulc_grouped |>
 
 ## Sub-Basin Ranking
 
+Tree loss and agriculture gain do not sum to zero because other IO LULC classes (Built Area, Water, Flooded Vegetation) also gain or lose area between years. The `other_ha` column captures this residual — positive values indicate net area flowing into non-tree, non-agriculture classes (e.g., Built Area expansion, water level changes). Classification noise at 10 m pixel boundaries and differences in Sentinel-2 overpass timing between years also contribute.
+
 ```{r lulc-summary-table}
 # One-row-per-subbasin summary with key metrics
 fp_areas <- lulc_all |>
@@ -327,14 +329,15 @@ summary_tab <- lulc_grouped_delta |>
     tree_loss_pct = round(delta_pct_Trees, 1),
     tree_loss_ha = round(delta_ha_Trees, 1),
     ag_gain_pct = round(delta_pct_Agriculture, 1),
-    ag_gain_ha = round(delta_ha_Agriculture, 1)
+    ag_gain_ha = round(delta_ha_Agriculture, 1),
+    other_ha = round(-tree_loss_ha - ag_gain_ha, 1)
   ) |>
-  select(subbasin, fp_ha, tree_loss_pct, tree_loss_ha, ag_gain_pct, ag_gain_ha) |>
+  select(subbasin, fp_ha, tree_loss_pct, tree_loss_ha, ag_gain_pct, ag_gain_ha, other_ha) |>
   arrange(tree_loss_ha)
 ```
 
 ```{r tab-lulc-summary-cap, results="asis", eval=gitbook_on}
-my_caption <- "Tree cover loss and agriculture gain within modelled floodplain by sub-basin (2017-2023). Negative values = loss. Agriculture = Crops + Rangeland + Bare Ground."
+my_caption <- "Tree cover loss and agriculture gain within modelled floodplain by sub-basin (2017-2023). Negative values = loss. Agriculture = Crops + Rangeland + Bare Ground. other_ha = residual area change attributed to remaining classes (Built Area, Water, Flooded Vegetation, etc.)."
 
 my_tab_caption()
 ```
@@ -346,7 +349,7 @@ summary_tab |>
 
 ```{r tab-lulc-summary-static, eval=identical(gitbook_on, FALSE)}
 knitr::kable(summary_tab, digits = 1,
-  caption = "Tree cover loss and agriculture gain within modelled floodplain by sub-basin (2017-2023).")
+  caption = "Tree cover loss and agriculture gain within modelled floodplain by sub-basin (2017-2023). other_ha = residual attributed to remaining classes.")
 ```
 
 ```{r plot-lulc-ranking-ha, fig.cap="Change in tree cover and agriculture area (ha) within modelled floodplain by sub-basin, 2017-2023. Agriculture = Crops + Rangeland + Bare Ground.", fig.width=10, fig.height=6}
