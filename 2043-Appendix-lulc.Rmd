@@ -377,27 +377,29 @@ ranking_ha |>
 ## Land Cover Composition
 
 ```{r tab-lulc-wide-cap, results="asis", eval=gitbook_on}
-my_caption <- "Land cover composition (% of modelled floodplain) by sub-basin and year."
+my_caption <- "Land cover composition (% of modelled floodplain) by sub-basin and year. fp_ha = total modelled floodplain area."
 
 my_tab_caption()
 ```
 
 ```{r tab-lulc-wide, eval=gitbook_on}
 wide <- lulc_all |>
-  select(subbasin, year, class_name, pct) |>
+  left_join(fp_areas, by = "subbasin") |>
+  select(subbasin, fp_ha, year, class_name, pct) |>
   pivot_wider(names_from = year, values_from = pct) |>
   arrange(subbasin, class_name)
 
 wide |>
-  my_dt_table(cols_freeze_left = 2, page_length = 25)
+  my_dt_table(cols_freeze_left = 3, page_length = 25)
 ```
 
 ```{r tab-lulc-wide-static, eval=identical(gitbook_on, FALSE)}
 wide <- lulc_all |>
-  select(subbasin, year, class_name, pct) |>
+  left_join(fp_areas, by = "subbasin") |>
+  select(subbasin, fp_ha, year, class_name, pct) |>
   pivot_wider(names_from = year, values_from = pct) |>
   arrange(subbasin, class_name)
 
 knitr::kable(wide, digits = 1,
-  caption = "Land cover composition (% of modelled floodplain) by sub-basin and year.")
+  caption = "Land cover composition (% of modelled floodplain) by sub-basin and year. fp_ha = total modelled floodplain area.")
 ```
