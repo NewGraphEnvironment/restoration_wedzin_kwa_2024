@@ -17,17 +17,17 @@ library(tidyr)
 sf::sf_use_s2(FALSE)
 terra::terraOptions(threads = 12)
 
-# Sub-basins from watershed picker
+# Sub-basins from watershed picker (transform to 4326 to match other layers)
 subbasins <- sf::st_read(
   here::here("data", "lulc", "subbasins.gpkg"),
   quiet = TRUE
-)
+) |> sf::st_transform(4326)
 
 # Floodplain AOI
 floodplain <- sf::st_read(
   here::here("data", "lulc", "floodplain_neexdzii_co.gpkg"),
   quiet = TRUE
-)
+) |> sf::st_transform(4326)
 
 # Label sub-basins: auto-number by stream name, 1 = mouth (lowest DRM)
 subbasins <- subbasins |>
@@ -116,7 +116,7 @@ tmap::tm_shape(basemap_stars, bbox = bbox) +
     fill.legend = tmap::tm_legend(show = FALSE)
   ) +
   tmap::tm_text("label", size = 0.65, col = "#3B2716", fontface = "bold",
-                shadow = TRUE) +
+                options = tmap::opt_tm_text(shadow = TRUE)) +
 
   # Floodplain
   tmap::tm_shape(floodplain) +
@@ -282,19 +282,55 @@ lulc_all |>
 
 Sub-basins ranked by the change in Trees and Rangeland cover between 2017 and 2023. Negative tree delta indicates loss; positive rangeland delta indicates gain.
 
-```{r plot-lulc-ranking, fig.cap="Sub-basins ranked by tree cover loss (2017-2023).", fig.width=10, fig.height=6}
-ranking <- lulc_delta |>
+```{r plot-lulc-ranking-ag, fig.cap="Sub-basins ranked by tree cover loss vs agriculture gain (2017-2023).", fig.width=10, fig.height=6}
+ag_classes <- c("Crops", "Rangeland", "Bare Ground")
+
+# Group agriculture and compute delta
+ranking_ag <- lulc_all |>
+  mutate(
+    group = case_when(
+      class_name == "Trees" ~ "Trees",
+      class_name %in% ag_classes ~ "Agriculture",
+      TRUE ~ NA_character_
+    )
+  ) |>
+  filter(!is.na(group), year %in% c(2017, 2023)) |>
+  group_by(subbasin, year, group) |>
+  summarize(pct = sum(pct), .groups = "drop") |>
+  pivot_wider(names_from = year, values_from = pct, names_prefix = "y") |>
+  mutate(delta = y2023 - y2017) |>
+  select(subbasin, group, delta) |>
+  pivot_wider(names_from = group, values_from = delta) |>
+  mutate(net_shift = Agriculture - Trees) |>
+  arrange(desc(net_shift))
+
+ranking_ag |>
+  pivot_longer(cols = c(Trees, Agriculture), names_to = "class", values_to = "delta") |>
+  mutate(subbasin = factor(subbasin, levels = ranking_ag$subbasin)) |>
+  ggplot(aes(x = subbasin, y = delta, fill = class)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = c("Trees" = "#006400", "Agriculture" = "#c0392b"), name = NULL) +
+  geom_hline(yintercept = 0, linewidth = 0.5) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(
+    y = "Change in % of Floodplain (2017-2023)",
+    x = NULL,
+    title = "Tree Loss vs Agriculture Gain (Crops + Rangeland + Bare Ground)"
+  )
+```
+
+```{r plot-lulc-ranking-range, fig.cap="Sub-basins ranked by tree cover loss vs rangeland gain (2017-2023).", fig.width=10, fig.height=6}
+ranking_range <- lulc_delta |>
   filter(class_name %in% c("Trees", "Rangeland")) |>
   select(subbasin, class_name, delta) |>
   pivot_wider(names_from = class_name, values_from = delta) |>
   mutate(net_shift = Rangeland - Trees) |>
   arrange(desc(net_shift))
 
-ranking_long <- ranking |>
-  pivot_longer(cols = c(Trees, Rangeland), names_to = "class_name", values_to = "delta")
-
-ranking_long |>
-  mutate(subbasin = factor(subbasin, levels = ranking$subbasin)) |>
+ranking_range |>
+  pivot_longer(cols = c(Trees, Rangeland), names_to = "class_name", values_to = "delta") |>
+  mutate(subbasin = factor(subbasin, levels = ranking_range$subbasin)) |>
   ggplot(aes(x = subbasin, y = delta, fill = class_name)) +
   geom_col(position = "dodge") +
   scale_fill_manual(values = c("Trees" = "#006400", "Rangeland" = "#FFBB22"), name = NULL) +
@@ -304,7 +340,79 @@ ranking_long |>
   labs(
     y = "Change in % of Floodplain (2017-2023)",
     x = NULL,
-    title = "Sub-Basins Ranked by Tree-to-Rangeland Conversion"
+    title = "Tree Loss vs Rangeland Gain Only"
+  )
+```
+
+```{r plot-lulc-ranking-ag-pct, fig.cap="Sub-basins ranked by tree loss vs agriculture gain in percent of floodplain (2017-2023).", fig.width=10, fig.height=6}
+ag_classes <- c("Crops", "Rangeland", "Bare Ground")
+
+ranking_ag_pct <- lulc_all |>
+  mutate(
+    group = case_when(
+      class_name == "Trees" ~ "Trees",
+      class_name %in% ag_classes ~ "Agriculture",
+      TRUE ~ NA_character_
+    )
+  ) |>
+  filter(!is.na(group), year %in% c(2017, 2023)) |>
+  group_by(subbasin, year, group) |>
+  summarize(pct = sum(pct), .groups = "drop") |>
+  pivot_wider(names_from = year, values_from = pct, names_prefix = "y") |>
+  mutate(delta = y2023 - y2017) |>
+  select(subbasin, group, delta) |>
+  pivot_wider(names_from = group, values_from = delta) |>
+  mutate(net_shift = Agriculture - Trees) |>
+  arrange(desc(net_shift))
+
+ranking_ag_pct |>
+  pivot_longer(cols = c(Trees, Agriculture), names_to = "class", values_to = "delta") |>
+  mutate(subbasin = factor(subbasin, levels = ranking_ag_pct$subbasin)) |>
+  ggplot(aes(x = subbasin, y = delta, fill = class)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = c("Trees" = "#006400", "Agriculture" = "#c0392b"), name = NULL) +
+  geom_hline(yintercept = 0, linewidth = 0.5) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(
+    y = "Change in % of Floodplain (2017-2023)",
+    x = NULL,
+    title = "Tree Loss vs Agriculture Gain (Crops + Rangeland + Bare Ground)"
+  )
+```
+
+```{r plot-lulc-ranking-ag-ha, fig.cap="Sub-basins ranked by tree loss vs agriculture gain in hectares (2017-2023).", fig.width=10, fig.height=6}
+ranking_ag_ha <- lulc_all |>
+  mutate(
+    group = case_when(
+      class_name == "Trees" ~ "Trees",
+      class_name %in% ag_classes ~ "Agriculture",
+      TRUE ~ NA_character_
+    )
+  ) |>
+  filter(!is.na(group), year %in% c(2017, 2023)) |>
+  group_by(subbasin, year, group) |>
+  summarize(area = sum(area), .groups = "drop") |>
+  pivot_wider(names_from = year, values_from = area, names_prefix = "y") |>
+  mutate(delta = y2023 - y2017) |>
+  select(subbasin, group, delta) |>
+  pivot_wider(names_from = group, values_from = delta) |>
+  mutate(net_shift = Agriculture - Trees) |>
+  arrange(desc(net_shift))
+
+ranking_ag_ha |>
+  pivot_longer(cols = c(Trees, Agriculture), names_to = "class", values_to = "delta") |>
+  mutate(subbasin = factor(subbasin, levels = ranking_ag_ha$subbasin)) |>
+  ggplot(aes(x = subbasin, y = delta, fill = class)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = c("Trees" = "#006400", "Agriculture" = "#c0392b"), name = NULL) +
+  geom_hline(yintercept = 0, linewidth = 0.5) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(
+    y = "Change in Area (ha, 2017-2023)",
+    x = NULL,
+    title = "Tree Loss vs Agriculture Gain — Absolute Area"
   )
 ```
 
