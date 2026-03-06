@@ -8,6 +8,8 @@ knitr::opts_chunk$set(fig.path = "fig/app-lulc/", dev = "png")
 library(drift)
 library(sf)
 library(terra)
+library(tmap)
+library(maptiles)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -41,9 +43,10 @@ subbasins <- subbasins |>
 
 The floodplain area of interest covers `r round(as.numeric(sf::st_area(sf::st_union(floodplain))) / 1e6, 1)` km² of valley bottom along the Neexdzii Kwa (Bulkley River) and tributaries, delineated using the Valley Confinement Algorithm via the `flooded` package.
 
-```{r map-lulc-subbasins, fig.cap="Sub-basin boundaries used for land cover comparison.", fig.width=10, fig.height=12}
+```{r map-lulc-subbasins, fig.cap="Sub-basin boundaries used for land cover comparison.", fig.width=8.5, fig.height=11}
 cache <- here::here("data", "spatial")
 streams_all <- readRDS(file.path(cache, "streams.rds"))
+lakes    <- readRDS(file.path(cache, "lakes.rds"))
 roads    <- readRDS(file.path(cache, "roads.rds"))
 railway  <- readRDS(file.path(cache, "railway.rds"))
 
@@ -58,46 +61,128 @@ towns <- sf::st_sf(
   )
 )
 
-highways <- roads |> dplyr::filter(road_type == "RH1")
+# Dissolved roads by route
+roads_dissolved <- roads |>
+  dplyr::filter(!is.na(route)) |>
+  dplyr::group_by(route) |>
+  dplyr::summarise(geom = sf::st_union(geom), .groups = "drop")
 
-# Sub-basin label coordinates
-sb_pts <- sf::st_point_on_surface(subbasins)
-sb_label_df <- data.frame(
-  label = subbasins$label,
-  lon = sf::st_coordinates(sb_pts)[, 1],
-  lat = sf::st_coordinates(sb_pts)[, 2]
-)
+# Bounding box from sub-basins with padding tuned for 8.5x11
+bbox <- sf::st_bbox(subbasins)
+bbox["ymax"] <- bbox["ymax"] + 0.06
+bbox["ymin"] <- bbox["ymin"] - 0.06
+bbox["xmin"] <- bbox["xmin"] - 0.04
+bbox["xmax"] <- bbox["xmax"] + 0.04
 
-map_bbox <- sf::st_bbox(subbasins)
+# Clip streams and lakes to bbox
+bbox_clip_sf <- sf::st_as_sfc(bbox) |> sf::st_set_crs(4326)
+streams_clip <- streams_all |> sf::st_make_valid() |> sf::st_crop(bbox_clip_sf)
+lakes_clip   <- lakes |> sf::st_make_valid() |> sf::st_crop(bbox_clip_sf)
 
-ggplot() +
-  geom_sf(data = subbasins, aes(fill = label), alpha = 0.25, color = "grey40",
-          linewidth = 0.5, show.legend = FALSE) +
-  geom_sf(data = floodplain, fill = "darkgreen", color = "darkgreen",
-          alpha = 0.3, linewidth = 0.6) +
-  geom_sf(data = streams_all |> dplyr::filter(stream_order >= 5),
-          color = "#7ba7cc", linewidth = 0.4) +
-  geom_sf(data = railway, color = "grey30", linewidth = 0.6, linetype = "dashed") +
-  geom_sf(data = highways, color = "#c0392b", linewidth = 0.8) +
-  geom_sf(data = towns, size = 2.5, shape = 16) +
-  geom_label(data = sb_label_df, aes(x = lon, y = lat, label = label),
-    size = 3, fontface = "bold",
-    fill = "white", alpha = 0.8,
-    label.padding = unit(0.15, "lines")
+# Stream labels (5th order+ named)
+stream_label_pts <- streams_clip |>
+  dplyr::filter(!is.na(gnis_name) & stream_order >= 5) |>
+  dplyr::group_by(gnis_name) |>
+  dplyr::summarise(geom = sf::st_union(geom), .groups = "drop") |>
+  dplyr::mutate(geometry = sf::st_point_on_surface(geom)) |>
+  sf::st_set_geometry("geometry") |>
+  sf::st_set_crs(4326)
+
+# Lake labels (>1 km²)
+lake_labels <- lakes_clip[!is.na(lakes_clip$name) & lakes_clip$area_km2 > 1, ]
+
+# Hillshade basemap
+bbox_sf <- sf::st_as_sfc(bbox) |> sf::st_set_crs(4326)
+relief  <- maptiles::get_tiles(bbox_sf, provider = "Esri.WorldShadedRelief",
+                               zoom = 10, crop = TRUE)
+basemap_stars <- stars::st_as_stars(relief)
+
+# Earthy sub-basin palette
+earth_pal <- c("#A67C52", "#C4A882", "#8B9E6B", "#D4A76A",
+               "#7A8B6E", "#BFA07A", "#9B8E6E", "#C2B280")
+
+tmap::tmap_mode("plot")
+
+tmap::tm_shape(basemap_stars, bbox = bbox) +
+  tmap::tm_rgb() +
+
+  # Sub-basins
+  tmap::tm_shape(subbasins) +
+  tmap::tm_polygons(
+    fill = "label",
+    fill.scale = tmap::tm_scale_categorical(values = earth_pal),
+    fill_alpha = 0.35,
+    col = "#5C4033", lwd = 1.5,
+    fill.legend = tmap::tm_legend(show = FALSE)
   ) +
-  geom_text(data = as.data.frame(sf::st_coordinates(towns)) |>
-    dplyr::mutate(name = towns$name),
-    aes(x = X, y = Y + 0.02, label = name),
-    size = 3, fontface = "bold") +
-  coord_sf(xlim = c(map_bbox["xmin"] - 0.04, map_bbox["xmax"] + 0.04),
-           ylim = c(map_bbox["ymin"] - 0.06, map_bbox["ymax"] + 0.06)) +
-  scale_fill_brewer(palette = "Set2", guide = "none") +
-  annotate("rect", xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = -Inf,
-           fill = "darkgreen", alpha = 0) +
-  labs(x = NULL, y = NULL) +
-  theme_minimal() +
-  theme(
-    panel.grid.minor = element_blank()
+  tmap::tm_text("label", size = 0.65, col = "#3B2716", fontface = "bold",
+                shadow = TRUE) +
+
+  # Floodplain
+  tmap::tm_shape(floodplain) +
+  tmap::tm_polygons(fill = "#2d6a2e", fill_alpha = 0.30,
+                    col = "#2d6a2e", lwd = 0.8) +
+
+  # Lakes
+  tmap::tm_shape(lakes_clip) +
+  tmap::tm_polygons(fill = "#c6ddf0", col = "#7ba7cc", lwd = 0.4, fill_alpha = 0.85) +
+  tmap::tm_shape(lake_labels) +
+  tmap::tm_text("name", size = 0.55, col = "#1a5276", fontface = "italic") +
+
+  # Streams
+  tmap::tm_shape(streams_clip |> dplyr::filter(stream_order >= 4)) +
+  tmap::tm_lines(col = "#7ba7cc", lwd = 0.4) +
+  tmap::tm_shape(streams_clip |> dplyr::filter(stream_order >= 5)) +
+  tmap::tm_lines(col = "#7ba7cc", lwd = 0.8) +
+  tmap::tm_shape(stream_label_pts) +
+  tmap::tm_text("gnis_name", size = 0.60, col = "#1a5276", fontface = "italic") +
+
+  # Railway
+  tmap::tm_shape(railway) +
+  tmap::tm_lines(col = "black", lwd = 1.2) +
+  tmap::tm_shape(railway) +
+  tmap::tm_lines(col = "white", lwd = 0.6, lty = "42") +
+
+  # Roads
+  tmap::tm_shape(roads_dissolved |> dplyr::filter(route == "16")) +
+  tmap::tm_lines(col = "#c0392b", lwd = 2.0) +
+  tmap::tm_shape(roads_dissolved |> dplyr::filter(route != "16")) +
+  tmap::tm_lines(col = "#e67e22", lwd = 1.2) +
+
+  # Towns
+  tmap::tm_shape(towns) +
+  tmap::tm_dots(fill = "black", size = 0.30) +
+  tmap::tm_text("name", size = 0.65, xmod = 0.8, ymod = -0.6,
+                col = "grey10", fontface = "bold") +
+
+  # Scale bar
+  tmap::tm_scalebar(breaks = c(0, 10, 20),
+                    position = c("left", "bottom"),
+                    text.size = 0.6) +
+
+  # Legend
+  tmap::tm_add_legend(
+    type = "polygons",
+    labels = "Floodplain AOI",
+    fill   = "#2d6a2e",
+    col    = "#2d6a2e",
+    lwd    = 1
+  ) +
+  tmap::tm_add_legend(
+    type = "lines",
+    labels = c("Highway 16", "Secondary highway", "Railway (CN)"),
+    col  = c("#c0392b", "#e67e22", "black"),
+    lwd  = c(2, 1.2, 1.2)
+  ) +
+
+  tmap::tm_layout(
+    frame = TRUE,
+    inner.margins  = c(0.005, 0.005, 0.005, 0.005),
+    outer.margins  = c(0.002, 0.002, 0.002, 0.002),
+    legend.position = c("right", "top"),
+    legend.frame    = TRUE,
+    legend.bg.color = "white",
+    legend.bg.alpha = 0.85
   )
 ```
 
