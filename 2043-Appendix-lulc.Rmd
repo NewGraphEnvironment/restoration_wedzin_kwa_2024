@@ -39,11 +39,11 @@ subbasins <- subbasins |>
   )
 ```
 
-## Floodplain Overview
+## Modelled Floodplain
 
-The floodplain area of interest covers `r round(as.numeric(sf::st_area(sf::st_union(floodplain))) / 1e6, 1)` km² of valley bottom along the Neexdzii Kwa (Bulkley River) and tributaries, delineated using the Valley Confinement Algorithm via the `flooded` package.
+Land cover change is assessed within the modelled floodplain — the valley bottom area delineated by the Valley Confinement Algorithm (`flooded` package) for co rearing/spawning habitat on streams of 4th order and greater. The modelled floodplain covers `r round(as.numeric(sf::st_area(sf::st_union(floodplain))) / 1e6, 1)` km² along the Neexdzii Kwa (Bulkley River) and tributaries. All percentages and areas reported below refer to land cover within this modelled floodplain, not the full watershed.
 
-```{r map-lulc-subbasins, fig.cap="Sub-basin boundaries used for land cover comparison.", fig.width=8.5, fig.height=11}
+```{r map-lulc-subbasins, fig.cap="Sub-basin boundaries and modelled floodplain extent used for land cover analysis.", fig.width=8.5, fig.height=11}
 cache <- here::here("data", "spatial")
 streams_all <- readRDS(file.path(cache, "streams.rds"))
 lakes    <- readRDS(file.path(cache, "lakes.rds"))
@@ -163,7 +163,7 @@ tmap::tm_shape(basemap_stars, bbox = bbox) +
   # Legend
   tmap::tm_add_legend(
     type = "polygons",
-    labels = "Floodplain AOI",
+    labels = "Modelled floodplain",
     fill   = "#2d6a2e",
     col    = "#2d6a2e",
     lwd    = 1
@@ -188,10 +188,9 @@ tmap::tm_shape(basemap_stars, bbox = bbox) +
 
 ## Land Cover by Sub-Basin
 
-IO Land Use Land Cover (10 m) is fetched from Planetary Computer for 2017, 2020, and 2023 and classified using the `drift` pipeline. Each sub-basin's floodplain is analyzed independently.
+IO Land Use Land Cover (10 m, Sentinel-2) is classified for 2017, 2020, and 2023 using the `drift` pipeline. Each sub-basin's modelled floodplain is analyzed independently.
 
 ```{r lulc-classify, message=FALSE, warning=FALSE, cache=TRUE}
-# Clip floodplain by each sub-basin and run drift pipeline
 results <- list()
 
 for (i in seq_len(nrow(subbasins))) {
@@ -219,23 +218,38 @@ lulc_all <- bind_rows(results)
 ```
 
 ```{r lulc-prep}
-# Prepare wide table and transition summaries used in multiple sections
-wide <- lulc_all |>
-  select(subbasin, year, class_name, pct) |>
-  pivot_wider(names_from = year, values_from = pct) |>
-  arrange(subbasin, class_name)
+ag_classes <- c("Crops", "Rangeland", "Bare Ground")
 
-# Compute change from 2017 to 2023 for each class and sub-basin
+# Compute change from 2017 to 2023 for each class and sub-basin (pct and area)
 lulc_delta <- lulc_all |>
   filter(year %in% c(2017, 2023)) |>
-  select(subbasin, year, class_name, pct) |>
-  pivot_wider(names_from = year, values_from = pct, names_prefix = "y") |>
-  mutate(delta = y2023 - y2017) |>
+  select(subbasin, year, class_name, pct, area) |>
+  pivot_wider(names_from = year, values_from = c(pct, area), names_sep = "_") |>
+  mutate(delta_pct = pct_2023 - pct_2017,
+         delta_ha = area_2023 - area_2017) |>
   arrange(subbasin, class_name)
+
+# Grouped agriculture delta
+lulc_grouped <- lulc_all |>
+  mutate(
+    group = case_when(
+      class_name == "Trees" ~ "Trees",
+      class_name %in% ag_classes ~ "Agriculture",
+      TRUE ~ NA_character_
+    )
+  ) |>
+  filter(!is.na(group)) |>
+  group_by(subbasin, year, group) |>
+  summarize(pct = sum(pct), area = sum(area), .groups = "drop")
+
+lulc_grouped_delta <- lulc_grouped |>
+  filter(year %in% c(2017, 2023)) |>
+  pivot_wider(names_from = year, values_from = c(pct, area), names_sep = "_") |>
+  mutate(delta_pct = pct_2023 - pct_2017,
+         delta_ha = area_2023 - area_2017)
 ```
 
-```{r plot-lulc-change, fig.cap="Land cover change by sub-basin (2017-2023).", fig.width=12, fig.height=8}
-# Focus on major classes
+```{r plot-lulc-change, fig.cap="Land cover composition of modelled floodplain by sub-basin (IO LULC 10 m, 2017-2023).", fig.width=12, fig.height=8}
 major <- lulc_all |>
   group_by(class_name) |>
   summarize(max_pct = max(pct), .groups = "drop") |>
@@ -251,190 +265,37 @@ lulc_all |>
   scale_fill_brewer(palette = "Set2", name = "Land Cover") +
   theme_minimal() +
   labs(
-    y = "% of Floodplain",
-    x = NULL,
-    title = "Land Cover Change by Sub-Basin (IO LULC 10m)"
+    y = "% of Modelled Floodplain",
+    x = NULL
   )
 ```
 
-## Trees vs Rangeland
+## Agriculture Definition
 
-The conversion of Trees to Rangeland is a key indicator of riparian disturbance.
+For this analysis, "Agriculture" groups three IO LULC classes that can represent different phases of the same land use at 10 m resolution: **Rangeland** (fallow, grazed pasture), **Crops** (actively growing), and **Bare Ground** (tilled or harvested). A single field can be classified differently depending on the satellite overpass date relative to the growing season.
 
-```{r plot-lulc-trees-range, fig.cap="Trees and Rangeland proportion by sub-basin over time.", fig.width=12, fig.height=6}
+```{r plot-lulc-ag-stacked, fig.cap="Composition of the Agriculture superclass within each sub-basin's modelled floodplain. Rangeland dominates; Crops and Bare Ground are minor components.", fig.width=12, fig.height=6}
 lulc_all |>
-  filter(class_name %in% c("Trees", "Rangeland")) |>
-  mutate(year = factor(year)) |>
-  ggplot(aes(x = year, y = pct, color = class_name, group = class_name)) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 3) +
+  filter(class_name %in% ag_classes) |>
+  mutate(year = factor(year),
+         class_name = factor(class_name, levels = c("Bare Ground", "Crops", "Rangeland"))) |>
+  ggplot(aes(x = year, y = pct, fill = class_name)) +
+  geom_col() +
   facet_wrap(~subbasin, nrow = 2) +
-  scale_color_manual(values = c("Trees" = "#006400", "Rangeland" = "#FFBB22"), name = NULL) +
+  scale_fill_manual(
+    values = c("Rangeland" = "#FFBB22", "Crops" = "#E49635", "Bare Ground" = "#A59B8F"),
+    name = NULL
+  ) +
   theme_minimal() +
   labs(
-    y = "% of Floodplain",
-    x = NULL,
-    title = "Trees vs Rangeland by Sub-Basin"
+    y = "% of Modelled Floodplain",
+    x = NULL
   )
 ```
 
-## Sub-Basin Ranking by Tree Loss
+## Trees vs Agriculture
 
-Sub-basins ranked by the change in Trees and Rangeland cover between 2017 and 2023. Negative tree delta indicates loss; positive rangeland delta indicates gain.
-
-```{r plot-lulc-ranking-ag, fig.cap="Sub-basins ranked by tree cover loss vs agriculture gain (2017-2023).", fig.width=10, fig.height=6}
-ag_classes <- c("Crops", "Rangeland", "Bare Ground")
-
-# Group agriculture and compute delta
-ranking_ag <- lulc_all |>
-  mutate(
-    group = case_when(
-      class_name == "Trees" ~ "Trees",
-      class_name %in% ag_classes ~ "Agriculture",
-      TRUE ~ NA_character_
-    )
-  ) |>
-  filter(!is.na(group), year %in% c(2017, 2023)) |>
-  group_by(subbasin, year, group) |>
-  summarize(pct = sum(pct), .groups = "drop") |>
-  pivot_wider(names_from = year, values_from = pct, names_prefix = "y") |>
-  mutate(delta = y2023 - y2017) |>
-  select(subbasin, group, delta) |>
-  pivot_wider(names_from = group, values_from = delta) |>
-  mutate(net_shift = Agriculture - Trees) |>
-  arrange(desc(net_shift))
-
-ranking_ag |>
-  pivot_longer(cols = c(Trees, Agriculture), names_to = "class", values_to = "delta") |>
-  mutate(subbasin = factor(subbasin, levels = ranking_ag$subbasin)) |>
-  ggplot(aes(x = subbasin, y = delta, fill = class)) +
-  geom_col(position = "dodge") +
-  scale_fill_manual(values = c("Trees" = "#006400", "Agriculture" = "#c0392b"), name = NULL) +
-  geom_hline(yintercept = 0, linewidth = 0.5) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(
-    y = "Change in % of Floodplain (2017-2023)",
-    x = NULL,
-    title = "Tree Loss vs Agriculture Gain (Crops + Rangeland + Bare Ground)"
-  )
-```
-
-```{r plot-lulc-ranking-range, fig.cap="Sub-basins ranked by tree cover loss vs rangeland gain (2017-2023).", fig.width=10, fig.height=6}
-ranking_range <- lulc_delta |>
-  filter(class_name %in% c("Trees", "Rangeland")) |>
-  select(subbasin, class_name, delta) |>
-  pivot_wider(names_from = class_name, values_from = delta) |>
-  mutate(net_shift = Rangeland - Trees) |>
-  arrange(desc(net_shift))
-
-ranking_range |>
-  pivot_longer(cols = c(Trees, Rangeland), names_to = "class_name", values_to = "delta") |>
-  mutate(subbasin = factor(subbasin, levels = ranking_range$subbasin)) |>
-  ggplot(aes(x = subbasin, y = delta, fill = class_name)) +
-  geom_col(position = "dodge") +
-  scale_fill_manual(values = c("Trees" = "#006400", "Rangeland" = "#FFBB22"), name = NULL) +
-  geom_hline(yintercept = 0, linewidth = 0.5) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(
-    y = "Change in % of Floodplain (2017-2023)",
-    x = NULL,
-    title = "Tree Loss vs Rangeland Gain Only"
-  )
-```
-
-```{r plot-lulc-ranking-ag-pct, fig.cap="Sub-basins ranked by tree loss vs agriculture gain in percent of floodplain (2017-2023).", fig.width=10, fig.height=6}
-ag_classes <- c("Crops", "Rangeland", "Bare Ground")
-
-ranking_ag_pct <- lulc_all |>
-  mutate(
-    group = case_when(
-      class_name == "Trees" ~ "Trees",
-      class_name %in% ag_classes ~ "Agriculture",
-      TRUE ~ NA_character_
-    )
-  ) |>
-  filter(!is.na(group), year %in% c(2017, 2023)) |>
-  group_by(subbasin, year, group) |>
-  summarize(pct = sum(pct), .groups = "drop") |>
-  pivot_wider(names_from = year, values_from = pct, names_prefix = "y") |>
-  mutate(delta = y2023 - y2017) |>
-  select(subbasin, group, delta) |>
-  pivot_wider(names_from = group, values_from = delta) |>
-  mutate(net_shift = Agriculture - Trees) |>
-  arrange(desc(net_shift))
-
-ranking_ag_pct |>
-  pivot_longer(cols = c(Trees, Agriculture), names_to = "class", values_to = "delta") |>
-  mutate(subbasin = factor(subbasin, levels = ranking_ag_pct$subbasin)) |>
-  ggplot(aes(x = subbasin, y = delta, fill = class)) +
-  geom_col(position = "dodge") +
-  scale_fill_manual(values = c("Trees" = "#006400", "Agriculture" = "#c0392b"), name = NULL) +
-  geom_hline(yintercept = 0, linewidth = 0.5) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(
-    y = "Change in % of Floodplain (2017-2023)",
-    x = NULL,
-    title = "Tree Loss vs Agriculture Gain (Crops + Rangeland + Bare Ground)"
-  )
-```
-
-```{r plot-lulc-ranking-ag-ha, fig.cap="Sub-basins ranked by tree loss vs agriculture gain in hectares (2017-2023).", fig.width=10, fig.height=6}
-ranking_ag_ha <- lulc_all |>
-  mutate(
-    group = case_when(
-      class_name == "Trees" ~ "Trees",
-      class_name %in% ag_classes ~ "Agriculture",
-      TRUE ~ NA_character_
-    )
-  ) |>
-  filter(!is.na(group), year %in% c(2017, 2023)) |>
-  group_by(subbasin, year, group) |>
-  summarize(area = sum(area), .groups = "drop") |>
-  pivot_wider(names_from = year, values_from = area, names_prefix = "y") |>
-  mutate(delta = y2023 - y2017) |>
-  select(subbasin, group, delta) |>
-  pivot_wider(names_from = group, values_from = delta) |>
-  mutate(net_shift = Agriculture - Trees) |>
-  arrange(desc(net_shift))
-
-ranking_ag_ha |>
-  pivot_longer(cols = c(Trees, Agriculture), names_to = "class", values_to = "delta") |>
-  mutate(subbasin = factor(subbasin, levels = ranking_ag_ha$subbasin)) |>
-  ggplot(aes(x = subbasin, y = delta, fill = class)) +
-  geom_col(position = "dodge") +
-  scale_fill_manual(values = c("Trees" = "#006400", "Agriculture" = "#c0392b"), name = NULL) +
-  geom_hline(yintercept = 0, linewidth = 0.5) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(
-    y = "Change in Area (ha, 2017-2023)",
-    x = NULL,
-    title = "Tree Loss vs Agriculture Gain — Absolute Area"
-  )
-```
-
-## Agriculture Grouping
-
-IO LULC classifies Crops, Rangeland, and Bare Ground as separate classes, but at 10 m resolution from single-date Sentinel-2 imagery these can represent different phases of the same agricultural land use — actively growing crops, fallow/grazed pasture, and freshly tilled soil. If the combined "Agriculture" proportion is stable while the individual classes swap, the apparent transitions are classification noise rather than real land cover change.
-
-```{r plot-lulc-ag-group, fig.cap="Agriculture superclass (Crops + Rangeland + Bare Ground) vs Trees by sub-basin.", fig.width=12, fig.height=6}
-ag_classes <- c("Crops", "Rangeland", "Bare Ground")
-
-lulc_grouped <- lulc_all |>
-  mutate(
-    group = case_when(
-      class_name == "Trees" ~ "Trees",
-      class_name %in% ag_classes ~ "Agriculture",
-      TRUE ~ NA_character_
-    )
-  ) |>
-  filter(!is.na(group)) |>
-  group_by(subbasin, year, group) |>
-  summarize(pct = sum(pct), .groups = "drop")
-
+```{r plot-lulc-trees-ag, fig.cap="Trees and Agriculture (Crops + Rangeland + Bare Ground) as percentage of modelled floodplain by sub-basin, 2017-2023.", fig.width=12, fig.height=6}
 lulc_grouped |>
   mutate(year = factor(year)) |>
   ggplot(aes(x = year, y = pct, color = group, group = group)) +
@@ -444,135 +305,96 @@ lulc_grouped |>
   scale_color_manual(values = c("Trees" = "#006400", "Agriculture" = "#c0392b"), name = NULL) +
   theme_minimal() +
   labs(
-    y = "% of Floodplain",
-    x = NULL,
-    title = "Trees vs Agriculture (Crops + Rangeland + Bare Ground)"
+    y = "% of Modelled Floodplain",
+    x = NULL
   )
 ```
 
-```{r plot-lulc-ag-components, fig.cap="Individual agriculture components by sub-basin over time.", fig.width=12, fig.height=6}
-lulc_all |>
-  filter(class_name %in% ag_classes) |>
-  mutate(year = factor(year)) |>
-  ggplot(aes(x = year, y = pct, color = class_name, group = class_name)) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 3) +
-  facet_wrap(~subbasin, nrow = 2) +
-  scale_color_manual(
-    values = c("Crops" = "#E49635", "Rangeland" = "#FFBB22", "Bare Ground" = "#A59B8F"),
-    name = NULL
-  ) +
-  theme_minimal() +
-  labs(
-    y = "% of Floodplain",
-    x = NULL,
-    title = "Agriculture Components by Sub-Basin"
-  )
-```
+## Sub-Basin Ranking
 
-```{r lulc-ag-stability}
-# Compare stability of grouped vs individual classes
-ag_stability <- lulc_all |>
+```{r lulc-summary-table}
+# One-row-per-subbasin summary with key metrics
+fp_areas <- lulc_all |>
+  filter(year == 2017) |>
+  group_by(subbasin) |>
+  summarize(fp_ha = round(sum(area), 1), .groups = "drop")
+
+summary_tab <- lulc_grouped_delta |>
+  select(subbasin, group, delta_pct, delta_ha) |>
+  pivot_wider(names_from = group, values_from = c(delta_pct, delta_ha)) |>
+  left_join(fp_areas, by = "subbasin") |>
   mutate(
-    group = case_when(
-      class_name %in% ag_classes ~ "Agriculture (grouped)",
-      TRUE ~ class_name
-    )
+    tree_loss_pct = round(delta_pct_Trees, 1),
+    tree_loss_ha = round(delta_ha_Trees, 1),
+    ag_gain_pct = round(delta_pct_Agriculture, 1),
+    ag_gain_ha = round(delta_ha_Agriculture, 1)
   ) |>
-  group_by(subbasin, year, group) |>
-  summarize(pct = sum(pct), .groups = "drop") |>
-  filter(group %in% c("Agriculture (grouped)", "Crops", "Rangeland", "Bare Ground", "Trees")) |>
-  group_by(subbasin, group) |>
-  summarize(
-    pct_range = round(max(pct) - min(pct), 1),
-    .groups = "drop"
-  ) |>
-  pivot_wider(names_from = group, values_from = pct_range) |>
-  arrange(subbasin)
+  select(subbasin, fp_ha, tree_loss_pct, tree_loss_ha, ag_gain_pct, ag_gain_ha) |>
+  arrange(tree_loss_ha)
 ```
 
-```{r tab-lulc-ag-stability-cap, results="asis", eval=gitbook_on}
-my_caption <- "Range of % floodplain cover across years (2017-2023) for individual classes vs grouped Agriculture. A small range for the grouped class with large ranges for components suggests classification swapping."
+```{r tab-lulc-summary-cap, results="asis", eval=gitbook_on}
+my_caption <- "Tree cover loss and agriculture gain within modelled floodplain by sub-basin (2017-2023). Negative values = loss. Agriculture = Crops + Rangeland + Bare Ground."
 
 my_tab_caption()
 ```
 
-```{r tab-lulc-ag-stability, eval=gitbook_on}
-ag_stability |>
+```{r tab-lulc-summary, eval=gitbook_on}
+summary_tab |>
   my_dt_table(cols_freeze_left = 1, page_length = 10)
 ```
 
-```{r tab-lulc-ag-stability-static, eval=identical(gitbook_on, FALSE)}
-knitr::kable(ag_stability, digits = 1,
-  caption = "Range of % floodplain cover across years (2017-2023) for individual classes vs grouped Agriculture.")
+```{r tab-lulc-summary-static, eval=identical(gitbook_on, FALSE)}
+knitr::kable(summary_tab, digits = 1,
+  caption = "Tree cover loss and agriculture gain within modelled floodplain by sub-basin (2017-2023).")
 ```
 
-## Class Transitions
+```{r plot-lulc-ranking-ha, fig.cap="Change in tree cover and agriculture area (ha) within modelled floodplain by sub-basin, 2017-2023. Agriculture = Crops + Rangeland + Bare Ground.", fig.width=10, fig.height=6}
+ranking_ha <- lulc_grouped_delta |>
+  select(subbasin, group, delta_ha) |>
+  pivot_wider(names_from = group, values_from = delta_ha) |>
+  mutate(net_shift = Agriculture - Trees) |>
+  arrange(desc(net_shift))
 
-To understand whether tree loss is primarily converting to rangeland or also shifting to other classes (e.g., Built Area, Crops), we examine all class changes across the study period.
-
-```{r plot-lulc-all-delta, fig.cap="Change in land cover by class and sub-basin (2017-2023).", fig.width=12, fig.height=8}
-lulc_delta |>
-  filter(abs(delta) >= 0.5) |>
-  mutate(subbasin = factor(subbasin)) |>
-  ggplot(aes(x = reorder(class_name, delta), y = delta, fill = delta > 0)) +
-  geom_col(show.legend = FALSE) +
-  facet_wrap(~subbasin, scales = "free_x") +
-  scale_fill_manual(values = c("TRUE" = "#FFBB22", "FALSE" = "#006400")) +
-  coord_flip() +
+ranking_ha |>
+  pivot_longer(cols = c(Trees, Agriculture), names_to = "class", values_to = "delta") |>
+  mutate(subbasin = factor(subbasin, levels = ranking_ha$subbasin)) |>
+  ggplot(aes(x = subbasin, y = delta, fill = class)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = c("Trees" = "#006400", "Agriculture" = "#c0392b"), name = NULL) +
+  geom_hline(yintercept = 0, linewidth = 0.5) +
   theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(
-    y = "Change in % of Floodplain (2017-2023)",
-    x = NULL,
-    title = "All Land Cover Class Changes by Sub-Basin"
+    y = "Change in Area (ha, 2017-2023)",
+    x = NULL
   )
-```
-
-```{r lulc-transition-summary}
-# Aggregate across all sub-basins to see overall class shifts
-overall_delta <- lulc_delta |>
-  group_by(class_name) |>
-  summarize(
-    mean_delta = round(mean(delta, na.rm = TRUE), 2),
-    min_delta = round(min(delta, na.rm = TRUE), 2),
-    max_delta = round(max(delta, na.rm = TRUE), 2),
-    n_gaining = sum(delta > 0.5, na.rm = TRUE),
-    n_losing = sum(delta < -0.5, na.rm = TRUE),
-    .groups = "drop"
-  ) |>
-  arrange(mean_delta)
-```
-
-```{r tab-lulc-transitions-cap, results="asis", eval=gitbook_on}
-my_caption <- "Mean land cover change (% of floodplain, 2017-2023) across all sub-basins. Negative values indicate loss."
-
-my_tab_caption()
-```
-
-```{r tab-lulc-transitions, eval=gitbook_on}
-overall_delta |>
-  my_dt_table(cols_freeze_left = 1, page_length = 15)
-```
-
-```{r tab-lulc-transitions-static, eval=identical(gitbook_on, FALSE)}
-knitr::kable(overall_delta, digits = 2,
-  caption = "Mean land cover change (% of floodplain, 2017-2023) across all sub-basins. Negative values indicate loss.")
 ```
 
 ## Land Cover Composition
 
 ```{r tab-lulc-wide-cap, results="asis", eval=gitbook_on}
-my_caption <- "Land cover composition (% of floodplain) by sub-basin and year."
+my_caption <- "Land cover composition (% of modelled floodplain) by sub-basin and year."
 
 my_tab_caption()
 ```
 
 ```{r tab-lulc-wide, eval=gitbook_on}
+wide <- lulc_all |>
+  select(subbasin, year, class_name, pct) |>
+  pivot_wider(names_from = year, values_from = pct) |>
+  arrange(subbasin, class_name)
+
 wide |>
   my_dt_table(cols_freeze_left = 2, page_length = 25)
 ```
 
 ```{r tab-lulc-wide-static, eval=identical(gitbook_on, FALSE)}
+wide <- lulc_all |>
+  select(subbasin, year, class_name, pct) |>
+  pivot_wider(names_from = year, values_from = pct) |>
+  arrange(subbasin, class_name)
+
 knitr::kable(wide, digits = 1,
-  caption = "Land cover composition (% of floodplain) by sub-basin and year.")
+  caption = "Land cover composition (% of modelled floodplain) by sub-basin and year.")
 ```
