@@ -1,4 +1,11 @@
 
+# restoration_wedzin_kwa_2024 DRAFT 0.1.6 (2026-03-06)
+
+- add LULC sub-basin analysis appendix with drift/flooded pipeline ([#114](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/114))
+- add interactive sub-basin picker app for defining analysis units
+- integrate LULC methods and results into main report body
+- restructure fisheries: barriers, traditional sites, species table to appendix ([#106](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/106))
+
 # restoration_wedzin_kwa_2024 DRAFT 0.1.5 (2026-03-02)
 
 - add study area map with site locations and keymap inset ([#108](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/108))

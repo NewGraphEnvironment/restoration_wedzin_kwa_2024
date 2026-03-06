@@ -41,6 +41,10 @@ A brief summary of key observations:
 -   The protection of road and rail infrastructure through streambank armoring is not adequately incorporating best practices for vegetating riprap, soft armouring where possible and establishing/restoring effective riparian buffers.
 
 
+## Land Cover Change
+
+Land cover classification within the modelled floodplain (valley bottoms delineated for co rearing/spawning habitat on ≥4th order streams) revealed a consistent pattern of tree cover loss and agriculture expansion across sub-basins between 2017 and 2023. Tree cover declined in all sub-basins analyzed, with corresponding gains in the Agriculture superclass (Crops + Rangeland + Bare Ground). A summary of tree cover loss and agriculture gain by sub-basin is presented in Table \@ref(tab:tab-lulc-summary-cap) with the full breakdown of land cover composition in [Appendix - LULC](#app-lulc). These results inform sub-basin prioritization for restoration site selection — sub-basins with the greatest tree loss within their modelled floodplain represent areas where riparian restoration investment is most needed.
+
 ## Collaborative GIS Environment
 
 A summary of background information layers loaded to the `background_layers.gpkg` geopackage of the `restoration_wedzin_kwa` project at the time of writing are included in Table \@ref(tab:tab-rfp-tracking).
