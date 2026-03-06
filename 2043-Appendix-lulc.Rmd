@@ -60,51 +60,43 @@ towns <- sf::st_sf(
 
 highways <- roads |> dplyr::filter(road_type == "RH1")
 
-# Sub-basin label points
-sb_labels <- subbasins |>
-  dplyr::mutate(geometry = sf::st_point_on_surface(geom)) |>
-  sf::st_set_geometry("geometry")
+# Sub-basin label coordinates
+sb_pts <- sf::st_point_on_surface(subbasins)
+sb_label_df <- data.frame(
+  label = subbasins$label,
+  lon = sf::st_coordinates(sb_pts)[, 1],
+  lat = sf::st_coordinates(sb_pts)[, 2]
+)
 
 map_bbox <- sf::st_bbox(subbasins)
 
 ggplot() +
   geom_sf(data = subbasins, aes(fill = label), alpha = 0.25, color = "grey40",
           linewidth = 0.5, show.legend = FALSE) +
-  geom_sf(data = floodplain, aes(color = "Floodplain"), fill = "darkgreen", alpha = 0.3,
-          linewidth = 0.6, show.legend = "polygon") +
+  geom_sf(data = floodplain, fill = "darkgreen", color = "darkgreen",
+          alpha = 0.3, linewidth = 0.6) +
   geom_sf(data = streams_all |> dplyr::filter(stream_order >= 5),
           color = "#7ba7cc", linewidth = 0.4) +
-  geom_sf(data = railway, aes(linetype = "Railway"), color = "grey30",
-          linewidth = 0.6, show.legend = "line") +
-  geom_sf(data = highways, aes(linetype = "Highway"), color = "#c0392b",
-          linewidth = 0.8, show.legend = "line") +
+  geom_sf(data = railway, color = "grey30", linewidth = 0.6, linetype = "dashed") +
+  geom_sf(data = highways, color = "#c0392b", linewidth = 0.8) +
   geom_sf(data = towns, size = 2.5, shape = 16) +
-  ggrepel::geom_label_repel(
-    data = sb_labels,
-    aes(label = label, geometry = geometry),
-    stat = "sf_coordinates",
+  geom_label(data = sb_label_df, aes(x = lon, y = lat, label = label),
     size = 3, fontface = "bold",
     fill = "white", alpha = 0.8,
-    label.padding = unit(0.15, "lines"),
-    min.segment.length = 0,
-    max.overlaps = 20
+    label.padding = unit(0.15, "lines")
   ) +
-  geom_sf_text(data = towns, aes(label = name), size = 3, fontface = "bold",
-               nudge_y = 0.02) +
+  geom_text(data = as.data.frame(sf::st_coordinates(towns)) |>
+    dplyr::mutate(name = towns$name),
+    aes(x = X, y = Y + 0.02, label = name),
+    size = 3, fontface = "bold") +
   coord_sf(xlim = c(map_bbox["xmin"] - 0.04, map_bbox["xmax"] + 0.04),
            ylim = c(map_bbox["ymin"] - 0.06, map_bbox["ymax"] + 0.06)) +
   scale_fill_brewer(palette = "Set2", guide = "none") +
-  scale_color_manual(name = NULL, values = c("Floodplain" = "darkgreen"),
-                     guide = guide_legend(order = 1, override.aes = list(fill = "darkgreen", alpha = 0.3))) +
-  scale_linetype_manual(name = NULL, values = c("Highway" = "solid", "Railway" = "dashed"),
-                        guide = guide_legend(order = 2,
-                          override.aes = list(color = c("#c0392b", "grey30")))) +
+  annotate("rect", xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = -Inf,
+           fill = "darkgreen", alpha = 0) +
   labs(x = NULL, y = NULL) +
   theme_minimal() +
   theme(
-    legend.position = c(0.85, 0.15),
-    legend.background = element_rect(fill = "white", color = "grey80"),
-    legend.key.size = unit(0.8, "lines"),
     panel.grid.minor = element_blank()
   )
 ```
@@ -141,14 +133,20 @@ for (i in seq_len(nrow(subbasins))) {
 lulc_all <- bind_rows(results)
 ```
 
-```{r tab-lulc-wide, results='asis'}
+```{r lulc-prep}
+# Prepare wide table and transition summaries used in multiple sections
 wide <- lulc_all |>
   select(subbasin, year, class_name, pct) |>
   pivot_wider(names_from = year, values_from = pct) |>
   arrange(subbasin, class_name)
 
-knitr::kable(wide, digits = 1,
-  caption = "Land cover composition (% of floodplain) by sub-basin and year.")
+# Compute change from 2017 to 2023 for each class and sub-basin
+lulc_delta <- lulc_all |>
+  filter(year %in% c(2017, 2023)) |>
+  select(subbasin, year, class_name, pct) |>
+  pivot_wider(names_from = year, values_from = pct, names_prefix = "y") |>
+  mutate(delta = y2023 - y2017) |>
+  arrange(subbasin, class_name)
 ```
 
 ```{r plot-lulc-change, fig.cap="Land cover change by sub-basin (2017-2023).", fig.width=12, fig.height=8}
@@ -193,4 +191,104 @@ lulc_all |>
     x = NULL,
     title = "Trees vs Rangeland by Sub-Basin"
   )
+```
+
+## Sub-Basin Ranking by Tree Loss
+
+Sub-basins ranked by the change in Trees and Rangeland cover between 2017 and 2023. Negative tree delta indicates loss; positive rangeland delta indicates gain.
+
+```{r plot-lulc-ranking, fig.cap="Sub-basins ranked by tree cover loss (2017-2023).", fig.width=10, fig.height=6}
+ranking <- lulc_delta |>
+  filter(class_name %in% c("Trees", "Rangeland")) |>
+  select(subbasin, class_name, delta) |>
+  pivot_wider(names_from = class_name, values_from = delta) |>
+  mutate(net_shift = Rangeland - Trees) |>
+  arrange(desc(net_shift))
+
+ranking_long <- ranking |>
+  pivot_longer(cols = c(Trees, Rangeland), names_to = "class_name", values_to = "delta")
+
+ranking_long |>
+  mutate(subbasin = factor(subbasin, levels = ranking$subbasin)) |>
+  ggplot(aes(x = subbasin, y = delta, fill = class_name)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = c("Trees" = "#006400", "Rangeland" = "#FFBB22"), name = NULL) +
+  geom_hline(yintercept = 0, linewidth = 0.5) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(
+    y = "Change in % of Floodplain (2017-2023)",
+    x = NULL,
+    title = "Sub-Basins Ranked by Tree-to-Rangeland Conversion"
+  )
+```
+
+## Class Transitions
+
+To understand whether tree loss is primarily converting to rangeland or also shifting to other classes (e.g., Built Area, Crops), we examine all class changes across the study period.
+
+```{r plot-lulc-all-delta, fig.cap="Change in land cover by class and sub-basin (2017-2023).", fig.width=12, fig.height=8}
+lulc_delta |>
+  filter(abs(delta) >= 0.5) |>
+  mutate(subbasin = factor(subbasin)) |>
+  ggplot(aes(x = reorder(class_name, delta), y = delta, fill = delta > 0)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~subbasin, scales = "free_x") +
+  scale_fill_manual(values = c("TRUE" = "#FFBB22", "FALSE" = "#006400")) +
+  coord_flip() +
+  theme_minimal() +
+  labs(
+    y = "Change in % of Floodplain (2017-2023)",
+    x = NULL,
+    title = "All Land Cover Class Changes by Sub-Basin"
+  )
+```
+
+```{r lulc-transition-summary}
+# Aggregate across all sub-basins to see overall class shifts
+overall_delta <- lulc_delta |>
+  group_by(class_name) |>
+  summarize(
+    mean_delta = round(mean(delta, na.rm = TRUE), 2),
+    min_delta = round(min(delta, na.rm = TRUE), 2),
+    max_delta = round(max(delta, na.rm = TRUE), 2),
+    n_gaining = sum(delta > 0.5, na.rm = TRUE),
+    n_losing = sum(delta < -0.5, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  arrange(mean_delta)
+```
+
+```{r tab-lulc-transitions-cap, results="asis", eval=gitbook_on}
+my_caption <- "Mean land cover change (% of floodplain, 2017-2023) across all sub-basins. Negative values indicate loss."
+
+my_tab_caption()
+```
+
+```{r tab-lulc-transitions, eval=gitbook_on}
+overall_delta |>
+  my_dt_table(cols_freeze_left = 1, page_length = 15)
+```
+
+```{r tab-lulc-transitions-static, eval=identical(gitbook_on, FALSE)}
+knitr::kable(overall_delta, digits = 2,
+  caption = "Mean land cover change (% of floodplain, 2017-2023) across all sub-basins. Negative values indicate loss.")
+```
+
+## Land Cover Composition
+
+```{r tab-lulc-wide-cap, results="asis", eval=gitbook_on}
+my_caption <- "Land cover composition (% of floodplain) by sub-basin and year."
+
+my_tab_caption()
+```
+
+```{r tab-lulc-wide, eval=gitbook_on}
+wide |>
+  my_dt_table(cols_freeze_left = 2, page_length = 25)
+```
+
+```{r tab-lulc-wide-static, eval=identical(gitbook_on, FALSE)}
+knitr::kable(wide, digits = 1,
+  caption = "Land cover composition (% of floodplain) by sub-basin and year.")
 ```
