@@ -1,9 +1,19 @@
 
+# restoration_wedzin_kwa_2024 DRAFT 0.1.6 (2026-03-06)
+
+- add LULC sub-basin analysis appendix with drift/flooded pipeline ([#114](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/114))
+- add interactive sub-basin picker app for defining analysis units
+- integrate LULC methods and results into main report body
+- restructure fisheries: barriers, traditional sites, species table to appendix ([#106](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/106))
+
 # restoration_wedzin_kwa_2024 DRAFT 0.1.5 (2026-03-02)
 
 - add study area map with site locations and keymap inset ([#108](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/108))
 - add study area map to Results field review section
 - expand Appendix 2 with per-site summary tables, photos, and UAV viewer links for all 21 sites
+- restructure fisheries: combine Bulkley Falls and Buck Falls into Barriers to Fish Passage section with Wet'suwet'en traditional fishing site names ([#106](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/106))
+- move fish species table to Appendix 1b ([#112](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/112))
+- add Buck Falls to fwa_query.R upstream fish observation script ([#111](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/111))
 
 # restoration_wedzin_kwa_2024 DRAFT 0.1.4 (2026-02-26)
 

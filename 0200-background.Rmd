@@ -201,26 +201,21 @@ Renowned as a world class recreational steelhead and coho fishery, the greater B
 
 <br>
 
-#### Upper Bulkley Falls
+#### Barriers to Fish Passage
 
-A detailed field assessment and write up regarding the upper Bulkley falls was conducted as part of fish passage restoration in the watershed - is presented in @irvine2021BulkleyRiver with a condensed summary here. The site was assessed on October 28, 2021 by Nallas Nikal, B.i.T, and Chad Lewis, Environmental Technician. The top of the falls is located at 11U.678269.6038266 at an elevation of 697m approximatley 11.3km downstream of Bulkley Lake and upstream of Ailport Creek.  Within the Bulkley River immediately below the 12 - 15m high bedrock falls, channel width was 17.4m and the wetted width was 15.6m. Two channels comprised the falls. The primary channel was 20m long, had a channel/wetted width of 8.5m, a 16% grade and water depths ranging from 35 - 63cm.  The secondary channel was 25m long, with channel/wetted widths of 7.5m, a grade of 12% and water depths ranging from 3 - 13cm [@irvine2021BulkleyRiver].
-
-<br>
-
-@dyson1949BulkleyFalls and @stokes1956UpperBulkley report substantial use of habitat above Bulkley Falls by steelhead, chinook, coho and sockeye utilization in the past (pre-1950) based on spawning reports.  Both authors concluded that the Bulkley Falls pose a partial obstruction to migrating fish based on flow levels. Chinook, which migrate early in the summer when water levels are high, have been noted as able to ascend the falls in normal to high water years and in high water years it was thought that coho and steelhead could ascend.  @gottesfeld_rabnett2007SkeenaFish report that the falls are almost completely impassable to all salmon during low water flows.  @stokes1956UpperBulkley reports that there was high value spawning habitat located within the first 3km of the Neexdzii Kwah from the outlet of Bulkley Lake.
+Two major natural barriers shape salmon distribution within the Neexdzii Kwah: Bulkley Falls on the mainstem and a series of falls on Buck Creek.
 
 <br>
 
-@wilson_rabnett2007FishPassage reported thataApproximately 11.3 km downstream of the Bulkley Lake outlet and just upstream of Watson Creek, the upper Bulkley falls is an approximately 4m high narrow rock sill that crosses the Neexdzii Kwah, producing a steep cascade section. This obstacle to fish passage is recorded as an almost complete barrier to fish passage for salmon during low water flows. @wilson_rabnett2007FishPassage also reported that coho have not been observed beyond the falls since 1972. 
+Bulkley Falls is a 12–15m bedrock cascade approximately 11.3 km downstream of Bulkley Lake and upstream of Ailport Creek. @dyson1949BulkleyFalls and @stokes1956UpperBulkley report substantial use of habitat above the falls by chinook, coho, sockeye, and steelhead prior to 1950, and both concluded that the falls pose a partial obstruction dependent on flow — chinook migrating during high summer flows can ascend, while coho and steelhead could only pass in high-water years. @gottesfeld_rabnett2007SkeenaFish report the falls are almost completely impassable during low flows, and @wilson_rabnett2007FishPassage reported that coho have not been observed beyond the falls since 1972. Provincial fish inventory records show only limited chinook (3 records, 1974–1999) and coho (3 records, 1975–1999) observations upstream of the falls, with no sockeye recorded [@moe2024KnownBC]. A detailed field assessment is presented in @irvine2021BulkleyRiver.
 
 <br>
 
-#### Traditional Fishing Sites within the Neexdzii Kwah
+Buck Falls is a series of four drops over approximately 200 m on the Buck Creek mainstem, located 46.7 km upstream of the Buck Creek–Bulkley River confluence. The falls were assessed in September 2024 and are documented in detail in @irvine_schick2025SkeenaWatershed. Despite their barrier status (individual drops up to approximately 4 m), the falls are not recorded in the provincial FISS obstacles database and are listed at only 1.5 m in the BC Freshwater Atlas — a significant underestimate.
 
-Tables of sites as detailed in @gottesfeld_rabnett2007SkeenaFish as well as @wilson_rabnett2007FishPassage
-have been extracted from these original documents and are stored [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/tree/main/data/inputs_extracted). Traditional fishing areas located within the Neexdzii Kwah as documented by @gottesfeld_rabnett2007SkeenaFish have been
-spatialized, stored within a location (outside of the github and mergin repositories) and linked to within
-the collaborative GIS project.  
+<br>
+
+Historic Wet'suwet'en fishing sites document salmon use that predates modern monitoring — including sites above both falls. Above Bulkley Falls, Nehl' dzee tez diee at the Bulkley Lake outlet was a fishing site for sockeye, coho, and chinook, and Tsaslachque at the Maxan Creek–Foxy Creek confluence was used for sockeye, coho, chinook, and trout. Above Buck Falls, Neelhdzii Teezdlii Ceek at the Goosly Lake outlet was a fishing site for coho, chinook, kokanee, and rainbow trout — approximately 24 km above the falls [@gottesfeld_rabnett2007SkeenaFish]. Kenny Rabnett (pers. comm.) has suggested that Buck Falls may have been historically passable under certain flow conditions. This traditional knowledge, combined with sparse modern fish inventory records, suggests these barriers were historically passable more frequently than current conditions allow. The near-absence of recent salmon observations above these falls reflects cumulative effects of habitat degradation, overharvest, and changing hydrological conditions rather than permanent natural isolation — and underscores the depth of loss experienced by Wet'suwet'en families and communities whose fishing sites once sustained them. Tables of traditional fishing sites as detailed in @gottesfeld_rabnett2007SkeenaFish and @wilson_rabnett2007FishPassage have been extracted and are stored [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/tree/main/data/inputs_extracted).
 
 
 ```{r hist-sites-extract, eval=FALSE}
@@ -237,7 +232,7 @@ path <- "/Users/airvine/zotero/storage/8SUN8SYA/wilson_rabnett_2007_fish_passage
 tab_trim <- tabulizer::locate_areas(path, 64)
 
 ##since we have done this before though - numbers below are results
- #      top      left    bottom     right 
+ #      top      left    bottom     right
  # 70.98383  84.16353 407.17779 521.81754
 tab_trim <- list(c(70.98383,  84.16353, 407.17779, 521.81754 ))
 
@@ -247,16 +242,16 @@ names_cols <- c('Site Location', 'Tradional Site Name', 'Fish Species')
 table_raw <- tabulapdf::extract_tables(path,
                                        pages = seq(64,64),
                                         method = "lattice",
-                                        area = tab_trim) %>% 
+                                        area = tab_trim) %>%
   pluck(1) %>%
-  as_tibble() %>% 
+  as_tibble() %>%
   # funky column names so we slice the first row and set them as names
-  slice(2:nrow(.)) %>% 
-  dplyr::select(1:3) %>% 
+  slice(2:nrow(.)) %>%
+  dplyr::select(1:3) %>%
   purrr::set_names(names_cols) ##should do this as input from "pages" part of the function
 
 # burn out to csv for safe keeping
-table_raw %>% 
+table_raw %>%
   readr::write_csv('data/inputs_extracted/trad_fish_sites_wilsonrabnett2007FishPassage.csv')
 
 
@@ -273,16 +268,16 @@ names_cols <- c('Site Location', 'Tradional Site Name', 'Fish Species')
 table_raw <- tabulapdf::extract_tables(path,
                                        pages = seq(384,384),
                                         method = "lattice",
-                                        area = tab_trim) %>% 
+                                        area = tab_trim) %>%
   pluck(1) %>%
-  as_tibble() %>% 
+  as_tibble() %>%
   # funky column names so we slice the first row and set them as names
-  slice(2:nrow(.)) %>% 
-  dplyr::select(1:3) %>% 
+  slice(2:nrow(.)) %>%
+  dplyr::select(1:3) %>%
   purrr::set_names(names_cols) ##should do this as input from "pages" part of the function
 
 # burn out to csv for safe keeping
-table_raw %>% 
+table_raw %>%
   readr::write_csv('data/inputs_extracted/trad_fish_sites_gottesfeld_rabnett2007FishPassage.csv')
 
 
@@ -290,194 +285,101 @@ table_raw %>%
 ```
 
 ```{r tab-hist-sites, eval = FALSE}
-readr::read_csv('data/trad_fish_sites_gottesfeld_rabnett2007FishPassage.csv') %>% 
-  # dplyr::filter(stringr::str_detect(`Site Location`, "Buck|Maxan|McQuarrie|Bulkley Lake|Hwy.16")) %>% 
-  arrange(`Tradional Site Name`) %>% 
+readr::read_csv('data/trad_fish_sites_gottesfeld_rabnett2007FishPassage.csv') %>%
+  # dplyr::filter(stringr::str_detect(`Site Location`, "Buck|Maxan|McQuarrie|Bulkley Lake|Hwy.16")) %>%
+  arrange(`Tradional Site Name`) %>%
   fpr::fpr_kable(caption_text = "Traditional fishing sites in the Neexdzii Kwah.  Adapted from Gottesfeld and Rabnett 2007.",
                  scroll = FALSE)
 ```
 
-#### Salmon Stock Assessment Data
+#### Population Status
 
-Fisheries and Oceans Canada stock assessment data was accessed via the [NuSEDS-New Salmon Escapement Database System](https://open.canada.ca/data/en/dataset/c48669a3-045b-400d-b730-48aafe8c5ee6)
-through the [Open Government Portal](https://open.canada.ca/en) with results presented in Table \@ref(tab:tab-dfo-sad-tr-neexdzii). A brief memo on the data extraction process is available in the [memos directory](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/tree/main/memos).
+Chinook salmon in the Wedzin Kwa are managed within three Conservation Units (CUs): Large Lakes / Morice (CU 49), Upper Bulkley / Neexdzii Kwa (CU 51), and Middle Skeena Mainstem Tributaries (CU 48). Only CU 51 falls entirely within Wet'suwet'en territory; the other CUs include chinook from Bear, Babine, Kispiox, and Kitwanga watersheds, meaning DFO management decisions at the CU scale do not necessarily reflect the status or needs of Wedzin Kwa populations specifically [@winther_etal2024assessmentskeena; @price_etal2026rebuildinggiis]. The upper Wedzin Kwa / Morice system has historically represented approximately 30% of total Skeena chinook production, with the Morice accounting for roughly 65.9% of the Large Lakes CU [@gottesfeld_rabnett2007SkeenaFish; @winther_etal2024assessmentskeena].
 
+<br>
 
-```{r tab-dfo-sad-tr-neexdzii}
-dfo_sad_raw <- readr::read_csv('data/inputs_raw/All Areas NuSEDS.csv')
-#names(dfo_sad_raw)
+Application of Wild Salmon Policy assessment metrics to the upper Wedzin Kwa chinook population rates 90-100% of indicators as Threatened or Endangered [@winther_etal2024assessmentskeena]. Historical optimum escapement targets established from BC 16 Reports were 18,175 chinook spawners for the upper Wedzin Kwa / Morice system and 2,000 for the Neexdzii Kwa specifically [@peacock_etal1996ReviewStock]; neither target has been consistently met (Figure \@ref(fig:fig-nuseds-spawners)). Substantial data gaps persist — the lower Wedzin Kwa has been largely unmonitored for over 30 years, and Neexdzii Kwa monitoring is sparse.
 
-dfo_sad_tr <- readr::read_csv('data/inputs_raw/All Areas NuSEDS.csv') %>% 
-  dplyr::filter(waterbody == "BULKLEY RIVER - UPPER" | waterbody == "MORICE RIVER") %>% 
-  dplyr::filter(!is.na(total_return_to_river)) %>% 
-  arrange(species, analysis_yr) %>% 
-  dplyr::select(waterbody,
-                species, analysis_yr, 
-                total_return_to_river, 
-                start_spawn_dt_from,
-                peak_spawn_dt_from,
-                end_spawn_dt_from, 
-                accuracy,	
-                precision,	
-                index_yn,	
-                reliability,	
-                estimate_stage,	
-                estimate_classification,	
-                no_inspections_used,	
-                estimate_method)
+<br>
 
-# started looking at GT
-# dfo_sad_tr |> 
-#   dplyr::filter(waterbody == "BULKLEY RIVER - UPPER") |> 
-#   dplyr::select(-waterbody) |>
-#   gt::gt() |>
-#   gt::tab_options(table.font.size = 10) |> 
-#   # gt::opt_interactive(page_size_default = 5, use_filters = TRUE, use_compact_mode = TRUE) |> 
-#   gt::tab_caption(caption = md("Fisheries and Oceans Canada stock assessment data for the Bulkley River - Upper.  Data is filtered to only include records with total return to river data."))
+Other anadromous species show similar or worse trajectories. Coho were historically the most widely distributed salmon in the Neexdzii Kwah, with escapements averaging approximately 2,850 annually in the 1950s and 1960s, but declined at an estimated 11% per year through the 1990s; approximately 74% of current Bulkley River coho production originates from hatchery supplementation at Toboggan Creek [@gottesfeld_rabnett2007SkeenaFish]. Sockeye that formerly spawned in Maxan Creek and likely Bulkley and Maxan Lakes collapsed after 1978 and are considered at high risk of extirpation [@gottesfeld_rabnett2007SkeenaFish]. Pink salmon have only scattered spawning records within the Neexdzii Kwah — primarily in Buck Creek and the mainstem below Bulkley Falls [@gottesfeld_rabnett2007SkeenaFish; @moe2024KnownBC] — though their presence has increased since barrier removal at Hagwilget Canyon in 1959 enabled colonization of upper Wedzin Kwa spawning reaches [@price_etal2026rebuildinggiis]. Steelhead, anadromous lamprey, and other species present in the watershed are relevant to restoration planning but lack systematic population monitoring.
 
+<br>
 
-dfo_sad_tr %>%
-  dplyr::filter(waterbody == "BULKLEY RIVER - UPPER") |>
-  dplyr::select(-waterbody) |> 
-  fpr::fpr_kable(caption_text = "Fisheries and Oceans Canada stock assessment data for the Bulkley River - Upper.  Data is filtered to only include records with total return to river data.",
-                 scroll = gitbook_on)
+```{r fig-nuseds-spawners, fig.cap = "Salmon escapement estimates for the Neexdzii Kwah (Upper Bulkley River) and Morice River from DFO NuSEDS (log scale). Values show natural adult spawners where available and total return to river for earlier records. Dashed and dotted lines in the Chinook panel indicate historical optimum escapement targets from BC 16 Reports (Peacock et al. 1996). Data accessed via the NuSEDS New Salmon Escapement Database System.", out.width = "100%"}
+
+dfo_sad <- readr::read_csv('data/inputs_raw/All Areas NuSEDS.csv',
+                            show_col_types = FALSE) |>
+  dplyr::filter(waterbody %in% c("BULKLEY RIVER - UPPER", "MORICE RIVER")) |>
+  dplyr::mutate(
+    spawners = dplyr::coalesce(natural_adult_spawners, total_return_to_river),
+    waterbody_label = dplyr::case_when(
+      waterbody == "BULKLEY RIVER - UPPER" ~ "Neexdzii Kwah",
+      waterbody == "MORICE RIVER" ~ "Morice River"
+    )
+  ) |>
+  dplyr::filter(!is.na(spawners))
+
+# Chinook escapement targets (apply to Chinook facet only)
+targets <- tibble::tibble(
+  species = c("Chinook", "Chinook"),
+  waterbody_label = c("Neexdzii Kwah", "Morice River"),
+  target = c(2000, 18175)
+)
+
+ggplot2::ggplot(dfo_sad, ggplot2::aes(x = analysis_yr, y = spawners,
+                                       colour = waterbody_label)) +
+  ggplot2::geom_line(linewidth = 0.6) +
+  ggplot2::geom_point(size = 1.2) +
+  ggplot2::geom_hline(
+    data = targets,
+    ggplot2::aes(yintercept = target, linetype = waterbody_label),
+    colour = "grey40", linewidth = 0.5
+  ) +
+  ggplot2::scale_y_log10(labels = scales::label_comma()) +
+  ggplot2::facet_wrap(~ species, ncol = 2, scales = "free_y") +
+  ggplot2::scale_colour_brewer(palette = "Set1") +
+  ggplot2::scale_linetype_manual(values = c("Neexdzii Kwah" = "dashed",
+                                             "Morice River" = "dotted")) +
+  ggplot2::labs(x = "Year", y = "Spawners", colour = "Waterbody",
+                linetype = "Escapement Target") +
+  ggplot2::theme_minimal(base_size = 11) +
+  ggplot2::theme(
+    legend.position = "bottom",
+    legend.box = "vertical",
+    strip.text = ggplot2::element_text(face = "bold")
+  )
 ```
 
 <br>
 
-```{r fig-dfo-sad-tr1, fig.cap = "Fisheries and Oceans Canada stock assessment data for the Bulkley River - Upper.  Data is filtered to only include records with total return to river data.", eval= FALSE}
+#### Exploitation and Recovery
 
-dfo_sad_raw %>%
-  ldfo_sad_plot_line("BULKLEY RIVER - UPPER", "total_return_to_river", "species", "analysis_yr", col_group_exclude = "Coho")
-```
+Combined ocean and in-river harvest rates for Wedzin Kwa chinook have averaged 56.4% since 1985, ranging from 38% to 76%, with Southeast Alaskan fisheries taking an estimated 22.4% and Canadian fisheries 24.5% annually [@winther_etal2024assessmentskeena; @lglltd_2025SkeenaRiver]. The maximum sustainable harvest rate (U~MSY~) under current ocean productivity is estimated at 41%, down from 54% under historical conditions; harvest has exceeded this level in 85% of years since 2008 [@winther_etal2024assessmentskeena]. The Skeena commercial fishery harvests chinook from multiple populations simultaneously as they migrate upstream; because harvest targets are set based on aggregate abundance rather than individual populations, declines in smaller stocks such as the Neexdzii Kwa can be masked by relatively stronger returns from other watersheds [@winther_etal2024assessmentskeena].
 
 <br>
 
-```{r fig-dfo-sad-nad1, fig.cap = "Fisheries and Oceans Canada stock assessment data for the Bulkley River - Upper.  Data is filtered to only include records with natural adult spawners data.", eval = FALSE}
+Mean male chinook fork length at the Tyee Test Fishery has declined from approximately 689 mm (1984-1993) to 600 mm (2011-2020), reducing per-capita egg deposition and meaning that historical escapement targets underestimate the number of spawners now needed for equivalent reproductive output [@winther_etal2024assessmentskeena]. Forward projections using an age-structured model indicate that at recent exploitation rates (~51%), recovery to sustainable population levels is effectively impossible within 50 years; even at 10% exploitation, recovery would require more than 20 years under historical productivity assumptions [@price_etal2026rebuildinggiis].
 
-dfo_sad_raw %>%
-  ldfo_sad_plot_line("BULKLEY RIVER - UPPER", "natural_adult_spawners", "species", "analysis_yr", col_group_exclude = "Coho")
+<br>
 
-```
+#### Implications for Restoration
 
-```{r morice-background, eval = FALSE}
-# ### Morice River
-# 
-# Detailed reviews of Morice River watershed fisheries can be found in @bustard_schell2002ConservingMorice, @gottesfeld_etal2002ConservingSkeena, @schell2003BriefOverview, @gottesfeld_rabnett2007SkeenaFish, and @ilmb2007MoriceLand with a comprehensive review of water quality by @oliver2018Analysiswater Overall, the Morice watershed contains high fisheries values as a major producer of chinook, pink, sockeye, coho and steelhead.
-# 
-# #### Salmon Stock Assessment Data
-# 
-<!-- # Fisheries and Oceans Canada stock assessment data was accessed via the [NuSEDS-New Salmon Escapement Database System](https://open.canada.ca/data/en/dataset/c48669a3-045b-400d-b730-48aafe8c5ee6) -->
-<!-- # through the [Open Government Portal](https://open.canada.ca/en) with results presented in Table \@ref(tab:tab-dfo-sad-tr-morice). A brief memo on the data extraction process is available in the [memos directory](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/tree/main/memos). -->
-```
+With harvest management operating at the Skeena scale and largely outside watershed-level control, freshwater habitat restoration is one of the few interventions available to support population recovery at the watershed scale. Improving spawning and rearing habitat quality, reconnecting side channels, and restoring riparian function directly address the freshwater survival bottleneck that compounds the effects of ocean and harvest-driven mortality. The remainder of this report focuses on identifying, prioritizing, and monitoring these habitat restoration opportunities within the Neexdzii Kwah.
 
 
-
-
-```{r tab-dfo-sad-tr-morice, eval = FALSE}
-
-dfo_sad_tr %>%
-  dplyr::filter(waterbody == "MORICE RIVER") |>
-  dplyr::select(-waterbody) |> 
-  fpr::fpr_kable(caption_text = "Fisheries and Oceans Canada stock assessment data for the Morice River.  Data is filtered to only include records with total return to river data.",
-                 scroll = gitbook_on)
-
-
-```
-
-```{r fig-dfo-sad-tr2, fig.cap = "Fisheries and Oceans Canada stock assessment data for the Morice River.  Data is filtered to only include records with total return to river data.", eval = FALSE}
-
-#### Salmon Stock Assessment Data
-
-dfo_sad_raw %>%
-  ldfo_sad_plot_line("MORICE RIVER", "total_return_to_river", "species", "analysis_yr", col_group_exclude = "Coho", eval = FALSE)
-
-```
-
-```{r fig-dfo-sad-nad2, fig.cap = "Fisheries and Oceans Canada stock assessment data for the Morice River.  Data is filtered to only include records with natural adult spawners data.", eval = FALSE}
-
-dfo_sad_raw %>%
-  ldfo_sad_plot_line("MORICE RIVER", "natural_adult_spawners", "species", "analysis_yr", col_group_exclude = "Coho")
-
-
-```
-
-
-#### Fish Species
-
-Fish species recorded in the greater Bulkley River watershed group are detailed in Table \@ref(tab:fiss-species-table) [@moe2024KnownBC]. Summaries of fish species life history, biology, stock status, and traditional use are documented in @schell2003BriefOverview, @wilson_rabnett2007FishPassage, @gottesfeld_etal2002ConservingSkeena and @officeofthewetsuweten2013WetsuwetenTitle. @wilson_rabnett2007FishPassage discuss chinook, pink, sockeye, coho, steelhead and indigenous freshwater Bulkley River fish stocks within the context of key lower and upper Bulkley River habitats such as the Suskwa River, Station Creek, Harold Price Creek, Telkwa River and Buck Creek. Key areas within the upper Bulkley River watershed with high fishery values, documented in @schell2003BriefOverview, are the upper Bulkley mainstem, Buck Creek, Dungate Creek, Barren Creek, McQuarrie Creek, Byman Creek, Richfield Creek, Johnny David Creek, Aitken Creek and Emerson Creek. Some areas of high fisheries values for chinook, sockeye and coho are noted in @bustard_schell2002ConservingMorice as McBride Lake, Nanika Lake, and Morice Lake watersheds. 
-
-```{r extra-morice}
-# In the 1990's the Morice River watershed, @gottesfeld_rabnett2007SkeenaFish estimated that chinook comprised 30% of the total Skeena system chinook escapements. It is estimated that Morice River coho comprise approximatley 4% of the Skeena escapement with a declining trend noted since the 1950 in @gottesfeld_rabnett2007SkeenaFish Coho spawn in major tributaries and small streams ideally at locations where downstream dispersal can result in seeding of prime off channel habitats including warm productive sloughs and side channels. Of all the salmon species, coho rely on small tributaries the most [@bustard_schell2002ConservingMorice]. @bustard_schell2002ConservingMorice report that much of the distribution of coho into non-natal tributaries occurs during high flow periods of May - early July with road culverts blocking migration into these habitats.
-```
-
-
-
-
-<!-- `r if(gitbook_on){knitr::asis_output("<br>")} else knitr::asis_output("<br><br><br><br>")` -->
-
-```{r fiss-species-table}
-fiss_species_table <- readr::read_csv('data/inputs_extracted/fiss_species_table.csv')
-
-fiss_species_table |> 
-  dplyr::select(-Morice) |> 
-  fpr::fpr_kable(caption_text = 'Fish species recorded in the Bulkley River watershed groups.', 
-                 footnote_text = 'COSEWIC abbreviations : 
-                 SC - Special concern 
-                 DD - Data deficient
-                 NAR - Not at risk
-                 E - Endangered
-                 T - Threatened
-                 
-                 BC List definitions : 
-                 Yellow - Species that is apparently secure 
-                 Blue - Species that is of special concern
-                 Exotic - Species that have been moved beyond their natural range as a result of human activity
-                 ',
-                 scroll = gitbook_on)
-```
+A summary of fish species recorded in the greater Bulkley River watershed group is provided in [Appendix 1 - Fish Species](#app-fish-species) (Table \@ref(tab:fiss-species-table)).
 
 
 ## Historic Restoration Context
 
 Understanding how we arrived at our current ecological and cultural state is essential for guiding present-day restoration and future sustainability efforts. This section provides high-level summaries of selected foundational references that document impacts to ecosystems and communities, as well as associated restoration initiatives. These works do not represent an exhaustive review but offer critical perspectives and historical context.
 
-### @morin2016NiwhtsideniHibiiten - Niwhts'ide'nï Hibi'itën: The Ways of Our Ancestors
-
-@morin2016NiwhtsideniHibiiten documents Witsuwit'en history, land relationships, and governance through the words and teachings of Hereditary Chiefs and Elders. It emphasizes the importance of oral histories, place-based knowledge, and language, following the Witsuwit'en system of writing (orthography) for names and terms. The work provides essential context for understanding long-term stewardship and the impacts of colonial policies on Witsuwit'en lands and governance.
-
-
-### @mitchell1997RiparianInStream - Riparian and In-stream Assessment of the Bulkley River System
-
-In the late 1990s, Nortech Consulting reported to the Department of Fisheries and Oceans on 68 tributaries of the Bulkley River located between Bulkley Lake and Boulder Creek. Boulder Creek flows into the main stem of the Bulkley River approximately 11 km north of Moricetown and about 120 km north of the confluence of the Neexdzii Kwa and Wetzin Kwa Rivers. The 68 streams were assessed using topographic maps and air photo interpretation to evaluate the degree and nature of impacts from transportation and hydroelectric corridors, powerlines, agriculture, grazing, and municipal land use. The most significant sources of impact were identified as agricultural/rangeland and municipal development [@mitchell1997RiparianInStream].
+Witsuwit'en relationships to the land and waters of the Neexdzii Kwah are documented through oral histories, place-based knowledge, and language in @morin2016NiwhtsideniHibiiten, providing essential context for understanding long-term stewardship and the impacts of colonial policies on Witsuwit'en lands and governance. Systematic assessments of watershed degradation began in the late 1990s when @mitchell1997RiparianInStream assessed 68 tributaries of the Bulkley River between Bulkley Lake and Boulder Creek, prioritizing streams by severity of impacts from transportation corridors, agriculture, grazing, and municipal land use. Tributaries ranked as highly or severely degraded included Buck Creek, Maxan Creek, Watson Creek, Airport Creek, Cesford Creek, Richfield Creek, Byman Creek, and McQuarrie Creek. @mackay_etal1998MidBulkleyDetailed followed with detailed fish habitat, riparian, and channel assessments that produced numerous site-specific restoration prescriptions across the Neexdzii Kwah — many of which remain unimplemented. @price2014UpperBulkley documented human-induced modifications to floodplain habitat, river channelization, and areas of upwelling groundwater with potential importance to salmonids along the upper Bulkley mainstem.
 
 <br>
 
-Streams were prioritized into six categories (1 through 6) based on the number and severity of impacts, the length of potential fish habitat, and the presence of significant (e.g., salmonid or regionally important) fish populations. Neexdzi Kwa tributaries ranked in the highest two priority categories (highly or severely degraded) included Buck Creek, Maxxan Creek, Watson Creek, Airport Creek, Cesford Creek, Richfield Creek, Byman Creek, and McQuarrie Creek. Those falling into categories 3 and 4 (moderately degraded) included Foxy Creek, Jonny David Creek, Barren Creek, Crow Creek, and the Sunset-Elwin system, among others. Tributaries within the lowest two priority categories included Aitken Creek and McKilligan Creek [@mitchell1997RiparianInStream].
-
-
-### @price2014UpperBulkley - Upper Bulkley Floodplain Habitat
-
-@price2014UpperBulkley documented human-induced modifications to floodplain habitat and river channelization, investigated potential barriers to fish migration, and assessed areas of upwelling groundwater in the Upper Bulkley mainstem having potential importance to salmonids.
-
-
-### @mackay_etal1998MidBulkleyDetailed - Mid-Bulkley Detailed Fish Habitat/Riparian/Channel Assessment
-
-@mackay_etal1998MidBulkleyDetailed utilized detailed fish and fish habitat assessments to inform restoration planning in the Neexdzii Kwah with numerous detailed prescriptions included within their reporting and digital deliverables.
-
-
-### @gaboury_smith2016DevelopmentAquatic - Aquatic Restoration Designs and On-Farm Cattle Management
-
-@gaboury_smith2016DevelopmentAquatic outlines four general types of aquatic restoration designs aimed at improving fish habitat and passage in the Bulkley River system: installing large woody debris and rock groin structures at eroding meanders, constructing riffles in channelized sections, adding riffles at backwater culverts to enhance connectivity, and reconstructing a fish bypass channel. These approaches focus on supporting habitat for steelhead, chinook, coho, trout, and char. Funding for the project was provided by Fisheries and Oceans Canada's Fish Habitat Restoration Initiative and through in-kind support from landowners and West Fraser. Yinka Dene Economic Development Limited Partnership Inc. (YLP), in collaboration with LGL Limited, developed designs and management plans for 16 high-priority sites in Wet'suwet'en First Nation territory between 2015 and 2019. Related construction efforts are documented in @smith_gaboury2016ASBUILTREPORT and @smith_gaboury2017ASBUILTREPORT, including work at four of these sites in 2016 as well as Johnny David Creek at Highway 16 in 2017.
-
-
-### @skeenasustainabilityassessmentforum2021Skeenasustainability - State of the Value Report
-
-The Skeena Sustainability Assessment Forum (SSAF) is a collaborative environmental stewardship initiative established under the Environmental Stewardship Initiative (ESI), bringing together 10 Skeena Nations and the Province of British Columbia. The SSAF supports shared decision-making by integrating Indigenous knowledge, scientific data, and local values to assess the state and trends of key environmental resources, including fish and fish habitat [@environmentalstewardshipinitiative2019Skeenasustainability].
-
-<br>
-
-As part of this work, the SSAF State of the Value Report for Fish and Fish Habitat summarized conditions across the study area using data available up to 2018. The analysis was completed at the [assessment watershed level](https://catalogue.data.gov.bc.ca/dataset/freshwater-atlas-assessment-watersheds) and considered a range of environmental indicators related to land and water use, natural watershed features, and salmon presence. This first phase of work is designed to be built upon with improved monitoring and data over time [@governmentofbritishcolumbia2023Environmentalstewardship; @skeenasustainabilityassessmentforum2021Skeenasustainability].
+Building on this foundation, @gaboury_smith2016DevelopmentAquatic developed aquatic restoration designs for 16 high-priority sites in Wet'suwet'en territory between 2015 and 2019, focusing on large woody debris and rock groin structures at eroding meanders, riffle construction in channelized sections, and fish bypass channels. Construction at several sites is documented in @smith_gaboury2016ASBUILTREPORT and @smith_gaboury2017ASBUILTREPORT. The Skeena Sustainability Assessment Forum — a collaborative initiative under the Environmental Stewardship Initiative bringing together 10 Skeena Nations and the Province of British Columbia — completed a State of the Value Report for Fish and Fish Habitat summarizing conditions across the study area using data available up to 2018, with analysis at the assessment watershed level considering environmental indicators related to land use, watershed features, and salmon presence [@environmentalstewardshipinitiative2019Skeenasustainability; @skeenasustainabilityassessmentforum2021Skeenasustainability; @governmentofbritishcolumbia2023Environmentalstewardship].
 
 
 ## Restoration Philosophy
