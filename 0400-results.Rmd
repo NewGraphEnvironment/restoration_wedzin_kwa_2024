@@ -71,6 +71,69 @@ top3 <- head(lulc_tree_delta, 3)
 
 Land cover classification within the modelled floodplain (IO LULC 10 m, Sentinel-2 derived) shows a consistent pattern of tree cover loss and agriculture expansion between 2017 and 2023. Across all sub-basins, approximately `r total_tree_loss` ha of tree cover was lost within the floodplain, with corresponding gains in the Agriculture superclass (Crops + Rangeland + Bare Ground). The greatest losses occurred in `r top3$subbasin[1]` (`r round(abs(top3$delta_ha[1]), 0)` ha), `r top3$subbasin[2]` (`r round(abs(top3$delta_ha[2]), 0)` ha), and `r top3$subbasin[3]` (`r round(abs(top3$delta_ha[3]), 0)` ha). Some pixel-level transitions reflect channel migration, seasonal differences in vegetation health due to drought, or classification noise rather than actual land clearing — particularly along actively shifting reaches and at field-forest edges. Despite these sources of uncertainty, the overall trajectory of tree cover loss and agriculture expansion is consistent across sub-basins and time steps, and the magnitude of change is well above what classification error alone would produce. These trends highlight where protection of remaining floodplain tree cover, engagement with landowners, and restoration of degraded reaches may be most effective. An interactive map of classified land cover with transition overlays, along with detailed sub-basin summaries, is presented in [Appendix - LULC](#app-lulc).
 
+## Climate Anomaly Trends
+
+```{r climate-results-summary}
+# Pull key values for inline text
+ts <- readr::read_csv(
+  here::here("data", "climate", "neexdzii_kwah_anomaly_timeseries.csv"),
+  show_col_types = FALSE
+)
+
+# Most recent annual tmean anomaly
+latest_tmean <- ts |>
+  dplyr::filter(par == "tmean", period == "annual") |>
+  dplyr::filter(yr == max(yr))
+
+# Count years above normal since 2013
+yrs_above <- ts |>
+  dplyr::filter(par == "tmean", period == "annual", yr >= 2013, ano > 0) |>
+  nrow()
+yrs_total <- ts |>
+  dplyr::filter(par == "tmean", period == "annual", yr >= 2013) |>
+  nrow()
+
+# Recent vs early comparison
+recent_tmean <- ts |>
+  dplyr::filter(par == "tmean", period == "annual", yr >= 2015) |>
+  dplyr::pull(ano) |> mean() |> round(1)
+early_tmean <- ts |>
+  dplyr::filter(par == "tmean", period == "annual", yr <= 1980) |>
+  dplyr::pull(ano) |> mean() |> round(1)
+warming_shift <- round(recent_tmean - early_tmean, 1)
+
+recent_summer_tmean <- ts |>
+  dplyr::filter(par == "tmean", period == "summer", yr >= 2015) |>
+  dplyr::pull(ano) |> mean() |> round(1)
+early_summer_tmean <- ts |>
+  dplyr::filter(par == "tmean", period == "summer", yr <= 1980) |>
+  dplyr::pull(ano) |> mean() |> round(1)
+summer_shift <- round(recent_summer_tmean - early_summer_tmean, 1)
+
+# Soil moisture shift
+recent_sm <- ts |>
+  dplyr::filter(par == "soil_moisture", period == "summer", yr >= 2015) |>
+  dplyr::pull(ano) |> mean() |> round(1)
+early_sm <- ts |>
+  dplyr::filter(par == "soil_moisture", period == "summer", yr <= 1980) |>
+  dplyr::pull(ano) |> mean() |> round(1)
+sm_shift <- round(recent_sm - early_sm, 1)
+
+sm_below <- ts |>
+  dplyr::filter(par == "soil_moisture", period == "summer", yr >= 2000, ano < 0) |>
+  nrow()
+sm_total <- ts |>
+  dplyr::filter(par == "soil_moisture", period == "summer", yr >= 2000) |>
+  nrow()
+```
+
+The Neexdzii Kwah watershed is approximately `r warming_shift`°C warmer than it was in the mid-20th century. Comparing the last decade (2015–`r latest_tmean$yr`) to the pre-1980 period, mean annual temperature has shifted by `r warming_shift`°C and summers have warmed by `r summer_shift`°C. `r yrs_above` of the last `r yrs_total` years have been warmer than the 1981–2010 average, and these trends are highly statistically significant across all seasons (p < 0.001, Mann-Kendall).
+
+The amount of precipitation has not changed — no season shows a statistically significant trend. However, summer soil moisture has declined by roughly `r abs(sm_shift)` percentage points relative to the pre-1980 period and has been below normal in `r sm_below` of the last `r sm_total` years. Soils are drying because warmer temperatures drive more evapotranspiration, even when the same amount of rain falls. For cold-water fish species, this translates to reduced summer baseflows during the period when flows are already at their lowest, compounding thermal stress from warmer water temperatures.
+
+Trend statistics, spatial anomaly maps, and time series plots are presented in [Appendix 1 - Climate Anomaly Data](#app-climate-anomaly).
+
+
 ## Collaborative GIS Environment
 
 A summary of background information layers loaded to the `background_layers.gpkg` geopackage of the `restoration_wedzin_kwa` project at the time of writing are included in Table \@ref(tab:tab-rfp-tracking).
