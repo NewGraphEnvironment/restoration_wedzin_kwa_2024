@@ -43,7 +43,33 @@ A brief summary of key observations:
 
 ## Land Cover Change
 
-Land cover classification within the modelled floodplain (valley bottoms delineated for co rearing/spawning habitat on ≥4th order streams) revealed a consistent pattern of tree cover loss and agriculture expansion across sub-basins between 2017 and 2023. Tree cover declined in all sub-basins analyzed, with corresponding gains in the Agriculture superclass (Crops + Rangeland + Bare Ground). A summary of tree cover loss and agriculture gain by sub-basin is presented in Table \@ref(tab:tab-lulc-summary-cap) with the full breakdown of land cover composition in [Appendix - LULC](#app-lulc). These results inform sub-basin prioritization for restoration site selection — sub-basins with the greatest tree loss within their modelled floodplain represent areas where riparian restoration investment is most needed.
+```{r lulc-results-summary}
+lulc_all <- readRDS(here::here("data", "lulc", "lulc_summary.rds"))
+ag_classes <- c("Crops", "Rangeland", "Bare Ground")
+
+lulc_grouped <- lulc_all |>
+  dplyr::mutate(
+    group = dplyr::case_when(
+      class_name == "Trees" ~ "Trees",
+      class_name %in% ag_classes ~ "Agriculture",
+      TRUE ~ NA_character_
+    )
+  ) |>
+  dplyr::filter(!is.na(group)) |>
+  dplyr::group_by(subbasin, year, group) |>
+  dplyr::summarize(area = sum(area), .groups = "drop")
+
+lulc_tree_delta <- lulc_grouped |>
+  dplyr::filter(year %in% c("2017", "2023"), group == "Trees") |>
+  tidyr::pivot_wider(names_from = year, values_from = area) |>
+  dplyr::mutate(delta_ha = `2023` - `2017`) |>
+  dplyr::arrange(delta_ha)
+
+total_tree_loss <- round(abs(sum(lulc_tree_delta$delta_ha)), 0)
+top3 <- head(lulc_tree_delta, 3)
+```
+
+Land cover classification within the modelled floodplain (IO LULC 10 m, Sentinel-2 derived) shows a consistent pattern of tree cover loss and agriculture expansion between 2017 and 2023. Across all sub-basins, approximately `r total_tree_loss` ha of tree cover was lost within the floodplain, with corresponding gains in the Agriculture superclass (Crops + Rangeland + Bare Ground). The greatest losses occurred in `r top3$subbasin[1]` (`r round(abs(top3$delta_ha[1]), 0)` ha), `r top3$subbasin[2]` (`r round(abs(top3$delta_ha[2]), 0)` ha), and `r top3$subbasin[3]` (`r round(abs(top3$delta_ha[3]), 0)` ha). Some pixel-level transitions reflect channel migration, seasonal differences in vegetation health due to drought, or classification noise rather than actual land clearing — particularly along actively shifting reaches and at field-forest edges. Despite these sources of uncertainty, the overall trajectory of tree cover loss and agriculture expansion is consistent across sub-basins and time steps, and the magnitude of change is well above what classification error alone would produce. These trends highlight where protection of remaining floodplain tree cover, engagement with landowners, and restoration of degraded reaches may be most effective. An interactive map of classified land cover with transition overlays, along with detailed sub-basin summaries, is presented in [Appendix - LULC](#app-lulc).
 
 ## Collaborative GIS Environment
 

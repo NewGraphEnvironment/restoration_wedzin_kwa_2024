@@ -16,6 +16,7 @@ tab:tab-ncfdc-1998-priority
 tab:tab-ncfdc-1998-priority-detailed
 tab:tab-ncfdc-1998-pres
 tab:tab-gis-params-cap
+fig:map-lulc-transitions
 fig:map-lulc-subbasins
 fig:plot-lulc-change
 fig:plot-lulc-ag-stacked

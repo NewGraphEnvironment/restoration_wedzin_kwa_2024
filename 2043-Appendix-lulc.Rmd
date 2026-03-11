@@ -4,6 +4,10 @@
 knitr::opts_chunk$set(fig.path = "fig/app-lulc/", dev = "png")
 ```
 
+```{r lulc-update, eval=params$update_lulc}
+source(here::here("scripts", "lulc_classify.R"))
+```
+
 ```{r lulc-load, message=FALSE, warning=FALSE}
 library(drift)
 library(sf)
@@ -15,21 +19,22 @@ library(dplyr)
 library(tidyr)
 
 sf::sf_use_s2(FALSE)
-terra::terraOptions(threads = 12)
 
-# Sub-basins from watershed picker (transform to 4326 to match other layers)
+lulc_dir <- here::here("data", "lulc")
+
+# Pre-computed by scripts/lulc_classify.R
+lulc_all <- readRDS(file.path(lulc_dir, "lulc_summary.rds"))
+
+# Spatial inputs
 subbasins <- sf::st_read(
-  here::here("data", "lulc", "subbasins.gpkg"),
-  quiet = TRUE
+  file.path(lulc_dir, "subbasins.gpkg"), quiet = TRUE
 ) |> sf::st_transform(4326)
 
-# Floodplain AOI
 floodplain <- sf::st_read(
-  here::here("data", "lulc", "floodplain_neexdzii_co.gpkg"),
-  quiet = TRUE
+  file.path(lulc_dir, "floodplain_neexdzii_co.gpkg"), quiet = TRUE
 ) |> sf::st_transform(4326)
 
-# Label sub-basins: auto-number by stream name, 1 = mouth (lowest DRM)
+# Label sub-basins (matches lulc_classify.R)
 subbasins <- subbasins |>
   dplyr::arrange(gnis_name, drm) |>
   dplyr::mutate(
@@ -42,6 +47,61 @@ subbasins <- subbasins |>
 ## Modelled Floodplain
 
 Land cover change is assessed within the modelled floodplain — the valley bottom area delineated by the Valley Confinement Algorithm (`flooded` package) for co rearing/spawning habitat on streams of 4th order and greater. The modelled floodplain covers `r round(as.numeric(sf::st_area(sf::st_union(floodplain))) / 1e6, 1)` km² along the Neexdzii Kwa (Bulkley River) and tributaries. All percentages and areas reported below refer to land cover within this modelled floodplain, not the full watershed.
+
+```{r map-lulc-transitions, eval=gitbook_on, fig.cap="Land cover classification within the modelled floodplain (IO LULC 10 m). Use radio buttons to toggle between 2017, 2020, and 2023 classified layers. Transition overlays show where Trees converted to other classes between 2017 and 2023. Sub-basin boundaries are shown as a toggleable overlay.", out.height="800px"}
+fp_dir <- here::here("data", "lulc", "rasters", "floodplain")
+
+# Load classified rasters as named list
+classified <- list(
+  "2017" = terra::rast(file.path(fp_dir, "classified_2017.tif")),
+  "2020" = terra::rast(file.path(fp_dir, "classified_2020.tif")),
+  "2023" = terra::rast(file.path(fp_dir, "classified_2023.tif"))
+)
+
+# Load transition raster and build summary
+trans_rast <- terra::rast(file.path(fp_dir, "transition.tif"))
+trans_cats <- terra::cats(trans_rast)[[1]]
+transition <- list(
+  raster = trans_rast,
+  summary = tibble::tibble(
+    id = trans_cats$id,
+    transition = trans_cats$transition,
+    from_class = "Trees",
+    to_class = sub("Trees -> ", "", trans_cats$transition)
+  )
+)
+
+# Build interactive map with drift
+m <- drift::dft_map_interactive(
+  classified,
+  aoi = floodplain,
+  transition = transition,
+  source = "io-lulc"
+)
+
+# Add sub-basin outlines as toggleable overlay
+trans_groups <- transition$summary$transition[
+  transition$summary$from_class != transition$summary$to_class
+]
+
+# Zoom to floodplain extent on load
+bb <- sf::st_bbox(sf::st_transform(floodplain, 4326))
+m <- m |>
+  leaflet::fitBounds(bb[["xmin"]], bb[["ymin"]], bb[["xmax"]], bb[["ymax"]]) |>
+  leaflet::addPolygons(
+    data = subbasins, fill = FALSE, color = "#5C4033",
+    weight = 2, opacity = 0.8, group = "Sub-basins",
+    label = ~label
+  ) |>
+  leaflet::addLayersControl(
+    baseGroups = c("Light", "Esri Satellite", "Google Satellite"),
+    overlayGroups = c(names(classified), trans_groups, "AOI", "Sub-basins"),
+    options = leaflet::layersControlOptions(collapsed = FALSE)
+  ) |>
+  leaflet::hideGroup(setdiff(names(classified), names(classified)[1]))
+
+m
+```
 
 ```{r map-lulc-subbasins, fig.cap="Sub-basin boundaries and modelled floodplain extent used for land cover analysis.", fig.width=8.5, fig.height=11}
 cache <- here::here("data", "spatial")
@@ -189,33 +249,6 @@ tmap::tm_shape(basemap_stars, bbox = bbox) +
 ## Land Cover by Sub-Basin
 
 IO Land Use Land Cover (10 m, Sentinel-2) is classified for 2017, 2020, and 2023 using the `drift` pipeline. Each sub-basin's modelled floodplain is analyzed independently.
-
-```{r lulc-classify, message=FALSE, warning=FALSE, cache=TRUE}
-results <- list()
-
-for (i in seq_len(nrow(subbasins))) {
-  sb <- subbasins[i, ]
-  fp_clip <- sf::st_intersection(floodplain, sb) |>
-    sf::st_collection_extract("POLYGON") |>
-    sf::st_union() |>
-    sf::st_sf(geometry = _)
-  sf::st_crs(fp_clip) <- sf::st_crs(floodplain)
-
-  if (nrow(fp_clip) == 0 || as.numeric(sf::st_area(fp_clip)) < 1e4) {
-    message("Skipping ", sb$label, " — no floodplain overlap")
-    next
-  }
-
-  message("Processing: ", sb$label)
-  rasters <- dft_stac_fetch(fp_clip, source = "io-lulc", years = c(2017, 2020, 2023))
-  classified <- dft_rast_classify(rasters, source = "io-lulc")
-  summary <- dft_rast_summarize(classified, unit = "ha")
-  summary$subbasin <- sb$label
-  results[[i]] <- summary
-}
-
-lulc_all <- bind_rows(results)
-```
 
 ```{r lulc-prep}
 ag_classes <- c("Crops", "Rangeland", "Bare Ground")

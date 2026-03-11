@@ -77,6 +77,17 @@
 <script src="libs/selectize-0.12.0/selectize.min.js"></script>
 <link href="libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+<link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="libs/proj4-2.6.2/proj4.min.js"></script>
+<script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-binding-2.2.3/leaflet.js"></script>
+<script src="libs/leaflet-providers-2.0.0/leaflet-providers_2.0.0.js"></script>
+<script src="libs/leaflet-providers-plugin-2.2.3/leaflet-providers-plugin.js"></script>
+<link href="libs/lfx-fullscreen-1.0.2/lfx-fullscreen-prod.css" rel="stylesheet" />
+<script src="libs/lfx-fullscreen-1.0.2/lfx-fullscreen-prod.js"></script>
 
 <script type="text/javascript">
 
@@ -367,24 +378,24 @@ div.csl-indent {
 <h1><strong>Appendix 1b - Fish Species</strong><a href="app-fish-species.html#app-fish-species" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>Fish species recorded in the greater Bulkley River watershed group are detailed in Table <a href="app-fish-species.html#tab:fiss-species-table">5.3</a> <span class="citation">(MoE 2024)</span>. Note that this table is scoped to the full Bulkley River watershed group code, which is broader than the Neexdzii Kwah study area (see <a href="https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/112">Issue #112</a>). Summaries of fish species life history, biology, stock status, and traditional use are documented in <span class="citation">Schell (2003)</span>, <span class="citation">Wilson and Rabnett (2007)</span>, <span class="citation">Gottesfeld et al. (2002)</span> and <span class="citation">Office of the Wet’suwet’en (2013)</span>. <span class="citation">Wilson and Rabnett (2007)</span> discuss chinook, pink, sockeye, coho, steelhead and indigenous freshwater Bulkley River fish stocks within the context of key lower and upper Bulkley River habitats such as the Suskwa River, Station Creek, Harold Price Creek, Telkwa River and Buck Creek. Key areas within the upper Bulkley River watershed with high fishery values, documented in <span class="citation">Schell (2003)</span>, are the upper Bulkley mainstem, Buck Creek, Dungate Creek, Barren Creek, McQuarrie Creek, Byman Creek, Richfield Creek, Johnny David Creek, Aitken Creek and Emerson Creek. Some areas of high fisheries values for chinook, sockeye and coho are noted in <span class="citation">Bustard and Schell (2002)</span> as McBride Lake, Nanika Lake, and Morice Lake watersheds.</p>
 <!-- <br> -->
-<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="app-fish-species.html#cb69-1" tabindex="-1"></a>fiss_species_table <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">&#39;data/inputs_extracted/fiss_species_table.csv&#39;</span>)</span>
-<span id="cb69-2"><a href="app-fish-species.html#cb69-2" tabindex="-1"></a></span>
-<span id="cb69-3"><a href="app-fish-species.html#cb69-3" tabindex="-1"></a>fiss_species_table <span class="sc">|&gt;</span></span>
-<span id="cb69-4"><a href="app-fish-species.html#cb69-4" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>Morice) <span class="sc">|&gt;</span></span>
-<span id="cb69-5"><a href="app-fish-species.html#cb69-5" tabindex="-1"></a>  fpr<span class="sc">::</span><span class="fu">fpr_kable</span>(<span class="at">caption_text =</span> <span class="st">&#39;Fish species recorded in the Bulkley River watershed groups.&#39;</span>,</span>
-<span id="cb69-6"><a href="app-fish-species.html#cb69-6" tabindex="-1"></a>                 <span class="at">footnote_text =</span> <span class="st">&#39;COSEWIC abbreviations :</span></span>
-<span id="cb69-7"><a href="app-fish-species.html#cb69-7" tabindex="-1"></a><span class="st">                 SC - Special concern</span></span>
-<span id="cb69-8"><a href="app-fish-species.html#cb69-8" tabindex="-1"></a><span class="st">                 DD - Data deficient</span></span>
-<span id="cb69-9"><a href="app-fish-species.html#cb69-9" tabindex="-1"></a><span class="st">                 NAR - Not at risk</span></span>
-<span id="cb69-10"><a href="app-fish-species.html#cb69-10" tabindex="-1"></a><span class="st">                 E - Endangered</span></span>
-<span id="cb69-11"><a href="app-fish-species.html#cb69-11" tabindex="-1"></a><span class="st">                 T - Threatened</span></span>
-<span id="cb69-12"><a href="app-fish-species.html#cb69-12" tabindex="-1"></a></span>
-<span id="cb69-13"><a href="app-fish-species.html#cb69-13" tabindex="-1"></a><span class="st">                 BC List definitions :</span></span>
-<span id="cb69-14"><a href="app-fish-species.html#cb69-14" tabindex="-1"></a><span class="st">                 Yellow - Species that is apparently secure</span></span>
-<span id="cb69-15"><a href="app-fish-species.html#cb69-15" tabindex="-1"></a><span class="st">                 Blue - Species that is of special concern</span></span>
-<span id="cb69-16"><a href="app-fish-species.html#cb69-16" tabindex="-1"></a><span class="st">                 Exotic - Species that have been moved beyond their natural range as a result of human activity</span></span>
-<span id="cb69-17"><a href="app-fish-species.html#cb69-17" tabindex="-1"></a><span class="st">                 &#39;</span>,</span>
-<span id="cb69-18"><a href="app-fish-species.html#cb69-18" tabindex="-1"></a>                 <span class="at">scroll =</span> gitbook_on)</span></code></pre></div>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="app-fish-species.html#cb71-1" tabindex="-1"></a>fiss_species_table <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">&#39;data/inputs_extracted/fiss_species_table.csv&#39;</span>)</span>
+<span id="cb71-2"><a href="app-fish-species.html#cb71-2" tabindex="-1"></a></span>
+<span id="cb71-3"><a href="app-fish-species.html#cb71-3" tabindex="-1"></a>fiss_species_table <span class="sc">|&gt;</span></span>
+<span id="cb71-4"><a href="app-fish-species.html#cb71-4" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>Morice) <span class="sc">|&gt;</span></span>
+<span id="cb71-5"><a href="app-fish-species.html#cb71-5" tabindex="-1"></a>  fpr<span class="sc">::</span><span class="fu">fpr_kable</span>(<span class="at">caption_text =</span> <span class="st">&#39;Fish species recorded in the Bulkley River watershed groups.&#39;</span>,</span>
+<span id="cb71-6"><a href="app-fish-species.html#cb71-6" tabindex="-1"></a>                 <span class="at">footnote_text =</span> <span class="st">&#39;COSEWIC abbreviations :</span></span>
+<span id="cb71-7"><a href="app-fish-species.html#cb71-7" tabindex="-1"></a><span class="st">                 SC - Special concern</span></span>
+<span id="cb71-8"><a href="app-fish-species.html#cb71-8" tabindex="-1"></a><span class="st">                 DD - Data deficient</span></span>
+<span id="cb71-9"><a href="app-fish-species.html#cb71-9" tabindex="-1"></a><span class="st">                 NAR - Not at risk</span></span>
+<span id="cb71-10"><a href="app-fish-species.html#cb71-10" tabindex="-1"></a><span class="st">                 E - Endangered</span></span>
+<span id="cb71-11"><a href="app-fish-species.html#cb71-11" tabindex="-1"></a><span class="st">                 T - Threatened</span></span>
+<span id="cb71-12"><a href="app-fish-species.html#cb71-12" tabindex="-1"></a></span>
+<span id="cb71-13"><a href="app-fish-species.html#cb71-13" tabindex="-1"></a><span class="st">                 BC List definitions :</span></span>
+<span id="cb71-14"><a href="app-fish-species.html#cb71-14" tabindex="-1"></a><span class="st">                 Yellow - Species that is apparently secure</span></span>
+<span id="cb71-15"><a href="app-fish-species.html#cb71-15" tabindex="-1"></a><span class="st">                 Blue - Species that is of special concern</span></span>
+<span id="cb71-16"><a href="app-fish-species.html#cb71-16" tabindex="-1"></a><span class="st">                 Exotic - Species that have been moved beyond their natural range as a result of human activity</span></span>
+<span id="cb71-17"><a href="app-fish-species.html#cb71-17" tabindex="-1"></a><span class="st">                 &#39;</span>,</span>
+<span id="cb71-18"><a href="app-fish-species.html#cb71-18" tabindex="-1"></a>                 <span class="at">scroll =</span> gitbook_on)</span></code></pre></div>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; overflow-x: scroll; width:100%; ">
 <table class="table table-condensed table-responsive" style="font-size: 11px; margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption style="font-size: initial !important;">

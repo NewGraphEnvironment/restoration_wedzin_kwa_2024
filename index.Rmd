@@ -29,6 +29,7 @@ params:
   update_bib: TRUE
   update_packages: FALSE
   update_gis: FALSE
+  update_lulc: FALSE
 nocite: |
   @gaboury_smith2016DevelopmentAquatic,
   @canada2008CanadianAquatic,
