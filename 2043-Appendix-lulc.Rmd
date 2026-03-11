@@ -34,14 +34,7 @@ floodplain <- sf::st_read(
   file.path(lulc_dir, "floodplain_neexdzii_co.gpkg"), quiet = TRUE
 ) |> sf::st_transform(4326)
 
-# Label sub-basins (matches lulc_classify.R)
-subbasins <- subbasins |>
-  dplyr::arrange(gnis_name, drm) |>
-  dplyr::mutate(
-    stream_short = sub(" (Creek|River|Lake)$", "", gnis_name),
-    seq = ave(seq_len(dplyr::n()), gnis_name, FUN = seq_along),
-    label = paste(stream_short, seq)
-  )
+# name_basin comes from break_points.csv via fresh::frs_watershed_split
 ```
 
 ## Modelled Floodplain
@@ -58,18 +51,19 @@ classified <- list(
   "2023" = terra::rast(file.path(fp_dir, "classified_2023.tif"))
 )
 
-# Load transition raster and build summary
+# Load transition raster, filter summary to agriculture classes only
+ag_classes <- c("Crops", "Rangeland", "Bare Ground")
 trans_rast <- terra::rast(file.path(fp_dir, "transition.tif"))
 trans_cats <- terra::cats(trans_rast)[[1]]
-transition <- list(
-  raster = trans_rast,
-  summary = tibble::tibble(
-    id = trans_cats$id,
-    transition = trans_cats$transition,
-    from_class = "Trees",
-    to_class = sub("Trees -> ", "", trans_cats$transition)
-  )
-)
+trans_summary <- tibble::tibble(
+  id = trans_cats$id,
+  transition = trans_cats$transition,
+  from_class = "Trees",
+  to_class = sub("Trees -> ", "", trans_cats$transition)
+) |>
+  dplyr::filter(to_class %in% ag_classes)
+
+transition <- list(raster = trans_rast, summary = trans_summary)
 
 # Build interactive map with drift
 m <- drift::dft_map_interactive(
@@ -79,22 +73,35 @@ m <- drift::dft_map_interactive(
   source = "io-lulc"
 )
 
-# Add sub-basin outlines as toggleable overlay
-trans_groups <- transition$summary$transition[
-  transition$summary$from_class != transition$summary$to_class
-]
+# Transition groups for layer control
+trans_groups <- trans_summary$transition
+
+# High-contrast sub-basin palette for interactive map (Brewer Set3, 9 classes)
+sb_pal <- RColorBrewer::brewer.pal(9, "Set3")
 
 # Zoom to floodplain extent on load
 bb <- sf::st_bbox(sf::st_transform(floodplain, 4326))
 m <- m |>
   leaflet::fitBounds(bb[["xmin"]], bb[["ymin"]], bb[["xmax"]], bb[["ymax"]]) |>
   leaflet::addPolygons(
-    data = subbasins, fill = FALSE, color = "#5C4033",
+    data = subbasins,
+    fillColor = sb_pal[seq_len(nrow(subbasins))],
+    fillOpacity = 0.3,
+    color = "#333333",
     weight = 2, opacity = 0.8, group = "Sub-basins",
-    label = ~label
+    label = ~name_basin
   ) |>
+  leaflet::addLegend(
+    position = "bottomleft",
+    colors = sb_pal[seq_len(nrow(subbasins))],
+    labels = subbasins$name_basin,
+    title = "Sub-basin",
+    opacity = 0.8,
+    group = "Sub-basins"
+  ) |>
+  leaflet::addProviderTiles("OpenTopoMap", group = "OpenTopoMap") |>
   leaflet::addLayersControl(
-    baseGroups = c("Light", "Esri Satellite", "Google Satellite"),
+    baseGroups = c("Light", "Esri Satellite", "Google Satellite", "OpenTopoMap"),
     overlayGroups = c(names(classified), trans_groups, "AOI", "Sub-basins"),
     options = leaflet::layersControlOptions(collapsed = FALSE)
   ) |>
@@ -103,7 +110,7 @@ m <- m |>
 m
 ```
 
-```{r map-lulc-subbasins, fig.cap="Sub-basin boundaries and modelled floodplain extent used for land cover analysis.", fig.width=8.5, fig.height=11}
+```{r map-lulc-subbasins, fig.cap="Sub-basin boundaries and modelled floodplain extent used for land cover analysis.", fig.width=8.5, fig.height=11, eval=identical(gitbook_on, FALSE)}
 cache <- here::here("data", "spatial")
 streams_all <- readRDS(file.path(cache, "streams.rds"))
 lakes    <- readRDS(file.path(cache, "lakes.rds"))
@@ -157,9 +164,9 @@ relief  <- maptiles::get_tiles(bbox_sf, provider = "Esri.WorldShadedRelief",
                                zoom = 10, crop = TRUE)
 basemap_stars <- stars::st_as_stars(relief)
 
-# Earthy sub-basin palette
+# Earthy sub-basin palette (9 sub-basins)
 earth_pal <- c("#A67C52", "#C4A882", "#8B9E6B", "#D4A76A",
-               "#7A8B6E", "#BFA07A", "#9B8E6E", "#C2B280")
+               "#7A8B6E", "#BFA07A", "#9B8E6E", "#C2B280", "#8FA87C")
 
 tmap::tmap_mode("plot")
 
@@ -169,13 +176,13 @@ tmap::tm_shape(basemap_stars, bbox = bbox) +
   # Sub-basins
   tmap::tm_shape(subbasins) +
   tmap::tm_polygons(
-    fill = "label",
+    fill = "name_basin",
     fill.scale = tmap::tm_scale_categorical(values = earth_pal),
     fill_alpha = 0.35,
     col = "#5C4033", lwd = 1.5,
     fill.legend = tmap::tm_legend(show = FALSE)
   ) +
-  tmap::tm_text("label", size = 0.65, col = "#3B2716", fontface = "bold",
+  tmap::tm_text("name_basin", size = 0.65, col = "#3B2716", fontface = "bold",
                 options = tmap::opt_tm_text(shadow = TRUE)) +
 
   # Floodplain

@@ -39,14 +39,7 @@ floodplain <- sf::st_read(
   file.path(out_dir, "floodplain_neexdzii_co.gpkg"), quiet = TRUE
 ) |> sf::st_transform(4326)
 
-# Label sub-basins: auto-number by stream name, 1 = mouth (lowest DRM)
-subbasins <- subbasins |>
-  dplyr::arrange(gnis_name, drm) |>
-  dplyr::mutate(
-    stream_short = sub(" (Creek|River|Lake)$", "", gnis_name),
-    seq = ave(seq_len(dplyr::n()), gnis_name, FUN = seq_along),
-    label = paste(stream_short, seq)
-  )
+# Use name_basin from break_points.csv (carried through via fresh::frs_watershed_split)
 
 # --- Pass 1: Whole floodplain (for interactive map) ---
 message("=== Whole floodplain ===")
@@ -76,7 +69,7 @@ results <- list()
 
 for (i in seq_len(nrow(subbasins))) {
   sb <- subbasins[i, ]
-  lab <- sb$label
+  lab <- sb$name_basin
 
   fp_clip <- sf::st_intersection(floodplain, sb) |>
     sf::st_collection_extract("POLYGON") |>

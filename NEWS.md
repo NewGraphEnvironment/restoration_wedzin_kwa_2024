@@ -1,4 +1,14 @@
 
+# restoration_wedzin_kwa_2024 DRAFT 0.1.8 (2026-03-11)
+
+- use `name_basin` labels from `break_points.csv` for sub-basins ([#120](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/120))
+- regenerate `subbasins.gpkg` via `fresh::frs_watershed_split(crs = 3005)`
+- add Brewer Set3 palette and legend to interactive LULC map
+- add OpenTopoMap basemap option to interactive map
+- add timber harvest and watershed function caveats to LULC results
+- split results LULC paragraph: findings vs interpretation
+- add gross/net transition numbers to results summary
+
 # restoration_wedzin_kwa_2024 DRAFT 0.1.7 (2026-03-10)
 
 - add climate anomaly methods, results summary, and trend table ([#118](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/118))
