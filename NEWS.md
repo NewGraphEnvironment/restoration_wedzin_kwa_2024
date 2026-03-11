@@ -1,5 +1,5 @@
 
-# restoration_wedzin_kwa_2024 DRAFT 0.1.6 (2026-03-06)
+# restoration_wedzin_kwa_2024 DRAFT 0.1.6 (2026-03-10)
 
 - add LULC sub-basin analysis appendix with drift/flooded pipeline ([#114](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/114))
 - add interactive land cover transition map to appendix using `dft_map_interactive()` with sub-basin overlay ([#116](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/116))
