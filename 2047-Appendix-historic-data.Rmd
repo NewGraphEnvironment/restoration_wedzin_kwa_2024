@@ -1,0 +1,214 @@
+
+
+# **Appendix - Historic Data Products** {-#app-historic-data}
+
+## @price2014UpperBulkley - Extracted Waypoints {-}
+
+Coordinates of points of interest documented in @price2014UpperBulkley were extracted from the PDF report using `tabulapdf` and converted to a spatial layer (`sites_restoration.gpkg`, layer name = `price_2014`). The extracted data includes locations of river channelization, potential barriers to fish migration, and areas of upwelling groundwater. Data is also available in [price_2014_waypoints.csv](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/inputs_extracted/price_2014_waypoints.csv).
+
+```{r extract-price2014, eval = F}
+path <- "/Users/airvine/zotero/storage/7JCL42Y3/price_2014_upper_bulkley_floodplain_habitat_-_modifications,_physical_barriers,_and_sites.pdf"
+
+# name our csv we are creating
+path_file <- "data/inputs_extracted/price_2014_waypoints.csv"
+
+# define page to extract table
+page <- 32
+
+
+# #if you wanted to define the area to extract would run with this the first time
+# tabulapdf::locate_areas(path, pages = page)
+
+
+# to get....
+# tab_area = list(c(151.17224,  87.13111, 715.14139,604.27249 ))
+# but....looks like it will guess correct with no help so let's do that
+tabulapdf::extract_tables(path,
+                                  pages = page,
+                                  # method = "lattice",
+                                  # output = c("tibble"),
+                                  # guess = FALSE,
+                                  # area = tab_area
+                                  ) |>
+  purrr::pluck(1) |>
+  # need to make the first row be the names due to muti-line header
+  janitor::row_to_names(1) |>
+  # now let's burn it to a csv so we can correct the types
+  readr::write_csv(path_file)
+
+# read it back in to get the types right
+tab1 <- readr::read_csv(path_file)
+
+# now let's define the rest of the pages to extract from
+page <- 33:36
+
+
+# build a function to pull them all out at the same time
+extract_tables_multi <- function(page){
+  tabulapdf::extract_tables(path,
+                                  pages = page,
+                                  ) |>
+  purrr::pluck(1) |>
+    # use the names from the header table
+  purrr::set_names(nm = names(tab1))
+}
+
+# run our function
+tabs_extra <- page |>
+  purrr::map_df(
+    extract_tables_multi
+  )
+
+# join our og table to our multi-page output but fix a type
+tab <- dplyr::bind_rows(
+  tab1 |> dplyr::mutate(number = as.numeric(number)),
+  tabs_extra
+) |>
+  # clean the names for the report
+  purrr::set_names(nm = stringr::str_to_title(names(tab1))) |>
+  # add a theme
+dplyr::mutate(Theme = dplyr::case_when(
+  stringr::str_detect(Notes, stringr::regex("spawning|Spawners", ignore_case = TRUE)) ~ "Spawning",
+  stringr::str_detect(Notes, stringr::regex("culvert|bridge|crossing", ignore_case = TRUE)) ~ "Stream Crossing",
+    stringr::str_detect(Notes, stringr::regex("richfield", ignore_case = TRUE)) ~ "Other",
+    stringr::str_detect(Notes, stringr::regex("floodplain", ignore_case = TRUE)) ~ "Floodplain",
+    stringr::str_detect(Notes, stringr::regex("rail", ignore_case = TRUE)) ~ "Railway",
+    stringr::str_detect(Notes, stringr::regex("field|cattle", ignore_case = TRUE)) ~ "Agriculture",
+    stringr::str_detect(Notes, stringr::regex("beaver", ignore_case = TRUE)) ~ "Beaver",
+    stringr::str_detect(Notes, stringr::regex("forest|clearcut|cutblock", ignore_case = TRUE)) ~ "Forestry",
+    stringr::str_detect(Notes, stringr::regex("rip-rap", ignore_case = TRUE)) ~ "Rip-rap",
+    stringr::str_detect(Notes, stringr::regex("Log jam", ignore_case = TRUE)) ~ "Log jam",
+
+    TRUE ~ "Other" # Default to Other if no other conditions are met
+  )) |>
+
+  #there is an issue at row 182... so fix by appending UB-643 to 645 [UB- to the beginning of the photo series column
+  dplyr::mutate(`Photo Series` = dplyr::case_when(
+    Number == 182 ~ paste0("UB-643 to 645 [UB-", `Photo Series`),
+    TRUE ~ `Photo Series`
+  )) |>
+  # remove rows without a Number
+  dplyr::filter(!is.na(Number))
+
+# burn over our csv so we can put as table in report
+tab |>
+  readr::write_csv(path_file, na = '')
+
+# create a spatial file and save to the shared project
+tab |>
+  janitor::clean_names() |>
+  # convert the time to character to preserve as gpkg won't accept
+    dplyr::mutate(time = as.character(time)) |>
+  dplyr::filter(!is.na(easting)) |>
+    sf::st_as_sf(coords = c("easting", "northing"), crs = 26909) |>
+    sf::st_transform(3005) |>
+  # put time after number and put notes as last column
+  dplyr::select(number, time, theme, everything()) |>
+
+    sf::st_write(
+      dsn = "~/Projects/gis/restoration_wedzin_kwa/sites_restoration.gpkg",
+      layer = 'price_2014',
+      delete_layer = TRUE
+    )
+
+
+```
+
+```{r tab-price-2014-waypoints}
+# read in the price 2014 data
+price_2014 <- read_csv("data/inputs_extracted/price_2014_waypoints.csv")
+
+# present as table
+price_2014 %>%
+  fpr::fpr_kable(caption_text = "Summary of Price (2014) waypoints for the Upper Bulkley floodplain including locations of river channelization, potential barriers to fish migration, and assessed areas of upwelling groundwater having potential importance to salmonids.")
+```
+
+<br>
+
+## @mackay_etal1998MidBulkleyDetailed - Extracted Prescriptions and Riparian Polygons {-}
+
+Restoration prescriptions and riparian polygon data from @mackay_etal1998MidBulkleyDetailed were extracted and spatialized through two complementary workflows:
+
+**Prescription Text Extraction:** Complex regex patterns were used to parse unstructured PDF text, extracting 18 fields per prescription including location, UTM coordinates, impact descriptions, goals, and proposed works. Manual correction was required to fix coordinate errors in the original document. Results are available in [ncfdc_1998_prescriptions.csv](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/inputs_extracted/ncfdc_1998_prescriptions.csv) and as the `ncfdc_1998_prescriptions_raw` layer in `sites_restoration.gpkg`.
+
+**Riparian Prescription Spatialization:** Appendix maps from the original report were georeferenced in QGIS to identify reach break locations. Prescriptions in the original report used chainage (distance upstream from reach breaks) rather than coordinates. Using `fwapgr` (a wrapper for `fwapg`), reach breaks were indexed to the BC Freshwater Atlas to obtain downstream route measures, which were then combined with prescription chainage values to geolocate each riparian polygon along the stream network. Results are stored as the `ncfdc_1998_riparian_raw` layer in `sites_restoration.gpkg`.
+
+```{r tab-ncfdc-1998-priority}
+
+
+ncfdc_1998_71a %>%
+  fpr::fpr_kable(caption_text = "Table 71a from the NCFDC (1998) report - summary of the prioritization of sub-basins in the Neexdzii Kwah region.",
+                 scroll = FALSE)
+```
+
+<br>
+
+```{r tab-ncfdc-1998-priority-detailed-prep, eval = F}
+# read in from the path using row 4 as teh header
+
+path <- "~/Library/CloudStorage/OneDrive-Personal/Projects/2024-069-ow-wedzin-kwa-restoration/data/ncfdc_1998/Mid Bulkley Detailed FHAP_CAP_RAP/Appendix/AppH.xls"
+
+
+
+path_file <- "data/inputs_extracted/ncfdc_1998_73_app_h.csv"
+
+# read in the data, clean and burn to csv
+readxl::read_excel(path, skip = 3) |>
+  # fill down for System and Sub-basin columns
+  tidyr::fill(System, `Sub-Basin`) |>
+  # save as csv to data/inputs_extracted/ncfdc_1998_73_app_h.csv
+  readr::write_csv(path_file)
+
+```
+
+<br>
+
+```{r tab-ncfdc-1998-priority-detailed, results="asis", echo=FALSE}
+# read the file back in and present as table
+
+my_caption <- "Table 73 from digital Appendix H of the NCFDC (1998) report (not included in pdf). Decision matrix to prioritize reaches for restoration based on watershed position, fisheries value, synergistic (downstream impact) value, the nature of impacts (sorted descending by total weight)"
+
+path_file <- "data/inputs_extracted/ncfdc_1998_73_app_h.csv"
+
+# my_tab_caption()
+
+
+readr::read_csv(path_file) |>
+  dplyr::arrange(desc(`Total Weight`)) |>
+  # my_dt_table(page_length = 5)
+  fpr::fpr_kable(caption_text = my_caption)
+
+```
+
+<br>
+
+```{r tab-ncfdc-1998-pres, eval=TRUE}
+ncfdc_1998 <- readr::read_csv(
+  "data/ncfdc_1998_prescriptions_hand_bomb.csv",
+  locale = readr::locale(encoding = "UTF-8")
+)
+
+ncfdc_1998_cleaned <- ncfdc_1998 |>
+  dplyr::mutate(
+    dplyr::across(
+      dplyr::everything(),
+      ~ as.character(.) |>
+        stringr::str_replace_all("[^[:alnum:][:space:].,]", "") |> # Retain alphanumeric, spaces, periods, and parentheses
+        stringr::str_replace_all("\\.", "\\\\.")    |>
+        stringr::str_replace_all("\\,", "\\\\,")
+    )
+  )
+
+ncfdc_1998_cleaned %>%
+  dplyr::select(sub_basin:technical_references) %>%
+  knitr::kable(
+    booktabs = T,
+    label = NA,
+    caption = "Summary of  NCFDC (1998) prescriptions for the Neexdzii Kwah area."
+    ) |>
+  kableExtra::kable_styling(c("condensed", "responsive"),
+                              full_width = T,
+                              font_size = font_set) |>
+  kableExtra::scroll_box(width = "100%", height = "500px")
+
+```

@@ -1,6 +1,6 @@
 
 
-# **Appendix 1b - Fish Species** {-#app-fish-species}
+# **Appendix - Fish Species** {-#app-fish-species}
 
 Fish species recorded in the greater Bulkley River watershed group are detailed in Table \@ref(tab:fiss-species-table) [@moe2024KnownBC]. Note that this table is scoped to the full Bulkley River watershed group code, which is broader than the Neexdzii Kwah study area (see [Issue #112](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/112)). Summaries of fish species life history, biology, stock status, and traditional use are documented in @schell2003BriefOverview, @wilson_rabnett2007FishPassage, @gottesfeld_etal2002ConservingSkeena and @officeofthewetsuweten2013WetsuwetenTitle. @wilson_rabnett2007FishPassage discuss chinook, pink, sockeye, coho, steelhead and indigenous freshwater Bulkley River fish stocks within the context of key lower and upper Bulkley River habitats such as the Suskwa River, Station Creek, Harold Price Creek, Telkwa River and Buck Creek. Key areas within the upper Bulkley River watershed with high fishery values, documented in @schell2003BriefOverview, are the upper Bulkley mainstem, Buck Creek, Dungate Creek, Barren Creek, McQuarrie Creek, Byman Creek, Richfield Creek, Johnny David Creek, Aitken Creek and Emerson Creek. Some areas of high fisheries values for chinook, sockeye and coho are noted in @bustard_schell2002ConservingMorice as McBride Lake, Nanika Lake, and Morice Lake watersheds.
 

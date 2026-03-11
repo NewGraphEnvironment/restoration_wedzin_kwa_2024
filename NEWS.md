@@ -1,4 +1,14 @@
 
+# restoration_wedzin_kwa_2024 DRAFT 0.1.9 (2026-03-11)
+
+- restructure Results: replace layer tracking table with descriptive GIS environment summary
+- add STAC cataloging explanation and `stac_uav_bc` repo link to Aerial Imagery section
+- move UAV imagery and historic data tables to new appendices
+- update lateral connectivity text to reference flooded, fresh, drift repos
+- replace raw parameter CSV table with plain-language ranking summary
+- strip numbers from all appendix headings
+- remove SKT and ESI appendices — cite sources inline instead
+
 # restoration_wedzin_kwa_2024 DRAFT 0.1.8 (2026-03-11)
 
 - use `name_basin` labels from `break_points.csv` for sub-basins ([#120](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/120))

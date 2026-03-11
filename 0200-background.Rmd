@@ -170,11 +170,11 @@ To provide regional climate context, we used a custom fork of the [BC Climate An
 Anomalies are calculated relative to 1981–2010 climate normals using ERA5-Land reanalysis data, regridded to ~30 km spatial resolution [@@munozsabater2019ERA5Landhourlya]. Trend direction and significance are assessed using the Mann-Kendall test and Theil-Sen slope estimator over the 1951–present period [@bcgovernment2024BCclimate].
 
 <br>
-See [Appendix 1 - Climate Anomaly Data](#app-climate-anomaly) for plots.
+See [Appendix - Climate Anomaly Data](#app-climate-anomaly) for plots.
 
 
 ## Skeena Knowledge Trust
-[The Skeena Knowledge Trust (SKT)](https://www.skeenatrust.ca/about/) serves as a centralized repository for data and information related to salmon and salmon habitat within the Skeena River watershed. To support informed decision-making, SKT provides access to a wide range of reports, datasets, and spatial information through its online platform. A summary of the available project packages and geospatial data can be found in Appendix 3, which provides an overview of key resources and their relevance to salmon conservation and habitat management in the region.
+[The Skeena Knowledge Trust (SKT)](https://www.skeenatrust.ca/about/) serves as a centralized repository for data and information related to salmon and salmon habitat within the Skeena River watershed. To support informed decision-making, SKT provides access to a wide range of reports, datasets, and spatial information through its online platform. Data including reports, datasets, and spatial layers relevant to salmon conservation and habitat management in the region are accessible through the [SKT data portal](https://data.skeenasalmon.info).
 
 ## Water Quality
 Water quality in the Neexdzi Kwah watershed has been the focus of multiple key studies, including among others - @nijman1996Waterquality, @remington_donas2000Nutrientsalgae, @oliver2020Analysis2017 and @westcott2022UpperBulkleya. The background information and resulting recommendations contained within these reports are critical for informing watershed recovery actions, as water quality has the potential to be a limiting factor for fish and fish food. This detailed documentation can also be leveraged to serve as a baseline dataset in which to compare current and future conditions. The reader is encouraged to source information directly from the aforementioned reports as the following summary has been simplified greatly.
@@ -368,7 +368,7 @@ Mean male chinook fork length at the Tyee Test Fishery has declined from approxi
 With harvest management operating at the Skeena scale and largely outside watershed-level control, freshwater habitat restoration is one of the few interventions available to support population recovery at the watershed scale. Improving spawning and rearing habitat quality, reconnecting side channels, and restoring riparian function directly address the freshwater survival bottleneck that compounds the effects of ocean and harvest-driven mortality. The remainder of this report focuses on identifying, prioritizing, and monitoring these habitat restoration opportunities within the Neexdzii Kwah.
 
 
-A summary of fish species recorded in the greater Bulkley River watershed group is provided in [Appendix 1 - Fish Species](#app-fish-species) (Table \@ref(tab:fiss-species-table)).
+A summary of fish species recorded in the greater Bulkley River watershed group is provided in [Appendix - Fish Species](#app-fish-species) (Table \@ref(tab:fiss-species-table)).
 
 
 ## Historic Restoration Context

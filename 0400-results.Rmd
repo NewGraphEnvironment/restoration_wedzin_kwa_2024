@@ -30,7 +30,7 @@ knitr::include_graphics("fig/map_study-area.png")
 
 <br>
 
-UAV flights were conducted at the majority of sites to provide high-resolution baseline imagery for monitoring. Orthomosaics for mapped sites are accessible via the imagery catalog detailed in [Aerial Imagery](#aerial-imagery). Raw field data is stored within the shared QGIS project in the `Project Specific/Field Data/2024` group, with photos in the `ignore_mobile/photos` directory. Site locations are available as a downloadable [`sites_reviewed_2024_202506.geojson`](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/gis/sites_reviewed_2024_202506.geojson) which renders as an interactive map on GitHub. Detailed site assessment data including classifications, visit rationale, and assessment comments are provided in [Appendix 2 - Effectiveness Monitoring Data and Potential Restoration Site Review](#app-eff-mon).
+UAV flights were conducted at the majority of sites to provide high-resolution baseline imagery for monitoring. Orthomosaics for mapped sites are accessible via the imagery catalog detailed in [Aerial Imagery](#aerial-imagery). Raw field data is stored within the shared QGIS project in the `Project Specific/Field Data/2024` group, with photos in the `ignore_mobile/photos` directory. Site locations are available as a downloadable [`sites_reviewed_2024_202506.geojson`](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/gis/sites_reviewed_2024_202506.geojson) which renders as an interactive map on GitHub. Detailed site assessment data including classifications, visit rationale, and assessment comments are provided in [Appendix - Effectiveness Monitoring Data and Potential Restoration Site Review](#app-eff-mon).
 
 <br>
 
@@ -155,364 +155,35 @@ The Neexdzii Kwah watershed is approximately `r warming_shift`°C warmer than it
 
 The amount of precipitation has not changed — no season shows a statistically significant trend. However, summer soil moisture has declined by roughly `r abs(sm_shift)` percentage points relative to the pre-1980 period and has been below normal in `r sm_below` of the last `r sm_total` years. Soils are drying because warmer temperatures drive more evapotranspiration, even when the same amount of rain falls. For cold-water fish species, this translates to reduced summer baseflows during the period when flows are already at their lowest, compounding thermal stress from warmer water temperatures.
 
-Trend statistics, spatial anomaly maps, and time series plots are presented in [Appendix 1 - Climate Anomaly Data](#app-climate-anomaly).
+Trend statistics, spatial anomaly maps, and time series plots are presented in [Appendix - Climate Anomaly Data](#app-climate-anomaly).
 
 
 ## Collaborative GIS Environment
 
-A summary of background information layers loaded to the `background_layers.gpkg` geopackage of the `restoration_wedzin_kwa` project at the time of writing are included in Table \@ref(tab:tab-rfp-tracking).
+The shared QGIS project (`restoration_wedzin_kwa`) serves as the spatial integration layer for this work — a single environment where all background information can be viewed together and taken into the field via Mergin Maps on mobile devices. The project contains approximately 45 provincial background layers from the BC Data Catalogue alongside locally generated analysis outputs. Key layer categories include:
 
-```{r rfp-tracking-copy, eval = params$update_gis}
-# first we will copy the doc from the Q project to this repo - the location of the Q project is outside of the repo!!
-q_path_stub <- "~/Projects/gis/restoration_wedzin_kwa/"
+-   **Stream network and fish passage modelling** — BC Freshwater Atlas streams, lakes, and wetlands; bcfishpass crossings, barriers, and modelled habitat; PSCIS assessment, design, and remediation sites; fish observations and obstacles to fish passage
+-   **Standardized field data collection forms** — site assessment forms (PSCIS, FISS, effectiveness monitoring, eDNA) that sync bidirectionally between field devices and the cloud via Mergin Maps, providing a structured and portable system for data collection
+-   **Spatialized historic restoration data** — over 200 riparian prescriptions from @mackay_etal1998MidBulkleyDetailed, floodplain waypoints from @price2014UpperBulkley, and proposed restoration sites from @gaboury_smith2016DevelopmentAquatic, all extracted from PDF reports and georeferenced to the stream network
+-   **Traditional knowledge and fisheries values** — traditional fishing sites extracted and spatialized from @gottesfeld_rabnett2007SkeenaFish and @wilson_rabnett2007FishPassage, spatially delineated areas of high value chinook and sockeye spawning habitat (DFO, Arocha Canada, and others), mapped salmon spawning and rearing polygons, and delineation of Wet'suwet'en house group territories
+-   **Land and resource tenure** — parcel fabric, range tenures, forest tenure roads, pipeline rights-of-way, Indian Reserves, parks, conservancy areas, wildlife habitat areas, and old growth management areas
+-   **Floodplain modelling and land cover change** — modelled floodplain extents, lateral habitat connectivity analysis (railway barriers), and classified land cover change detection polygons highlighting transitions between time periods
+-   **Aerial imagery** — UAV orthomosaics, digital surface and terrain models stored as cloud-optimized GeoTIFFs (AWS), and historic orthophoto coverage indices
+-   **Environmental context** — biogeoclimatic zones, fire history and burn severity, vegetation resource inventory, terrain and ecosystem mapping, hydrometric stations, environmental monitoring sites, and water rights
 
-rfp_tracking_raw <- sf::st_read(paste0(q_path_stub, "background_layers.gpkg"),
-            layer = "rfp_tracking",
-            quite = TRUE)
-
-# grab the metadata
-md <- rfp::rfp_meta_bcd_xref()
-
-# remove the `_vw` from the end of content
-rfp_tracking_prep <- dplyr::left_join(
-  rfp_tracking_raw %>% 
-    dplyr::arrange(desc(timestamp)) %>% 
-    dplyr::distinct(content, .keep_all = FALSE),
-  
-  md |> 
-    dplyr::select(content = object_name, url = url_browser, description),
-  
-  by = "content"
-) |> 
-    dplyr::mutate(url = dplyr::case_when(
-    stringr::str_detect(content, "bcfishobs|bcfishpass") ~ "https://smnorris.github.io/bcfishpass/06_data_dictionary.html",
-    TRUE ~ url)) |>
-  arrange(content)
-
-rfp_tracking_prep %>% 
-  readr::write_csv("data/rfp_tracking_prep.csv")
-
-```
-
-```{r tab-rfp-tracking}
-rfp_tracking_prep <- readr::read_csv(
-  "data/rfp_tracking_prep.csv"
-)
-
-rfp_tracking_prep %>% 
-  fpr::fpr_kable(caption_text = "Layers loaded to collaborative GIS project.",
-                 footnote_text = "Metadata information for bcfishpass and bcfishobs layers can be provided here in the future but  currently can usually be sourced from https://smnorris.github.io/bcfishpass/06_data_dictionary.html .")
-
-
-
-```
+The ability to overlay these layers — reach breaks alongside intrinsic potential modelling, fish presence observations next to historic prescriptions, floodplain change detection over current land tenure — allows users to understand the spatial context of each location and make informed decisions about restoration priorities. Critically, this is not just an office tool: through Mergin Maps integration, the full project travels into the field on mobile devices, serving as the primary navigation and orientation system during site visits and providing the platform for standardized data collection in real time.
 
 ## Aerial Imagery
 
-Orthoimagery has been gathered in the Neexdzii Kwah watershed for past monitoring of historic restoration sites, as part of fish passage restoration planning efforts, and specifically for this project by Matt Sakals (WLRS Provincial Drone Specialist) and New Graph Environment Ltd. team members. Data has been stored as Cloud Optimized Geotiffs on a cloud service provider (AWS) with most outputs linked to in the collaborative GIS project. Data can be downloaded and viewed through the links provided in Table \@ref(tab:tab-uav-imagery-cap).
-
-```{r uav-get, eval = T}
-
-# only needs to be run at the beginning or if we want to update
-
-# Grab the imagery from the stac
-
-# neexdzii kwa
-
-bbox = c(-126.77000, 54.08832, -125.88822, 54.68786)
-
-# use rstac to query the collection
-q <- rstac::stac("https://images.a11s.one/") |>
-    rstac::stac_search(
-      collections = "imagery-uav-bc-prod",
-                      bbox = bbox
-                      
-                     ) |>
-  rstac::post_request()
-
-# get deets of the items
-uav_raw <- q |>
-  rstac::items_fetch()
-
-# build the table to display the info
-uav_tab <- tibble::tibble(url_download = purrr::map_chr(uav_raw$features, ~ purrr::pluck(.x, "assets", "image", "href"))) |> 
-  dplyr::mutate(stub = stringr::str_replace_all(url_download, "https://imagery-uav-bc.s3.amazonaws.com/", "")) |> 
-  tidyr::separate(
-    col = stub, 
-    into = c("region", "watershed_group", "year", "item", "rest"),
-    sep = "/",
-    extra = "drop"
-  ) |> 
-  dplyr::mutate(
-    link_view = 
-                  dplyr::case_when(
-                    !tools::file_path_sans_ext(basename(url_download)) %in% c("dsm", "dtm") ~ 
-                      ngr::ngr_str_link_url(
-                        url_base = "https://viewer.a11s.one/?cog=",
-                        url_resource = url_download, 
-                        url_resource_path = FALSE,
-                        # anchor_text= "URL View"
-                        anchor_text= tools::file_path_sans_ext(basename(url_download))),
-                    T ~ "-"),
-                        link_download = ngr::ngr_str_link_url(url_base = url_download, anchor_text = url_download)
-    )|> 
-  dplyr::select(year, item, link_view, link_download)
-
-# burn to the repo for safe keeping
-uav_tab |> 
-  readr::write_csv(
-  "data/inputs_extracted/uav.csv"
-)
-
-```
-
-```{r tab-uav-imagery-cap, results="asis", eval= gitbook_on}
-my_caption <- "Drone imagery download and viewer links."
-
-my_tab_caption()
-```
-
-```{r tab-uav-imagery, eval= gitbook_on}
-uav_tab |> 
-  my_dt_table(cols_freeze_left = 0, escape = FALSE)
-```
+Orthoimagery has been gathered in the Neexdzii Kwah watershed for past monitoring of historic restoration sites, as part of fish passage restoration planning efforts, and specifically for this project by Matt Sakals (WLRS Provincial Drone Specialist) and New Graph Environment Ltd. team members. Data has been processed and stored as Cloud Optimized GeoTIFFs on AWS, and cataloged using the SpatioTemporal Asset Catalog ([STAC](https://github.com/NewGraphEnvironment/stac_uav_bc)) standard. This means imagery can be queried programmatically based on spatial extent and time range, and loaded directly into applications such as QGIS without needing to know specific file paths — a significant improvement over traditional file-based storage where data is effectively inaccessible unless you already know where it is. Outputs are linked within the collaborative GIS project. A table of download and viewer links is provided in [Appendix - Aerial Imagery](#app-uav-imagery).
 
 ## Historic Data Products
 
 A key deliverable of this project was the compilation, extraction, and spatialization of historic restoration data from multiple sources. This work involved extracting tabular data from PDF reports, converting site coordinates to spatial formats, and linking descriptions to GIS layers within the shared `restoration_wedzin_kwa` project. Background context for these historic reports is provided in the [Historic Restoration Context](#historic-restoration-context) section. The resulting spatial layers are stored in `sites_restoration.gpkg` within the collaborative GIS project.
 
-### @price2014UpperBulkley - Extracted Waypoints
+Coordinates of points of interest documented in @price2014UpperBulkley — including locations of river channelization, potential barriers to fish migration, and areas of upwelling groundwater — were extracted from the PDF report using `tabulapdf` and converted to a spatial layer. Restoration prescriptions and riparian polygon data from @mackay_etal1998MidBulkleyDetailed were extracted through two complementary workflows: regex parsing of unstructured PDF text to extract 18 fields per prescription, and georeferencing of appendix maps to spatialize riparian polygons using chainage measurements indexed to the BC Freshwater Atlas via `fwapgr`. Site locations from @gaboury_smith2016DevelopmentAquatic have also been extracted and spatialized. Amalgamated results from the SSAF State of the Value Report for Fish and Fish Habitat [@skeenasustainabilityassessmentforum2021Skeenasustainability] have been integrated into the shared GIS project.
 
-Coordinates of points of interest documented in @price2014UpperBulkley were extracted from the PDF report using `tabulapdf` and converted to a spatial layer (`sites_restoration.gpkg`, layer name = `price_2014`). The extracted data includes locations of river channelization, potential barriers to fish migration, and areas of upwelling groundwater. Individual waypoint information is presented in Table \@ref(tab:tab-price-2014-waypoints) and available in [price_2014_waypoints.csv](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/inputs_extracted/price_2014_waypoints.csv).
-
-```{r extract-price2014, eval = F}
-path <- "/Users/airvine/zotero/storage/7JCL42Y3/price_2014_upper_bulkley_floodplain_habitat_-_modifications,_physical_barriers,_and_sites.pdf"
-
-# name our csv we are creating
-path_file <- "data/inputs_extracted/price_2014_waypoints.csv"
-
-# define page to extract table
-page <- 32
-
-
-# #if you wanted to define the area to extract would run with this the first time
-# tabulapdf::locate_areas(path, pages = page)
-
-
-# to get.... 
-# tab_area = list(c(151.17224,  87.13111, 715.14139,604.27249 ))
-# but....looks like it will guess correct with no help so let's do that
-tabulapdf::extract_tables(path,
-                                  pages = page,
-                                  # method = "lattice",
-                                  # output = c("tibble"),
-                                  # guess = FALSE,
-                                  # area = tab_area
-                                  ) |> 
-  purrr::pluck(1) |> 
-  # need to make the first row be the names due to muti-line header
-  janitor::row_to_names(1) |> 
-  # now let's burn it to a csv so we can correct the types
-  readr::write_csv(path_file)
-
-# read it back in to get the types right
-tab1 <- readr::read_csv(path_file)
-
-# now let's define the rest of the pages to extract from
-page <- 33:36
-
-
-# build a function to pull them all out at the same time 
-extract_tables_multi <- function(page){
-  tabulapdf::extract_tables(path,
-                                  pages = page,
-                                  ) |> 
-  purrr::pluck(1) |> 
-    # use the names from the header table
-  purrr::set_names(nm = names(tab1))
-}
-
-# run our function 
-tabs_extra <- page |> 
-  purrr::map_df(
-    extract_tables_multi
-  )
-
-# join our og table to our multi-page output but fix a type 
-tab <- dplyr::bind_rows(
-  tab1 |> dplyr::mutate(number = as.numeric(number)),
-  tabs_extra 
-) |> 
-  # clean the names for the report
-  purrr::set_names(nm = stringr::str_to_title(names(tab1))) |> 
-  # add a theme
-dplyr::mutate(Theme = dplyr::case_when(
-  stringr::str_detect(Notes, stringr::regex("spawning|Spawners", ignore_case = TRUE)) ~ "Spawning",
-  stringr::str_detect(Notes, stringr::regex("culvert|bridge|crossing", ignore_case = TRUE)) ~ "Stream Crossing",
-    stringr::str_detect(Notes, stringr::regex("richfield", ignore_case = TRUE)) ~ "Other", 
-    stringr::str_detect(Notes, stringr::regex("floodplain", ignore_case = TRUE)) ~ "Floodplain",
-    stringr::str_detect(Notes, stringr::regex("rail", ignore_case = TRUE)) ~ "Railway",
-    stringr::str_detect(Notes, stringr::regex("field|cattle", ignore_case = TRUE)) ~ "Agriculture",
-    stringr::str_detect(Notes, stringr::regex("beaver", ignore_case = TRUE)) ~ "Beaver",
-    stringr::str_detect(Notes, stringr::regex("forest|clearcut|cutblock", ignore_case = TRUE)) ~ "Forestry",
-    stringr::str_detect(Notes, stringr::regex("rip-rap", ignore_case = TRUE)) ~ "Rip-rap",
-    stringr::str_detect(Notes, stringr::regex("Log jam", ignore_case = TRUE)) ~ "Log jam",
-    
-    TRUE ~ "Other" # Default to Other if no other conditions are met
-  )) |> 
-
-  #there is an issue at row 182... so fix by appending UB-643 to 645 [UB- to the beginning of the photo series column
-  dplyr::mutate(`Photo Series` = dplyr::case_when(
-    Number == 182 ~ paste0("UB-643 to 645 [UB-", `Photo Series`),
-    TRUE ~ `Photo Series`
-  )) |> 
-  # remove rows without a Number
-  dplyr::filter(!is.na(Number)) 
-
-# burn over our csv so we can put as table in report
-tab |> 
-  readr::write_csv(path_file, na = '')
-
-# create a spatial file and save to the shared project
-tab |> 
-  janitor::clean_names() |> 
-  # convert the time to character to preserve as gpkg won't accept
-    dplyr::mutate(time = as.character(time)) |>
-  dplyr::filter(!is.na(easting)) |>
-    sf::st_as_sf(coords = c("easting", "northing"), crs = 26909) |>
-    sf::st_transform(3005) |>
-  # put time after number and put notes as last column
-  dplyr::select(number, time, theme, everything()) |>
-  
-    sf::st_write(
-      dsn = "~/Projects/gis/restoration_wedzin_kwa/sites_restoration.gpkg",
-      layer = 'price_2014',
-      delete_layer = TRUE
-    )
-
-
-```
-
-```{r tab-price-2014-waypoints}
-# read in the price 2014 data
-price_2014 <- read_csv("data/inputs_extracted/price_2014_waypoints.csv")
-
-# present as table
-price_2014 %>% 
-  fpr::fpr_kable(caption_text = "Summary of Price (2014) waypoints for the Upper Bulkley floodplain including locations of river channelization, potential barriers to fish migration, and assessed areas of upwelling groundwater having potential importance to salmonids.")
-```
-
-### @mackay_etal1998MidBulkleyDetailed - Extracted Prescriptions and Riparian Polygons
-
-Restoration prescriptions and riparian polygon data from @mackay_etal1998MidBulkleyDetailed were extracted and spatialized through two complementary workflows:
-
-**Prescription Text Extraction:** Complex regex patterns were used to parse unstructured PDF text, extracting 18 fields per prescription including location, UTM coordinates, impact descriptions, goals, and proposed works. Manual correction was required to fix coordinate errors in the original document. Results are available in [ncfdc_1998_prescriptions.csv](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/inputs_extracted/ncfdc_1998_prescriptions.csv) and as the `ncfdc_1998_prescriptions_raw` layer in `sites_restoration.gpkg`.
-
-**Riparian Prescription Spatialization:** Appendix maps from the original report were georeferenced in QGIS to identify reach break locations. Prescriptions in the original report used chainage (distance upstream from reach breaks) rather than coordinates. Using `fwapgr` (a wrapper for `fwapg`), reach breaks were indexed to the BC Freshwater Atlas to obtain downstream route measures, which were then combined with prescription chainage values to geolocate each riparian polygon along the stream network. Results are stored as the `ncfdc_1998_riparian_raw` layer in `sites_restoration.gpkg`.
-
-A summary of sub-basin prioritization is presented in Table \@ref(tab:tab-ncfdc-1998-priority), detailed prioritization scores in Table \@ref(tab:tab-ncfdc-1998-priority-detailed), and individual prescription details in Table \@ref(tab:tab-ncfdc-1998-pres).
-
-<br>
-
-```{r tab-ncfdc-1998-priority}
-
-  
-ncfdc_1998_71a %>% 
-  fpr::fpr_kable(caption_text = "Table 71a from the NCFDC (1998) report - summary of the prioritization of sub-basins in the Neexdzii Kwah region.",
-                 scroll = FALSE)
-```
-
-<br>
-
-```{r tab-ncfdc-1998-priority-detailed-prep, eval = F}
-# read in from the path using row 4 as teh header
-
-path <- "~/Library/CloudStorage/OneDrive-Personal/Projects/2024-069-ow-wedzin-kwa-restoration/data/ncfdc_1998/Mid Bulkley Detailed FHAP_CAP_RAP/Appendix/AppH.xls"
-
-
-
-path_file <- "data/inputs_extracted/ncfdc_1998_73_app_h.csv"
-
-# read in the data, clean and burn to csv
-readxl::read_excel(path, skip = 3) |> 
-  # fill down for System and Sub-basin columns
-  tidyr::fill(System, `Sub-Basin`) |> 
-  # save as csv to data/inputs_extracted/ncfdc_1998_73_app_h.csv
-  readr::write_csv(path_file)
-
-```
-
-<br>
-
-```{r tab-ncfdc-1998-priority-detailed, results="asis", echo=FALSE}
-# read the file back in and present as table
-
-my_caption <- "Table 73 from digital Appendix H of the NCFDC (1998) report (not included in pdf). Decision matrix to prioritize reaches for restoration based on watershed position, fisheries value, synergistic (downstream impact) value, the nature of impacts (sorted descending by total weight)"
-
-path_file <- "data/inputs_extracted/ncfdc_1998_73_app_h.csv"
-
-# my_tab_caption()
-
-
-readr::read_csv(path_file) |> 
-  dplyr::arrange(desc(`Total Weight`)) |>
-  # my_dt_table(page_length = 5)
-  fpr::fpr_kable(caption_text = my_caption)
-
-```
-
-<br>
-
-```{r tab-ncfdc-1998-pres, eval=TRUE}
-ncfdc_1998 <- readr::read_csv(
-  "data/ncfdc_1998_prescriptions_hand_bomb.csv",
-  locale = readr::locale(encoding = "UTF-8")
-) 
-
-ncfdc_1998_cleaned <- ncfdc_1998 |>
-  dplyr::mutate(
-    dplyr::across(
-      dplyr::everything(),
-      ~ as.character(.) |> 
-        stringr::str_replace_all("[^[:alnum:][:space:].,]", "") |> # Retain alphanumeric, spaces, periods, and parentheses
-        stringr::str_replace_all("\\.", "\\\\.")    |> 
-        stringr::str_replace_all("\\,", "\\\\,") 
-    )
-  )
-
-ncfdc_1998_cleaned %>% 
-  dplyr::select(sub_basin:technical_references) %>% 
-  knitr::kable(
-    booktabs = T, 
-    label = NA, 
-    caption = "Summary of  NCFDC (1998) prescriptions for the Neexdzii Kwah area."
-    ) |> 
-  kableExtra::kable_styling(c("condensed", "responsive"),
-                              full_width = T,
-                              font_size = font_set) |> 
-  kableExtra::scroll_box(width = "100%", height = "500px")
-
-
-
-
-# below was throwing error
-# [WARNING] Div at Restoration_Neexdzii_Kwah_2024.knit.md line 8335 column 1 unclosed at Restoration_Neexdzii_Kwah_2024.knit.md line 9788 column 1, closing implicitly.
-# it was then not linking to TOC elements beyond Results!!
-  # fpr::fpr_kable(caption_text = "Summary of  NCFDC (1998) prescriptions for the Neexdzii Kwah area.")
-
-# this is the problem
-  # kableExtra::scroll_box(width = "100%", height = "500px")
-# https://chatgpt.com/c/674459e0-6c30-800c-8fe1-ad49e8b53979
-```
-
-### @gaboury_smith2016DevelopmentAquatic - Extracted Site Locations
-
-Site locations and associated design data from @gaboury_smith2016DevelopmentAquatic have been extracted and added to the shared GIS project (`sites_restoration.gpkg`, layer name = `sites_wfn_proposed`). Background context for this work is provided in the [Historic Restoration Context](#historic-restoration-context) section.
-
-
-### State of the Value Data Integration
-
-Amalgamated results from the SSAF State of the Value Report for Fish and Fish Habitat [@skeenasustainabilityassessmentforum2021Skeenasustainability] have been integrated into the shared GIS project. A summary table of indicators and spatial output field descriptions is included in [Appendix – State of the Value – Fish and Fish Habitat](#app-esi).
+Detailed tables of extracted data are provided in [Appendix - Historic Data Products](#app-historic-data).
 
 
 ## Future Restoration Site Selection
@@ -532,22 +203,11 @@ High priority fish passage restoration opportunities in the Neexdzii Kwah waters
 -   [Bulkley River and Morice River Watershed Groups Fish Passage Restoration Planning 2020](https://www.newgraphenvironment.com/fish_passage_bulkley_2020_reporting/)[@irvine2021BulkleyRiver]
 -   Development Of Aquatic Restoration Designs And On-Farm Cattle Management Improvements within the Wet’suwet’en First Nation Territory [@gaboury_smith2016DevelopmentAquatic]
 
-At the time of writing, lateral connectivity analysis had been run for areas of the Neexdzii Kwah and tributaries floodplains for railway only. The results of this analysis are included in the `lateral_habitat.tif` layer in the and viewable in the `restoration_wedzin_kwa` project. The results of this analysis and future analysis incorporating major roadways as well (currently under development) will be used to inform future restoration activities.
-
-### Local Knowledge for Riparian Area and Erosion Protection Site Selection
-
-Numerous sites proposed for riparian area and erosion protection activities are are viewable in the `restoration_wedzin_kwa` project. These sites were selected based on local knowledge and landowner willingness to participate in restoration activities.
-
-### Delineation of Areas of High Fisheries Values
-
-As noted within the methods - past work to spatially delineate areas of high value habitat known to be utilized historically for chinook and sockeye salmon spawning (among other data) undertaken by DFO, Arocha Canada and others has been stored within a secure location and linked within the shared GIS project. Tables of traditional fishing sites as detailed in @gottesfeld_rabnett2007SkeenaFish as well as @wilson_rabnett2007FishPassage
-have been extracted from the original documents and are stored [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/tree/main/data/inputs_extracted). Traditional fishing areas located within the Neexdzii Kwah as documented by @gottesfeld_rabnett2007SkeenaFish have been
-spatialized, stored within a location (outside of the github and mergin repositories) and linked to within
-the collaborative GIS project.  
+Lateral connectivity analysis for railway barriers has been run for areas of the Neexdzii Kwah and tributary floodplains using [flooded](https://github.com/NewGraphEnvironment/flooded), with results included as the `lateral_habitat.tif` layer in the shared GIS project. Floodplain extents were modelled using the Valley Confinement Algorithm implemented in flooded, sub-basin delineation was performed with [fresh](https://github.com/NewGraphEnvironment/fresh), and land cover change detection was conducted using [drift](https://github.com/NewGraphEnvironment/drift) — with results presented in [Appendix - LULC](#app-lulc). Future analysis incorporating major roadways (currently under development) will further inform restoration site selection. Additionally, numerous sites proposed for riparian area and erosion protection activities have been identified through local knowledge and landowner engagement and are viewable in the shared GIS project.
 
 ### Parameter Ranking to Select Future Restoration Sites
 
-A summary of an initial draft of GIS and user input parameters used to rank future restoration sites generated from the `restoration_site_priority_parameters.csv` file located [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/restoration_site_priority_parameters.csv) is included in Table \@ref(tab:tab-gis-params-cap). Outputs from an intitial proof of concept run are included within the shared GIS project and collated within [Appendix 5 – Example of Potential Restoration Sites Prioritized](#sites-ranked). Please note that any parameters included in the Skeena Sustainability Assessment Forum - State of the Value - Fish and Fish Habitat assessment [here](#app-esi) can now be included in the ranking - provided the attribute to rank is added to the input spreadsheet and ranking weights applied.
+Potential restoration sites are ranked using a weighted scoring system that combines ecological value, cultural significance, and practical considerations. Each site is evaluated against the parameters in Table \@ref(tab:tab-gis-params), with scores summed to produce a total ranking. Higher-weighted parameters reflect greater importance to restoration success — for example, sites of cultural significance to the Wet'suwet'en receive the highest individual score, while the presence of modelled habitat for a single species contributes a smaller increment. The system is designed to be iterative: as new data layers become available (e.g., additional indicators from the SSAF State of the Value assessment [@skeenasustainabilityassessmentforum2021Skeenasustainability]), they can be incorporated by adding rows to the [input spreadsheet](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/restoration_site_priority_parameters.csv) and assigning weights. Outputs from an initial proof of concept run are included within the shared GIS project and collated within [Appendix – Example of Potential Restoration Sites Prioritized](#sites-ranked).
 
 <br>
 
@@ -556,37 +216,37 @@ A summary of an initial draft of GIS and user input parameters used to rank futu
 # load the data
 gis_params_raw_all <- readr::read_csv(
   "data/inputs_raw/restoration_site_priority_parameters_raw.csv"
-) 
+)
 
 
-gis_params_raw_to_update <- gis_params_raw_all|> 
-  # dplyr::filter(!is.na(source_layer) & 
+gis_params_raw_to_update <- gis_params_raw_all|>
+  # dplyr::filter(!is.na(source_layer) &
   #                 !is.na(source_column_name) &
-  #                 !str_detect(source_layer, "bcfishobs|bcfishpass")) |> 
-    dplyr::filter(!is.na(source_layer) & 
+  #                 !str_detect(source_layer, "bcfishobs|bcfishpass")) |>
+    dplyr::filter(!is.na(source_layer) &
                   !is.na(source_column_name) &
                     # remove bcfishpass, esi, local hab layers
-                  !stringr::str_detect(source_layer, "bcfishobs|bcfishpass|chinook|skeena_east")) |> 
+                  !stringr::str_detect(source_layer, "bcfishobs|bcfishpass|chinook|skeena_east")) |>
   # we know that tenures and the land ownership layers are problematic so lets remove
   dplyr::filter(!stringr::str_detect(source_layer, "whse_forest_tenure.ften_range_poly_carto_vw|whse_cadastre.pmbc_parcel_fabric_poly_svw"))
 
 
-# grab the details about the source_layer as source_schema_table_details and then the 
+# grab the details about the source_layer as source_schema_table_details and then the
 # source_column_name as source_column_name_details
 gis_param_details_prep_schtab <- dplyr::left_join(
-  
+
   gis_params_raw_to_update,
-  
+
   rfp::rfp_meta_bcd_xref(),
-  
+
   by = c("source_layer" = "object_name")
 )
-  
+
 
 # grab the column details
 params_cols_des <- purrr::map2_df(
-  gis_param_details_prep_schtab$source_layer, 
-  gis_param_details_prep_schtab$source_column_name, 
+  gis_param_details_prep_schtab$source_layer,
+  gis_param_details_prep_schtab$source_column_name,
   rfp::rfp_meta_bcd_xref_col_comments
   )
 
@@ -599,70 +259,87 @@ gis_param_details_prep <- dplyr::left_join(
 
 # need to add back all the layers filtered out above - this should not be repeated but will do for now
 gis_params_raw_all_updated <- dplyr::bind_rows(
-  gis_params_raw_all |> 
-    dplyr::filter(is.na(source_layer) | 
+  gis_params_raw_all |>
+    dplyr::filter(is.na(source_layer) |
                     is.na(source_column_name) |
                     stringr::str_detect(source_layer, "bcfishobs|bcfishpass|chinook|skeena_east") |
-                    # not accessible via bcdata 
+                    # not accessible via bcdata
                     stringr::str_detect(source_layer, "whse_forest_tenure.ften_range_poly_carto_vw|whse_cadastre.pmbc_parcel_fabric_poly_svw")),
   gis_param_details_prep
-) |> 
+) |>
   dplyr::mutate(url_browser = dplyr::case_when(
     stringr::str_detect(source_layer, "bcfishobs|bcfishpass") ~ "https://smnorris.github.io/bcfishpass/06_data_dictionary.html",
     TRUE ~ url_browser)
-  ) |> 
-  dplyr::mutate(is_wet_cultural_site = source_column_name == "wet_cultural_site") |> 
+  ) |>
+  dplyr::mutate(is_wet_cultural_site = source_column_name == "wet_cultural_site") |>
   dplyr::arrange(
-    desc(is_wet_cultural_site), 
+    desc(is_wet_cultural_site),
     rank
-    # source_layer, 
-    # source_column_name, 
+    # source_layer,
+    # source_column_name,
     # column_name
-  )|> 
+  )|>
   dplyr::select(-is_wet_cultural_site)
 # dplyr::arrange(rank, source_layer, source_column_name, column_name)
 
 # this is time consuming so lets save it as a csv and make this chunk conditional on the gis_update flag
-gis_params_raw_all_updated |> 
+gis_params_raw_all_updated |>
   readr::write_csv("data/restoration_site_priority_parameters.csv")
 
 ```
 
 ```{r gis-params, eval = TRUE}
-tab_gis_params_raw <- readr::read_csv("data/restoration_site_priority_parameters.csv") 
-  # dplyr::select(
-  #   source_layer, 
-  #   source_column_name,
-  #   column_name,
-  #   user_input,
-  #   type,
-  #   url_browser,
-  #   # description_table = description,
-  #   col_comments
-  # ) |> 
-  # dplyr::arrange(user_input, group, group_sub, column_name) |> 
-  # dplyr::select(column_name, source_column_name, everything())
-
-```
-
-```{r tab-gis-params-cap, results="asis"}
-my_caption = "Example of parameter selection and ranking system to prioritize potential restoration/enhancement sites."
-
-my_tab_caption()
+tab_gis_params_raw <- readr::read_csv("data/restoration_site_priority_parameters.csv")
 ```
 
 ```{r tab-gis-params}
+# non-bcfishpass ranked parameters
+tab_non_bp <- tab_gis_params_raw |>
+  dplyr::filter(rank == TRUE, !stringr::str_detect(source_column_name, "^model_")) |>
+  dplyr::transmute(
+    Parameter = dplyr::case_when(
+      source_column_name == "wet_cultural_site" ~ "Cultural significance",
+      source_column_name == "bulkley_falls_downstream" ~ "Downstream of Bulkley Falls",
+      source_column_name == "floodplain_ind" ~ "Modelled floodplain",
+      source_column_name == "owner_type" ~ "Land ownership",
+      source_column_name == "AU_TOT_Disturb_all_PCNT_cl" ~ "Total watershed disturbance",
+      source_column_name == "Rip_Tot_All_Dstrb_PCNT_cl" ~ "Riparian disturbance",
+      TRUE ~ source_column_name
+    ),
+    Rationale = dplyr::case_when(
+      source_column_name == "wet_cultural_site" ~ "Sites identified through Wet'suwet'en traditional knowledge as having cultural significance receive the highest weighting — reflecting that restoration of culturally important areas provides value beyond ecological function.",
+      source_column_name == "bulkley_falls_downstream" ~ "Sites downstream of Bulkley Falls are more likely to support salmon populations and are weighted accordingly.",
+      source_column_name == "floodplain_ind" ~ "Restoration targets floodplain function — sites within the modelled floodplain are where work can most directly improve lateral connectivity, off-channel habitat, and natural flood attenuation. Connected floodplain scores highest; disconnected floodplain (e.g., behind infrastructure) scores moderate.",
+      source_column_name == "owner_type" ~ "Crown and public lands score highest — reflecting accessibility, governance certainty, and long-term security of restoration investments. Private lands score lowest due to access constraints.",
+      source_column_name == "AU_TOT_Disturb_all_PCNT_cl" ~ "Percentage of the assessment watershed affected by human, fire, or insect disturbance. Higher disturbance = higher score, reflecting greater need and potential benefit from restoration. Source: SSAF State of the Value Report for Fish and Fish Habitat.",
+      source_column_name == "Rip_Tot_All_Dstrb_PCNT_cl" ~ "Percentage of stream length within 30m of total disturbance (human, fire, insect). Higher riparian disturbance = higher score, reflecting degraded streamside conditions with restoration potential. Source: SSAF State of the Value Report for Fish and Fish Habitat.",
+      TRUE ~ ""
+    ),
+    `Score (Low)` = weight_score_low,
+    `Score (Mod)` = weight_score_mod,
+    `Score (High)` = weight_score_high,
+    `Max Score` = pmax(weight_score_low, weight_score_mod, weight_score_high, na.rm = TRUE)
+  )
 
-tab_gis_params_raw |> 
-  dplyr::mutate(
-    url_browser = ngr::ngr_str_link_url(url_browser, anchor_text = url_browser),
-    url_download = ngr::ngr_str_link_url(url_download, anchor_text = url_download)
-  ) |> 
-  dplyr::select(group:source_column_name, 
-                user_input:rank,
-                weight_value_low:comments
-                ) |> 
-  dplyr::mutate(sort = dplyr::row_number()) |> 
-  my_dt_table(cols_freeze_left = 2, escape = FALSE)
+# summarize bcfishpass habitat rows into one — count how many species are scored
+n_bp <- tab_gis_params_raw |>
+  dplyr::filter(rank == TRUE, stringr::str_detect(source_column_name, "^model_")) |>
+  nrow()
+
+tab_bp <- tibble::tibble(
+  Parameter = "Modelled fish habitat (bcfishpass)",
+  Rationale = glue::glue(
+    "Intrinsic potential spawning and rearing habitat modelled by bcfishpass for {n_bp} species-lifecycle combinations (chinook, coho, steelhead x spawning, rearing). Each scores 0 (absent) or 1 (present) — sites with more species accumulate higher totals (max {n_bp})."
+  ),
+  `Score (Low)` = 0,
+  `Score (Mod)` = NA_real_,
+  `Score (High)` = n_bp,
+  `Max Score` = n_bp
+)
+
+dplyr::bind_rows(tab_non_bp, tab_bp) |>
+  dplyr::arrange(dplyr::desc(`Max Score`), Parameter) |>
+  dplyr::select(-`Max Score`) |>
+  fpr::fpr_kable(caption_text = "Active parameters used to rank potential restoration sites. Each site receives a score for each parameter based on Low, Moderate, or High classification. Scores are summed to produce a total site ranking. The system is extensible — additional parameters from the SSAF assessment or other sources can be added to the input spreadsheet.", scroll = FALSE)
 
 ```
