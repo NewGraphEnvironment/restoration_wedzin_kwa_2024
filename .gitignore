@@ -32,3 +32,8 @@ fig/time_series/*.png
 
 # Leaflet widget support files (regeneratable)
 fig/map_fish-obs-above-falls_files/
+fig/map_study-area-interactive.html
+fig/map_study-area-interactive_files/
+
+# Bookdown knitr cache (regeneratable)
+Restoration_Neexdzii_Kwah_2024_cache/

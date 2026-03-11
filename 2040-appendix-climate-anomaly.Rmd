@@ -1,5 +1,10 @@
 # **Appendix 1 - Climate Anomaly Data** {-#app-climate-anomaly}
 
+<!-- CSVs in data/climate/ were extracted from ERA5-Land NetCDF rasters (~264MB)
+     using: https://github.com/NewGraphEnvironment/bc_climate_anomaly/blob/data-extract-aoi/data-raw/extract_aoi_anomaly.R
+     To regenerate: clone that repo, ensure ano_clm_trn_data/ is populated, run the script, copy CSVs here.
+     Plan to upstream the script: https://github.com/NewGraphEnvironment/bc_climate_anomaly/issues/3 -->
+
 ```{r setup-app-climate-anomaly}
 knitr::opts_chunk$set(fig.path = "fig/app-climate-anomaly/", dev = "png")
 ```
