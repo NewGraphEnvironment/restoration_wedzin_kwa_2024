@@ -112,7 +112,10 @@ ui <- fluidPage(
       actionButton("compute", "Compute Sub-Basins", class = "btn-primary"),
       hr(),
       actionButton("export", "Export", class = "btn-success"),
-      helpText("Saves break_points.csv and subbasins.gpkg to data/lulc/"),
+      textInput("export_dir", "Export directory:",
+                value = here::here("data", "lulc")),
+      textInput("export_bp", "Break points filename:", value = "break_points.csv"),
+      textInput("export_sb", "Sub-basins filename:", value = "subbasins.gpkg"),
       hr(),
       h4("Break Points Table"),
       tableOutput("points_table"),
@@ -499,16 +502,20 @@ server <- function(input, output, session) {
       return()
     }
 
-    out_dir <- here::here("data", "lulc")
+    out_dir <- input$export_dir
+    if (!dir.exists(out_dir)) {
+      dir.create(out_dir, recursive = TRUE)
+      showNotification(paste("Created:", out_dir), type = "message")
+    }
 
     # Save break points
-    bp_path <- file.path(out_dir, "break_points.csv")
+    bp_path <- file.path(out_dir, input$export_bp)
     write.csv(rv$breaks, bp_path, row.names = FALSE)
     showNotification(paste("Saved:", bp_path), type = "message")
 
     # Save sub-basins if computed
     if (!is.null(rv$subbasins) && nrow(rv$subbasins) > 0) {
-      sb_path <- file.path(out_dir, "subbasins.gpkg")
+      sb_path <- file.path(out_dir, input$export_sb)
       sf::st_write(
         sf::st_transform(rv$subbasins, 3005),
         sb_path, delete_dsn = TRUE, quiet = TRUE
