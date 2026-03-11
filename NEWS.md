@@ -1,4 +1,11 @@
 
+# restoration_wedzin_kwa_2024 DRAFT 0.1.7 (2026-03-10)
+
+- add climate anomaly methods, results summary, and trend table ([#118](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/118))
+- extract ERA5-Land anomaly data programmatically from NetCDF for Neexdzii Kwah study area ([NewGraphEnvironment/bc_climate_anomaly#2](https://github.com/NewGraphEnvironment/bc_climate_anomaly/issues/2))
+- add Total Change column to trend table so readers see cumulative impact (e.g., +2.3°C) not just per-year rate
+- plain-language summary: watershed ~2°C warmer, precipitation unchanged, summer soils drying ~5% from evapotranspiration
+
 # restoration_wedzin_kwa_2024 DRAFT 0.1.6 (2026-03-10)
 
 - add LULC sub-basin analysis appendix with drift/flooded pipeline ([#114](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/114))

@@ -16,6 +16,7 @@ tab:tab-ncfdc-1998-priority
 tab:tab-ncfdc-1998-priority-detailed
 tab:tab-ncfdc-1998-pres
 tab:tab-gis-params-cap
+tab:tab-climate-trends-cap
 fig:map-lulc-transitions
 fig:map-lulc-subbasins
 fig:plot-lulc-change
@@ -264,6 +265,7 @@ open-source-reporting-framework
 remote-sensing-imagery
 aerial-imagery
 time-series-analysis
+climate-anomaly-analysis
 background-research-analysis
 historic-information
 future-restoration-site-selection
@@ -276,6 +278,7 @@ parameter-ranking
 results
 field-review
 land-cover-change
+climate-anomaly-trends
 collaborative-gis-environment
 methodology
 aerial-imagery-1
