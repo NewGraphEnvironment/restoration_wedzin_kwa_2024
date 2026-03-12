@@ -12,10 +12,10 @@ Throughout The Millennia" available through  `r ngr::ngr_str_link_url(url_base =
 
 <br>
 
-This report should be considered a living document, with ongoing revisions and updates tracked through the [Changelog](#Changelog) section. 
-We are humbled by the depth of knowledge that exists for this region, both through traditional knowledge and scientific study. 
-We acknowledge that this report is far from complete, and that the work of restoring and sustaining ecosystem values will 
-require many decades—if not centuries—of dedication. It is our hope that this effort can serve as a catalyst for positive 
+This report should be considered a living document, with ongoing revisions and updates tracked through version control.
+We are humbled by the depth of knowledge that exists for this region, both through traditional knowledge and scientific study.
+We acknowledge that this report is far from complete, and that the work of restoring and sustaining ecosystem values will
+require many decades—if not centuries—of dedication. It is our hope that this effort can serve as a catalyst for positive
 change and foster genuine, open collaboration. 
 
 <br>
@@ -25,6 +25,94 @@ To support long-term watershed resilience in Neexdzii Kwah, we recommend a coord
 <br>
 
 Developing comprehensive restoration planning for the Neexdzii Kwah watershed will help ensure that restoration activities address the underlying drivers of degradation. Through partnerships, education, and resource-sharing, stakeholders can work together to align ecological goals with economic interests, ensuring long-term benefits for the watershed. The following recommendations are provided to support effective restoration by addressing root causes. This is a partial list as the project is still in development — progress is tracked through [issues](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues) and the [project changelog](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/NEWS.md).
+
+## Exploitation Caveat {-}
+
+Habitat restoration in the Neexdzii Kwah is necessary but not sufficient for salmon population recovery. Skeena chinook and coho show sustained declines consistent with exploitation rates exceeding what these populations can sustain [@winther_etal2024assessmentskeena; @lglltd_2025SkeenaRiver; @price_etal2026rebuildinggiis]. Rebuilding habitat capacity is the prerequisite for population recovery when exploitation is eventually reduced — but the prioritization framework that follows cannot promise recovery without parallel action on harvest.
+
+## Prioritization Framework {-}
+
+### Governance Structure {-}
+
+Effective restoration requires not just identifying what to do, but establishing who decides. We propose a four-tier governance model anchored in Wet'suwet'en governance:
+
+1. **Watershed Stewardship Council (Decision Authority)** — Wet'suwet'en hereditary leadership and technical advisors. Sets restoration priorities, approves projects, and holds accountability. Grounded in Wet'suwet'en law (Ink Nu'at'en) and land stewardship responsibilities.
+
+2. **Technical Working Group (Science & Planning)** — Biologists, hydrologists, GIS analysts, and restoration practitioners. Develops project designs, monitors outcomes, and adapts approaches. Translates community priorities into implementable plans.
+
+3. **Implementation Partnerships (Delivery)** — Landowners, contractors, conservation groups, and government agencies. Execute approved projects within the governance framework, with project complexity matched to delivery capacity.
+
+4. **Community Roundtable (Input & Accountability)** — Open forum for landowners, residents, and stakeholders. Provides local knowledge, flags concerns, and reviews progress to ensure transparency and broad engagement.
+
+
+### Gates Before Scoring {-}
+
+Before a site enters the scoring framework, it must pass three diagnostic gates. Sites that fail a gate are not rejected — they are routed to the appropriate queue (assessment, pressure reduction, or relationship building) rather than scored prematurely.
+
+| Gate | Question | If No |
+|------|----------|-------|
+| **G1: Diagnostic Certainty** | Do we understand the problem well enough to prescribe a treatment? | Route to assessment queue |
+| **G2: Active Degradation Clear** | Is the pressure that caused the problem still ongoing? | Address pressure first |
+| **G3: Access & Willingness** | Is there a willing partner and legal access? | Park until social license exists |
+
+
+### Scoring Principles {-}
+
+Seven principles guide how projects are evaluated once they pass all gates:
+
+1. **Root-cause alignment** — Does the project address why the system is degraded, or just treat symptoms? Bank armouring a reach while adjacent floodplain vegetation is being actively cleared and cattle continue to access riparian areas is symptom management. Understanding root causes requires investment in diagnostics — review of historic aerial imagery (available back to 1968), land cover change analysis, water quality monitoring, and fish population data — before prescribing treatments. Without meaningful riparian buffers and with adjacent areas seeing active vegetation removal, engineered interventions are unlikely to achieve lasting outcomes.
+
+2. **Scale of benefit** — Is the project at a scale that matters for watershed function? Land cover change detection between 2017 and 2023 quantifies floodplain tree loss across sub-basins (Table \@ref(tab:tab-area-priority-cap)), and historic aerial imagery extending back to 1968 can now place recent trends in a multi-decadal context. These tools allow us to assess whether a proposed project addresses a reach-scale problem or a pattern that extends across the sub-basin — and to match the scale of investment to the scale of impact.
+
+3. **Passive-first** — Can the system recover on its own if we stop the pressure? Removing a barrier to natural process (e.g., restoring riparian buffers, supporting beaver activity) before engineering a solution.
+
+4. **Probability of success** — Is there a willing landowner, legal access, and realistic maintenance path? Great designs fail without social license.
+
+5. **Wet'suwet'en stewardship** — Does the project align with Wet'suwet'en values and governance? Cultural significance is not a tiebreaker — it is a foundational criterion.
+
+6. **Learning & accountability** — Does the project include monitoring that builds shared understanding of ecosystem health? Monitoring is not an add-on to restoration — it is itself an act of stewardship, restoring our collective understanding of what is happening on the land. Effectiveness monitoring, water quality sampling, fish population tracking, and land cover change analysis must be resourced as fundamental components of the work, not optional extras contingent on leftover budget. Without sustained investment in monitoring, we cannot learn from our interventions, adapt our approaches, or demonstrate to communities and funders that restoration investments are producing results.
+
+
+### Community Parameter Rankings {-}
+
+Two community workshops (June 2025) ranked prioritization parameters. The rankings diverged in instructive ways that the governance framework must hold without collapsing one perspective into the other.
+
+```{r tab-workshop-rankings}
+workshop <- tibble::tribble(
+  ~Parameter,                          ~`Wet'suwet'en Rank`, ~`Wet'suwet'en Avg`, ~`Landowner Rank`, ~`Landowner Avg`,
+  "Cultural Significance",             1L,                   2.16,                 4L,                4.33,
+  "Probability of Success",            2L,                   2.83,                 2L,                2.50,
+  "Increase Watershed Function",       3L,                   3.16,                 1L,                2.00,
+  "Proximity to High-Value Fish Habitat", 4L,                3.50,                 3L,                3.00,
+  "Collective Wellbeing",              5L,                   4.00,                 NA_integer_,        NA_real_,
+  "Opportunity for Engagement",        6L,                   5.16,                 6L,                5.33,
+  "Economic Impact",                   7L,                   6.50,                 5L,                5.00,
+  "Land Ownership",                    8L,                   7.50,                 7L,                5.83
+)
+
+knitr::kable(workshop, caption = "Prioritization parameter rankings from Wet'suwet'en and landowner community workshops (June 2025). Wet'suwet'en participants ranked Cultural Significance decisively first; landowner participants ranked Watershed Function first and proposed a decision-tree approach. Both groups ranked Probability of Success highly.")
+```
+
+Both groups value Watershed Function and Fish Habitat highly. The critical difference: Wet'suwet'en participants ranked Cultural Significance decisively first (average score 2.16), while landowner participants ranked it fourth. This is not a conflict to resolve — it reflects fundamentally different relationships to the land. Wet'suwet'en participants emphasized that "when we heal the land we heal ourselves" — restoration is cultural, spiritual, and intergenerational, not just technical. Landowner participants proposed a practical decision-tree approach: Watershed Function first, then Probability of Success plus landowner willingness, then Fish Habitat, then score remaining criteria 0–5. The Collective Wellbeing parameter was added by Wet'suwet'en participants — it was not in the original parameter set.
+
+
+### Addressing Cumulative Pressures {-}
+
+Before we prioritize which projects to do, we must also consider whether cumulative pressures on floodplain function are still increasing. Land cover change detection ([Appendix - LULC](#app-lulc)) shows ongoing floodplain vegetation loss across most sub-basins — if restoration gains on one reach are offset by continued riparian clearing elsewhere, the net watershed benefit is diminished. Where losses far exceed any realistic restoration capacity — as in sub-basins showing double-digit percentage declines in floodplain tree cover over just six years — the most effective use of limited resources may be preventing further damage rather than implementing new restoration projects. This calculus is sub-basin specific: in reaches with high ongoing loss, protection and land use engagement may deliver more ecological benefit per dollar than engineered interventions, while in more stable reaches, targeted restoration can build on existing function. The boundaries of these priority zones are flexible and should be updated as new land cover data becomes available. Complementary actions to site-level restoration include supporting compliance with existing riparian setback regulations, identifying ongoing sources of channel and floodplain modification, protecting remaining wetlands and beaver complexes, and communicating the connection between floodplain land use and downstream impacts.
+
+
+### Applying the Gates: Project Types That Pass {-}
+
+The gates are practical. Here are examples of project types that would pass all three gates in sub-basins where the data supports action:
+
+**Riparian fencing and vegetation recovery in Bulkley Richfield-Falls** — This sub-basin has the largest modelled floodplain below Bulkley Falls (1,060 ha) and the highest coho spawning length (60.8 km). Existing restoration investments provide baseline monitoring sites. The diagnostic picture is clear from land cover change analysis showing 19.9% agriculture expansion into the floodplain (G1 passes). Active vegetation removal is documented and ongoing (G2 — address pressure and restore simultaneously). With 648 ha of private floodplain and 564 ha of Crown land, there are multiple potential partners on both tenure types, and prior landowner engagement provides a foundation for access (G3). This sub-basin demonstrates how protection and restoration can work together — fencing cattle out of riparian areas on private land while restoring native vegetation on adjacent Crown parcels.
+
+**Beaver dam analogue installation in Maxam Creek** — Maxam Creek has 59.4% agriculture expansion within its floodplain and 97 ha of reserve land. With 3 reserves and 1 documented traditional fishing site, this sub-basin has both cultural significance and active Wet'suwet'en presence. Process-based restoration through beaver dam analogues can reconnect floodplain function without requiring landowner agreements on every parcel (G3 passes where work is on Crown or reserve land). The diagnostic basis is strong (G1) and the approach addresses root cause — loss of water retention on the landscape (G2).
+
+**Monitoring and assessment in Bulkley Upstream Falls** — This sub-basin has the second-highest absolute tree loss (165 ha) and 213 km of coho habitat, yet has 1 documented cultural fishing site and no reserves. Before prescribing treatments, we need to understand the pattern of loss through historic imagery analysis and field assessment. This is a G1 response — routing to the assessment queue rather than premature project design. The monitoring itself is an investment in diagnostic certainty for future prioritization rounds.
+
+
+## Specific Recommendations {-}
 
 ```{r, echo=FALSE}
 knitr::include_url("https://www.newgraphenvironment.com/restoration_wedzin_kwa_2024_recomendations/", height = "800px")

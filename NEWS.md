@@ -1,4 +1,12 @@
 
+# restoration_wedzin_kwa_2024 DRAFT 0.2.1 (2026-03-12)
+
+- add historic aerial photograph STAC collection to methods and results (9,741 photos, 1963-2019 via `fly`/`stac_airphoto_bc`) ([#126](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/126))
+- reorganize methods: airphoto STAC first, land cover classification, climate; move Open Source Reporting to end; remove Data Sourcing
+- add sub-basin prioritization data: fish habitat (bcfishpass), land ownership (PMBC), reserves (CLAB), cultural sites per sub-basin ([#125](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/125))
+- add governance framework, diagnostic gates, scoring principles, and workshop rankings to Recommendations
+- add exploitation caveat with Skeena chinook/coho decline citations
+
 # restoration_wedzin_kwa_2024 DRAFT 0.2.0 (2026-03-12)
 
 - upgrade floodplain model to coho 3rd order+ streams with waterbodies via `fresh::frs_network()` ([#123](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/123))
