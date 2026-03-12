@@ -97,6 +97,46 @@ Land cover classification within the modelled floodplain — delineated using th
 
 Not all detected tree loss represents agricultural conversion — some transitions reflect timber harvest within the floodplain, where recent cutblocks are classified as rangeland or bare ground at 10 m resolution. Even where harvested areas regenerate or are replanted, young closed-canopy forests do not provide the same watershed function as mature riparian stands — they contribute less large woody debris, offer less structural diversity for fish habitat, and have different hydrological characteristics. Other pixel-level transitions reflect channel migration, seasonal differences in vegetation health due to drought, or classification noise — particularly along actively shifting reaches and at field-forest edges. Despite these sources of uncertainty, the overall trajectory of floodplain tree cover loss is consistent across sub-basins and time steps, and the magnitude of change is well above what classification error alone would produce. These trends highlight where protection of remaining mature floodplain forest, engagement with landowners, and restoration of degraded reaches may be most effective.
 
+## Sub-Basin Prioritization
+
+Table \@ref(tab:tab-area-priority-cap) integrates land cover change, fish habitat modelling, land ownership, and cultural site data to characterize each sub-basin. Below Bulkley Falls, the middle reaches show the steepest declines — Bulkley Byman-JDavid (-14.5%) and Bulkley Houston-McKilligan (-11.1%) — while the reach closest to Houston (Bulkley-Houston, -8.3%) is comparatively stable but contains the most coho spawning habitat (40 km). The Bulkley Richfield-Falls sub-basin has the largest modelled floodplain below the falls (1,060 ha), the highest coho spawning length (60.8 km), and a near-even split of private (648 ha) and non-private (564 ha) floodplain — existing restoration investments here provide a foundation for expansion. Above Bulkley Falls, Maxam Creek stands out with 59.4% agriculture expansion, 97 ha of reserve land, and a documented traditional fishing site. Buck Creek Downstream Falls has 2 cultural sites and the highest chinook spawning density (60.5 km). These data provide the empirical foundation for the prioritization framework described in [Recommendations](#recommendations), where governance structure and community input guide how investment is directed across sub-basins.
+
+```{r tab-area-priority-cap, results="asis"}
+my_caption <- "Sub-basin prioritization data for the Neexdzii Kwah watershed. Floodplain tree loss and agriculture change are from drift land cover classification (2017-2023). Fish habitat lengths are modelled spawning and rearing from bcfishpass. Non-private floodplain ownership includes Crown Provincial, Untitled Provincial, Crown Agency, Local Government, Federal, and Unclassified parcels from the PMBC parcel fabric. Reserves are from CLAB and cultural sites from @gottesfeld_rabnett2007SkeenaFish. Sub-basins are ordered by tree loss rate within the floodplain."
+my_tab_caption(tip_flag = FALSE)
+```
+
+```{r tab-area-priority}
+area_scores <- readr::read_csv(
+  here::here("data", "prioritization", "area_scores.csv"),
+  show_col_types = FALSE
+) |>
+  dplyr::arrange(tree_loss_pct) |>
+  dplyr::mutate(
+    dplyr::across(c(area_km2, floodplain_area_ha), ~ round(.x, 0)),
+    dplyr::across(c(fp_private_ha, fp_crown_ha), ~ round(.x, 0)),
+    position = gsub("_", " ", gsub("below_|above_", "", position))
+  ) |>
+  dplyr::mutate(fisheries_value = NA_character_) |>
+  dplyr::select(
+    `Sub-basin` = name_basin,
+    `Area (km²)` = area_km2,
+    `Floodplain (ha)` = floodplain_area_ha,
+    `Tree Loss (%)` = tree_loss_pct,
+    `Ag Change (%)` = ag_change_pct,
+    `CO Spawn (km)` = co_spawn_km,
+    `CO Rear (km)` = co_rear_km,
+    `CH Spawn (km)` = ch_spawn_km,
+    `Private FP (ha)` = fp_private_ha,
+    `Non-Private FP (ha)` = fp_crown_ha,
+    `Reserves (ha)` = reserve_area_ha,
+    `Fisheries Value` = fisheries_value,
+    `Cultural Sites` = n_cultural_sites
+  )
+
+my_dt_table(area_scores, page_length = 14, cols_freeze_left = 0)
+```
+
 ## Climate Anomaly Trends
 
 ```{r climate-results-summary}
@@ -190,9 +230,9 @@ Detailed tables of extracted data are provided in [Appendix - Historic Data Prod
 
 ## Future Restoration Site Selection
 
-### Evaluation of Historic and Current Imagery
+### Historic Aerial Photographs
 
-As part of this project - we developed a system to identify the IDs of historic ortho photos for specific timeframes and areas within the Upper Bulkley watershed. The system is designed to be flexible, allowing adjustments to parameters such as input year and location, and it can be adapted for use in other regions across the province. Next steps include aquisition of photos from the province which will enable georeferencing, amalgamation, storage and analysis. Details on the system and the code developed are outlined [here](https://www.newgraphenvironment.com/new_graphiti/posts/2024-11-15-bcdata-ortho-historic/), with individual photo IDs for the study area available [here](https://github.com/NewGraphEnvironment/new_graphiti/tree/main/posts/2024-11-15-bcdata-ortho-historic/exports/). Of note, direct communications with the provincial Image Warehouse Specialist resulted in details of images available for the study area for 1949 and 1963 (prior to those detailed at the above site) - which at the time of reporting had not yet been updated to [Web Imagery Search Interface](https://www2.gov.bc.ca/gov/content/data/geographic-data-services/digital-imagery/imagery-search) or the provincial [Base Map Online Store](https://www2.gov.bc.ca/gov/content/data/geographic-data-services/topographic-data/base-map-online-store) [@governmentofbritishcolumbia2024Webimagery; @governmentofbritishcolumbia2025Basemap; pers comm Koraley Tylor - Image Warehouse Specialist]. We have included this information within the project code repository [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/tree/main/data/gis/imagery_historic).
+A collection of 9,741 georeferenced provincial aerial photograph thumbnails (1963–2019) covering the Neexdzii Kwah watershed has been processed and served as a STAC collection (see [Historic Aerial Photographs](#historic-airphotos) in Methods). These photographs are queryable by location and time range alongside the UAV imagery, and are available within the collaborative GIS project. At thumbnail resolution, the collection is sufficient for identifying change trajectories — for example, comparing 1968 riparian conditions against current cleared areas, or documenting the progressive filling of side channels. High-resolution scans of specific photos of interest can be acquired from the province for detailed analysis where the thumbnails reveal compelling change. Details on the georeferencing and processing pipeline are documented in the [`fly`](https://github.com/NewGraphEnvironment/fly) R package and described in [Methods](#historic-airphotos).
 
 ### Fish Passage
 
