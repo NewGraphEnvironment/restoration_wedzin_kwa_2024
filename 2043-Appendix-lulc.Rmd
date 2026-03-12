@@ -30,19 +30,22 @@ subbasins <- sf::st_read(
   file.path(lulc_dir, "subbasins.gpkg"), quiet = TRUE
 ) |> sf::st_transform(4326)
 
-floodplain <- sf::st_read(
-  file.path(lulc_dir, "floodplain_neexdzii_co.gpkg"), quiet = TRUE
-) |> sf::st_transform(4326)
+# Load scenario-specific floodplain, fall back to legacy name
+fp_file <- file.path(lulc_dir, "floodplain_neexdzii_co_ff06.gpkg")
+if (!file.exists(fp_file)) fp_file <- file.path(lulc_dir, "floodplain_neexdzii_co.gpkg")
+floodplain <- sf::st_read(fp_file, quiet = TRUE) |> sf::st_transform(4326)
 
 # name_basin comes from break_points.csv via fresh::frs_watershed_split
 ```
 
 ## Modelled Floodplain
 
-Land cover change is assessed within the modelled floodplain — the valley bottom area delineated by the Valley Confinement Algorithm (`flooded` package) for co rearing/spawning habitat on streams of 4th order and greater. The modelled floodplain covers `r round(as.numeric(sf::st_area(sf::st_union(floodplain))) / 1e6, 1)` km² along the Neexdzii Kwa (Bulkley River) and tributaries. All percentages and areas reported below refer to land cover within this modelled floodplain, not the full watershed.
+Land cover change is assessed within the modelled floodplain — the valley bottom area delineated by the Valley Confinement Algorithm (VCA, `flooded` package) for coho rearing/spawning habitat on streams of 3rd order and greater, with lakes and wetlands included. The VCA uses a bankfull regression scaled by `flood_factor = 6` to approximate the functional floodplain — the area regularly influenced by high flows that sustains riparian vegetation, off-channel habitat, and large wood recruitment processes critical to salmon. The modelled floodplain covers `r round(as.numeric(sf::st_area(sf::st_union(floodplain))) / 1e6, 1)` km² along the Neexdzii Kwa (Bulkley River) and tributaries. All percentages and areas reported below refer to land cover within this modelled floodplain, not the full watershed.
 
 ```{r map-lulc-transitions, eval=gitbook_on, fig.cap="Land cover classification within the modelled floodplain (IO LULC 10 m). Use radio buttons to toggle between 2017, 2020, and 2023 classified layers. Transition overlays show where Trees converted to other classes between 2017 and 2023. Sub-basin boundaries are shown as a toggleable overlay.", out.height="800px"}
-fp_dir <- here::here("data", "lulc", "rasters", "floodplain")
+# Use scenario-specific raster dir, fall back to legacy
+fp_dir <- here::here("data", "lulc", "rasters", "co_ff06")
+if (!dir.exists(fp_dir)) fp_dir <- here::here("data", "lulc", "rasters", "floodplain")
 
 # Load classified rasters as named list
 classified <- list(

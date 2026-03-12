@@ -2,163 +2,162 @@
 #
 # lulc_network-extract.R
 #
-# Extract coho rearing/spawning stream network for the full Neexdzii Kwa
-# (Upper Bulkley) and generate a floodplain AOI using the flooded package.
+# Extract coho stream network and waterbodies for the Neexdzii Kwa using
+# fresh::frs_network(), then generate floodplain AOI(s) using flooded.
 #
-# The floodplain polygon is then used by lulc_classify.R (drift pipeline)
-# to quantify land cover change across the floodplain.
+# Reads scenario parameters from data/lulc/flood_scenarios.csv:
+#   - min_order: stream order filter for flood model streams
+#   - anchor_order: stream order for patch connectivity (TODO: wire into flooded)
+#   - flood_factor: VCA flood depth multiplier
 #
-# Stream network scoping:
-#   - Coho (co) rearing and spawning habitat
-#   - Stream order >= 4 (4th order and above — streams with floodplains)
-#   - Upstream of Neexdzii Kwa / Wedzin Kwa confluence
+# Usage:
+#   Rscript scripts/lulc_network-extract.R           # runs co_ff06
+#   Rscript scripts/lulc_network-extract.R co_ff04   # runs specific scenario
+#   Rscript scripts/lulc_network-extract.R all        # runs all scenarios
 #
 # Requires:
 #   - SSH tunnel: ssh -L 63333:<db_host>:5432 <ssh_host>
-#   - R packages: flooded, sf, terra, DBI, RPostgres, glue
+#   - R packages: flooded, fresh, sf, terra, readr
 #   - DEM/slope from bcfishpass habitat_lateral model
 #
-# Pattern adapted from airbc/data-raw/floodplain_neexdzii_co.R
+# Outputs per scenario:
+#   data/lulc/floodplain_neexdzii_{scenario_id}.tif   (raster)
+#   data/lulc/floodplain_neexdzii_{scenario_id}.gpkg  (vector)
+#   data/lulc/streams_neexdzii_{scenario_id}.gpkg     (stream network)
 #
-# Output:
-#   data/lulc/floodplain_neexdzii_co.tif   (raster)
-#   data/lulc/floodplain_neexdzii_co.gpkg  (vector)
-#   data/lulc/streams_neexdzii_co.gpkg     (stream network used)
-#
-# Relates to #67
+# Relates to #67, #123
 
 library(flooded)
+library(fresh)
 library(sf)
 library(terra)
-library(DBI)
-library(RPostgres)
-library(glue)
+library(readr)
 
 sf_use_s2(FALSE)
 terra::terraOptions(threads = 12)
 
-# --- Parameters ---
-# Neexdzii Kwa / Wedzin Kwa confluence on the Bulkley mainstem
+# --- Boundary: Neexdzii Kwa / Wedzin Kwa confluence on Bulkley mainstem ---
 blk <- 360873822
 drm <- 166030.4
-min_order <- 4
-buf <- 2000 # buffer around streams for DEM crop (metres)
+buf <- 2000
 
 # Source rasters from bcfishpass habitat_lateral model
 dem_path <- "/Users/airvine/Projects/repo/bcfishpass/model/habitat_lateral/data/temp/BULK/dem.tif"
 slope_path <- "/Users/airvine/Projects/repo/bcfishpass/model/habitat_lateral/data/temp/BULK/slope.tif"
 
-# Output directory
 out_dir <- here::here("data", "lulc")
 fs::dir_create(out_dir)
 
-out_raster <- file.path(out_dir, "floodplain_neexdzii_co.tif")
-out_vector <- file.path(out_dir, "floodplain_neexdzii_co.gpkg")
-out_streams <- file.path(out_dir, "streams_neexdzii_co.gpkg")
+# --- Load scenarios ---
+scenarios <- readr::read_csv(file.path(out_dir, "flood_scenarios.csv"), show_col_types = FALSE)
 
-# --- Connect to bcfishpass DB ---
-message("Connecting to bcfishpass DB on localhost:63333...")
-conn <- DBI::dbConnect(
-  RPostgres::Postgres(),
-  host = "localhost", port = 63333,
-  dbname = "bcfishpass", user = "newgraph"
-)
+arg <- commandArgs(trailingOnly = TRUE)[1]
+if (!is.na(arg) && arg == "all") {
+  run_scenarios <- scenarios
+} else {
+  sid <- if (is.na(arg) || !arg %in% scenarios$scenario_id) "co_ff06" else arg
+  run_scenarios <- scenarios[scenarios$scenario_id == sid, ]
+}
 
-# --- Query coho rearing/spawning streams upstream of confluence ---
-# Stream order >= min_order to get streams large enough to have floodplains.
-# Uses FWA_Upstream() to get all streams upstream of the Neexdzii Kwa mouth.
-sql <- glue::glue("
-  WITH mouth AS (
-    SELECT wscode, localcode
-    FROM bcfishpass.streams_co_vw
-    WHERE blue_line_key = {blk}
-      AND downstream_route_measure <= {drm}
-    ORDER BY downstream_route_measure DESC
-    LIMIT 1
-  )
-  SELECT s.segmented_stream_id, s.blue_line_key, s.waterbody_key,
-         s.downstream_route_measure, s.upstream_area_ha,
-         s.map_upstream, s.gnis_name,
-         s.stream_order, s.channel_width, s.mapping_code,
-         s.rearing, s.spawning, s.access, s.geom
-  FROM bcfishpass.streams_co_vw s, mouth m
-  WHERE s.watershed_group_code = 'BULK'
-    AND s.stream_order >= {min_order}
-    AND (s.rearing > 0 OR s.spawning > 0)
-    AND FWA_Upstream(
-      m.wscode, m.localcode,
-      s.wscode, s.localcode
-    )
-")
+message("Scenarios to run: ", paste(run_scenarios$scenario_id, collapse = ", "))
 
-message(
-  "Querying coho rearing/spawning streams upstream of blk ", blk,
-  " drm ", drm, " (order >= ", min_order, ")..."
-)
-streams <- sf::st_read(conn, query = sql) |>
-  sf::st_zm(drop = TRUE)
-
-DBI::dbDisconnect(conn)
-
-message("  ", nrow(streams), " segments")
-message("  Streams: ", paste(unique(na.omit(streams$gnis_name)), collapse = ", "))
-message("  Orders: ", paste(sort(unique(streams$stream_order)), collapse = ", "))
-message(
-  "  Upstream area range: ",
-  paste(range(streams$upstream_area_ha, na.rm = TRUE), collapse = " - "), " ha"
-)
-
-# Save stream network for reference and sub-basin slicing
-sf::st_write(streams, out_streams, delete_dsn = TRUE, quiet = TRUE)
-message("Saved streams: ", out_streams)
-
-# --- Load and crop DEM/slope to stream extent ---
+# --- Load DEM/slope once (shared across scenarios) ---
 message("Loading DEM and slope...")
 dem_full <- terra::rast(dem_path)
 slope_full <- terra::rast(slope_path)
 
-stream_ext <- terra::ext(terra::vect(streams)) + buf
-dem <- terra::crop(dem_full, stream_ext)
-slope <- terra::crop(slope_full, stream_ext)
+# --- Loop scenarios ---
+for (i in seq_len(nrow(run_scenarios))) {
+  sc <- run_scenarios[i, ]
+  message("\n=== Scenario: ", sc$scenario_id, " (ff=", sc$flood_factor,
+          ", order>=", sc$min_order, ") ===")
+  message("  ", sc$description)
 
-message("  Cropped DEM: ", terra::ncol(dem), " x ", terra::nrow(dem), " pixels")
+  # --- Extract streams + waterbodies via fresh ---
+  message("Querying co habitat (order ", sc$min_order, "+) and waterbodies...")
 
-# --- Rasterize streams and precipitation ---
-message("Rasterizing streams...")
-stream_r <- fl_stream_rasterize(streams, dem, field = "upstream_area_ha")
-precip_r <- fl_stream_rasterize(streams, dem, field = "map_upstream")
+  results <- frs_network(
+    blue_line_key = blk,
+    downstream_route_measure = drm,
+    tables = list(
+      streams = list(
+        table = "bcfishpass.streams_co_vw",
+        cols = c(
+          "segmented_stream_id", "blue_line_key", "waterbody_key",
+          "downstream_route_measure", "upstream_area_ha",
+          "map_upstream", "gnis_name",
+          "stream_order", "channel_width", "mapping_code",
+          "rearing", "spawning", "access", "geom"
+        ),
+        wscode_col = "wscode",
+        localcode_col = "localcode",
+        extra_where = paste0("stream_order >= ", sc$min_order)
+      ),
+      lakes = "whse_basemapping.fwa_lakes_poly",
+      wetlands = "whse_basemapping.fwa_wetlands_poly"
+    )
+  ) |>
+    lapply(sf::st_zm, drop = TRUE)
 
-# --- Run Valley Confinement Algorithm ---
-message("Running valley confinement algorithm...")
-valleys <- fl_valley_confine(
-  dem, streams,
-  field = "upstream_area_ha",
-  slope = slope,
-  slope_threshold = 9,
-  max_width = 2000,
-  cost_threshold = 2500,
-  flood_factor = 6,
-  precip = precip_r,
-  size_threshold = 5000,
-  hole_threshold = 2500
-)
+  streams <- results$streams
+  waterbodies <- rbind(
+    results$lakes[, c("waterbody_key", "waterbody_type", "area_ha", "geom")],
+    results$wetlands[, c("waterbody_key", "waterbody_type", "area_ha", "geom")]
+  )
 
-n_valley <- sum(terra::values(valleys) == 1, na.rm = TRUE)
-message(
-  "  Valley cells: ", n_valley, " / ", terra::ncell(valleys),
-  " (", round(100 * n_valley / terra::ncell(valleys), 1), "%)"
-)
+  message("  Streams: ", nrow(streams), " segments")
+  message("  Orders: ", paste(sort(unique(streams$stream_order)), collapse = ", "))
+  message("  Waterbodies: ", nrow(waterbodies), " features")
 
-# --- Polygonize ---
-message("Converting to polygons...")
-valleys_poly <- fl_valley_poly(valleys)
-message("  ", nrow(valleys_poly), " polygon features")
+  # Save streams
+  out_streams <- file.path(out_dir, paste0("streams_neexdzii_", sc$scenario_id, ".gpkg"))
+  sf::st_write(streams, out_streams, delete_dsn = TRUE, quiet = TRUE)
+  message("  Saved: ", basename(out_streams))
 
-# --- Write outputs ---
-terra::writeRaster(valleys, out_raster, overwrite = TRUE)
-message("Saved raster: ", out_raster)
+  # --- Crop DEM/slope to stream extent ---
+  stream_ext <- terra::ext(terra::vect(streams)) + buf
+  dem <- terra::crop(dem_full, stream_ext)
+  slope <- terra::crop(slope_full, stream_ext)
+  message("  Cropped DEM: ", terra::ncol(dem), " x ", terra::nrow(dem), " pixels")
 
-sf::st_write(valleys_poly, out_vector, delete_dsn = TRUE, quiet = TRUE)
-message("Saved vector: ", out_vector)
+  # --- Rasterize streams and precipitation ---
+  message("  Rasterizing streams...")
+  precip_r <- fl_stream_rasterize(streams, dem, field = "map_upstream")
 
-message("Done. Floodplain AOI ready for drift pipeline (lulc_classify.R).")
+  # --- Run Valley Confinement Algorithm ---
+  # TODO: when flooded supports separate anchor_order, pass order 1+ streams
+  # for fl_patch_conn() connectivity. For now, same streams for both.
+  message("  Running VCA (flood_factor=", sc$flood_factor, ")...")
+  valleys <- fl_valley_confine(
+    dem, streams,
+    field = "upstream_area_ha",
+    slope = slope,
+    slope_threshold = 9,
+    max_width = 2000,
+    cost_threshold = 2500,
+    flood_factor = sc$flood_factor,
+    precip = precip_r,
+    waterbodies = waterbodies,
+    size_threshold = 5000,
+    hole_threshold = 2500
+  )
+
+  n_valley <- sum(terra::values(valleys) == 1, na.rm = TRUE)
+  message("  Valley cells: ", n_valley, " / ", terra::ncell(valleys),
+          " (", round(100 * n_valley / terra::ncell(valleys), 1), "%)")
+
+  # --- Polygonize ---
+  message("  Converting to polygons...")
+  valleys_poly <- fl_valley_poly(valleys)
+  message("  ", nrow(valleys_poly), " polygon features")
+
+  # --- Write outputs ---
+  out_raster <- file.path(out_dir, paste0("floodplain_neexdzii_", sc$scenario_id, ".tif"))
+  out_vector <- file.path(out_dir, paste0("floodplain_neexdzii_", sc$scenario_id, ".gpkg"))
+
+  terra::writeRaster(valleys, out_raster, overwrite = TRUE)
+  sf::st_write(valleys_poly, out_vector, delete_dsn = TRUE, quiet = TRUE)
+  message("  Saved: ", basename(out_raster), ", ", basename(out_vector))
+}
+
+message("\nDone. Floodplain AOI(s) ready for drift pipeline (lulc_classify.R).")

@@ -1,0 +1,7 @@
+scenario_id,species,min_order,anchor_order,flood_factor,description
+co_ff01,co,3,1,1,Bankfull - spawning gravel recruitment zone
+co_ff02,co,3,1,2,Near-bankfull - active channel margin
+co_ff04,co,3,1,4,Off-channel rearing habitat zone
+co_ff06,co,3,1,6,Functional floodplain (current baseline)
+co_ff08,co,3,1,8,Extended floodplain - large wood recruitment
+co_ff12,co,3,1,12,Channel migration zone - full process width

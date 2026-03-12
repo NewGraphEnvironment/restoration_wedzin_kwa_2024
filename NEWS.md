@@ -1,4 +1,12 @@
 
+# restoration_wedzin_kwa_2024 DRAFT 0.2.0 (2026-03-12)
+
+- upgrade floodplain model to coho 3rd order+ streams with waterbodies via `fresh::frs_network()` ([#123](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/123))
+- split lower Bulkley into 5 sub-basins (14 total) to isolate degradation hotspots
+- add scenario-driven flood modelling framework (`flood_scenarios.csv`) for multi-scale floodplain analysis
+- add prioritization framework scaffold: `area_scores.csv` (14 sub-basins) and `project_scores.csv` (208 sites) ([#125](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/125))
+- update methods, results, and appendix to document VCA parameters (flood_factor=6, order 3+, waterbodies)
+
 # restoration_wedzin_kwa_2024 DRAFT 0.1.9 (2026-03-11)
 
 - restructure Results: replace layer tracking table with descriptive GIS environment summary

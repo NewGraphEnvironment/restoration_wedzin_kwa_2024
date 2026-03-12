@@ -7,21 +7,27 @@
 #   1. Whole-floodplain: classify + transition for interactive map
 #   2. Per-sub-basin: summarize for tables/plots
 #
-# Consumes subbasins.gpkg (from break app) and floodplain_neexdzii_co.gpkg
-# (from flooded). Runs drift pipeline: fetch, classify, summarize, transition.
+# Reads active scenario from data/lulc/flood_scenarios.csv to select the
+# floodplain AOI. Naming convention: floodplain_neexdzii_{scenario_id}.gpkg
+# Currently only co_ff06 exists (flood_factor = 6, the baseline).
+#
+# Consumes subbasins.gpkg (from break app) and floodplain polygon (from flooded).
+# Runs drift pipeline: fetch, classify, summarize, transition.
 #
 # Outputs to data/lulc/:
-#   lulc_summary.rds       — area/pct by class, sub-basin, year (for tables)
-#   rasters/floodplain/    — classified + transition tifs (for interactive map)
+#   lulc_summary_{scenario_id}.rds  — area/pct by class, sub-basin, year
+#   lulc_summary.rds                — copy of active scenario (for report)
+#   rasters/{scenario_id}/          — classified + transition tifs
 #
 # Gated by params$update_lulc in index.Rmd
 #
-# Relates to #116, #67
+# Relates to #116, #67, #123
 
 library(drift)
 library(sf)
 library(terra)
 library(dplyr)
+library(readr)
 
 sf::sf_use_s2(FALSE)
 terra::terraOptions(threads = 12)
@@ -30,14 +36,29 @@ out_dir <- here::here("data", "lulc")
 ag_classes <- c("Crops", "Rangeland", "Bare Ground")
 years <- c(2017, 2020, 2023)
 
+# --- Select scenario ---
+# Override at command line: Rscript scripts/lulc_classify.R co_ff04
+scenarios <- readr::read_csv(file.path(out_dir, "flood_scenarios.csv"), show_col_types = FALSE)
+scenario_id <- commandArgs(trailingOnly = TRUE)[1]
+if (is.na(scenario_id) || !scenario_id %in% scenarios$scenario_id) {
+  scenario_id <- "co_ff06"
+}
+scenario <- scenarios |> dplyr::filter(scenario_id == !!scenario_id)
+message("=== Scenario: ", scenario_id, " (ff=", scenario$flood_factor, ") ===")
+message("  ", scenario$description)
+
 # --- Load inputs ---
 subbasins <- sf::st_read(
   file.path(out_dir, "subbasins.gpkg"), quiet = TRUE
 ) |> sf::st_transform(4326)
 
-floodplain <- sf::st_read(
-  file.path(out_dir, "floodplain_neexdzii_co.gpkg"), quiet = TRUE
-) |> sf::st_transform(4326)
+# Floodplain file: try scenario-specific name, fall back to legacy name
+fp_file <- file.path(out_dir, paste0("floodplain_neexdzii_", scenario_id, ".gpkg"))
+if (!file.exists(fp_file)) {
+  fp_file <- file.path(out_dir, "floodplain_neexdzii_co.gpkg")
+  message("  Using legacy floodplain: ", basename(fp_file))
+}
+floodplain <- sf::st_read(fp_file, quiet = TRUE) |> sf::st_transform(4326)
 
 # Use name_basin from break_points.csv (carried through via fresh::frs_watershed_split)
 
@@ -51,7 +72,7 @@ trans_all <- dft_rast_transition(
 )
 
 # Save rasters as tif
-fp_dir <- file.path(out_dir, "rasters", "floodplain")
+fp_dir <- file.path(out_dir, "rasters", scenario_id)
 dir.create(fp_dir, recursive = TRUE, showWarnings = FALSE)
 for (yr in names(classified_all)) {
   terra::writeRaster(classified_all[[yr]], file.path(fp_dir, paste0("classified_", yr, ".tif")),
@@ -92,6 +113,11 @@ for (i in seq_len(nrow(subbasins))) {
 
 # --- Save ---
 lulc_summary <- dplyr::bind_rows(results)
+lulc_summary$scenario_id <- scenario_id
+lulc_summary$flood_factor <- scenario$flood_factor
+
+# Scenario-specific file + copy as lulc_summary.rds for report consumption
+saveRDS(lulc_summary, file.path(out_dir, paste0("lulc_summary_", scenario_id, ".rds")))
 saveRDS(lulc_summary, file.path(out_dir, "lulc_summary.rds"))
 
-message("\nDone. Outputs in ", out_dir)
+message("\nDone. Scenario: ", scenario_id, " — outputs in ", out_dir)

@@ -1,186 +1,112 @@
-# Task Plan: Restoration Neexdzii Kwah Report Finalization
+# Task Plan: Floodplain Scenario Modelling Pipeline
 
-**Goal:** Restructure and finalize the restoration report to scientific reporting standards, incorporating all 2024 field work deliverables.
+**Goal:** Build a multi-scenario floodplain modelling pipeline using `flooded` VCA at different `flood_factor` values, each representing a distinct ecological process. Research-first approach: add references to Zotero, semantic search to build rationale, then parameterize, run, and report.
 
 **Status:** `in_progress`
-**Created:** 2026-01-15
-**SRED Tracking:** Relates to NewGraphEnvironment/sred-2025-2026 (Iterations 1, 4)
+**Created:** 2026-03-11
+**Issue:** [#123](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/123)
+**Branch:** `123-floodplain-refinement`
+**SRED Tracking:** Relates to NewGraphEnvironment/sred-2025-2026#4
 
 ---
 
-## Phase 1: Report Restructuring
+## Phase 1: Research & References
 **Status:** `in_progress`
 
-### 1.1 Executive Summary Updates
-- [x] Review current executive summary table structure
-- [x] Decision: Keep table for technical tools/workflows; add field work narrative separately
+### 1.1 Add papers to Zotero (25 references) ✓ COMPLETE
+Papers from cloud conversation covering:
+- Off-channel habitat & floodplain connectivity
+- Process-based restoration (NRCS, Beechie, Wheaton)
+- LWD/beaver dam analogues
+- Valley confinement & bankfull geometry
+- Lidar resolution effects on flood modelling
+- Fish habitat & salmon lifecycle
 
-**Field Work Narrative Paragraph (to add):**
-- [ ] Benthic invertebrate sampling (3 sites, Neexdzii Kwah mainstem)
-- [ ] eDNA sampling (below Bulkley Falls + 1km downstream)
-- [ ] Site reviews (as already described in Results)
-- [ ] UAV mapping extent
-- [ ] Two workshops conducted:
-  - Landowners workshop (input on prioritization)
-  - Wet'suwet'en community members & leadership workshop (input on prioritization)
+**Reference list (DOIs from cloud conversation):**
 
-**Technical Tools Table:**
-- [ ] Rename table caption to "Project Resources & Deliverables" or similar
-- [ ] Add time series analysis workflow
-- [ ] Add climate anomaly tool
-- [ ] Keep existing technical items
+| # | Key topic | First author | Year | Zotero key | Status |
+|---|-----------|-------------|------|------------|--------|
+| 1 | Off-channel rearing | Beechie et al. | 2005 | V5TB9WSZ | [x] in Zotero (pre-existing) |
+| 2 | Floodplain connectivity | Opperman et al. | 2010 | JIT4EFQ9 | [x] PDF attached |
+| 3 | Side-channel habitat | Morley et al. | 2005 | 7INMABI2 | [x] in Zotero (pre-existing) |
+| 4 | Process-based restoration | Beechie et al. | 2010 | 9ZU9P92W | [x] in Zotero (pre-existing) |
+| 5 | Low-tech PBR | Wheaton et al. | 2019 | MYHDLARR | [x] in Zotero (pre-existing) |
+| 6 | Stage-0 restoration | Cluer & Thorne | 2014 | KN976MGF | [x] in Zotero (pre-existing) |
+| 7 | Floodplain reconnection | Roni et al. | 2019 | UA7RI236 | [x] in Zotero (pre-existing) |
+| 8 | Beaver dam analogues | Pollock et al. | 2014 | 43UKF3PG | [x] in Zotero (pre-existing) |
+| 9 | Valley confinement algo | Nagel et al. | 2014 | TE78VAJT | [x] PDF attached |
+| 10 | VCA implementation | Gilbert et al. | 2016 | AF4WVTDV | [x] URL + abstract |
+| 11 | Bankfull regression PNW | Hall et al. | 2007 | WP79Z9X7 | [x] URL + abstract |
+| 12 | Channel migration zones | Rapp & Abbe | 2003 | Z7CMN8ME | [x] PDF attached |
+| 13 | DEM resolution effects | Zhang & Montgomery | 1994 | 4HMFR6VL | [x] in Zotero (pre-existing) |
+| 14 | DEM flood sensitivity | Dakin Kuiper et al. | 2022 | 7HMBEIT2 | [x] URL + abstract |
+| 15 | Fish barriers & connectivity | Kemp & O'Hanley | 2010 | 5AUDDRAR | [x] in Zotero (pre-existing) |
+| 16 | Side-channel productivity | Rosenfeld et al. | 2008 | 28GANINW | [x] PDF attached |
+| 17 | Coho smolt production | Knox et al. | 2022 | FZ37XRI8 | [x] URL + abstract |
+| 18 | Process-based principles | Beechie et al. | 2013 | W3ICV3R9 | [x] URL + abstract |
+| 19 | Restoration + population | Beechie et al. | 2023 | ZRE4Z65R | [x] URL + abstract |
+| 20 | Floodplain restoration | Beechie et al. | 2021 | ST2KZK8G | [x] PDF attached |
+| 21 | WDFW side channels | WDFW | 2009 | 4CUNR42Z | [x] PDF attached |
+| 22 | Floodplain mapping | Fogel et al. | 2022 | 8MQCQAEX | [x] PDF attached |
+| 23 | Landscape change + fish | Aristizabal et al. | 2024 | TB7NN94Z | [x] PDF attached |
+| 24 | Juvenile salmon habitat | Sommer et al. | 2001 | ZQAM35LS | [x] in Zotero (pre-existing) |
+| 25 | Floodplain rearing | Katz et al. | 2017 | GFGBG2AT | [x] in Zotero (pre-existing) |
 
-**Future improvements (document for later):**
-- Condense URLs to anchor text links
-- Add internal links to corresponding Methods sections
-- Query STAC catalogue to summarize UAV work (number of products, sites mapped, area covered) for exec summary
-
-### 1.2 Methods Section Restructure & Expansion (Issue #97)
-
-**Step 1: Reorganize into logical groupings** (see findings.md for full proposal)
-- [x] Create "Field Assessments" section grouping
-- [x] Create "Collaborative Data Management" section grouping
-- [x] Create "Remote Sensing & Imagery" section grouping
-- [x] Create "Background Research & Analysis" section grouping
-
-**Step 2: Tighten/condense existing content**
-- [x] Condense "Open Source - Iterative Reporting" to 2 sentences
-- [x] Remove "Issue and Discussion Tracking" subsection (meta, not methods)
-- [x] Remove "Tables and Figures" subsection (meta, not methods)
-- [x] Remove "Documentation of Workflows" subsection (memos dropped, blogs used instead)
-- [x] Promote "Data Sourcing" to own ## section, tighten text
-
-**Step 3: Add missing field methods**
-- [x] Benthic invertebrate sampling ✓ (placed in Field Assessments)
-- [x] Site Reviews section added ✓ (Issue #100 for forms table)
-- [ ] eDNA sampling (awaiting user details)
-- [ ] Stakeholder workshops (landowner + Wet'suwet'en community)
-- [ ] Digital forms table (Issue #100) - document fields captured
-- [x] Spring 2025 site visits - confirmed data organized and added to report
-- [ ] Stream walks methods & results - summarize locations and add to report
-  - **Data:** `~/Projects/gis/restoration_wedzin_kwa/data_field/2024/form_fiss_site_2024.gpkg`
-  - **Note:** Different form type than monitoring forms - NOT included in amalgamated geojson
-  - **Purpose:** Understand high-value salmon habitat, visit past prescription sites, identify publicly accessible points for field technicians to connect with Bulkley River mainstem and Buck Creek to build knowledge of conditions, ecological values, degradation issues (restoration/conservation potential)
-- [ ] Site visit data amalgamation & categorization
-  - **Amalgamated data:** `data/gis/sites_reviewed_2024_202506.geojson` (made by `scripts/gis/amalgamate_field_forms.R`)
-  - **Sources:** form_monitoring_ree_2024, form_monitoring_ree_20240923, form_fiss_site_fraser_2024, form_monitoring_ree_2025
-  - **Issue:** Appendix 2 is out of date - needs updating with amalgamated file
-  - **Task:** Categorize sites by visit purpose, update results presentation
-
-**Step 4: Add missing technical methods**
-- [ ] iPhone LiDAR vegetation monitoring methodology
-- [x] Time series analysis workflow (Sentinel-2, Google Earth, BC historic ortho discovery)
-- [ ] Climate anomaly methodology (reference Appendix 1)
-
-### 1.3 Results Section Expansion
-- [ ] Restructure `0400-results.Rmd` to receive content from exec summary
-- [ ] Organize by deliverable type
+### 1.2 Semantic search for ecological rationale
+- [ ] Search Zotero for each scenario's ecological basis
+- [ ] Build citation strings for each `flood_factor` level
+- [ ] Document rationale in findings.md
 
 ---
 
-## Phase 2b: QGIS Project Cleanup & Site Data
+## Phase 2: Scenario CSV Design
 **Status:** `pending`
 
-### 2b.1 Site Categorization
-- [ ] Add tags/attributes to site data table to categorize:
-  - Sites with past restoration work completed
-  - Sites with existing prescriptions (e.g., NCFDC 1998)
-  - Proposed/conceptual sites from landowners
-  - HWI sites
-  - Wet'suwet'en FN 2016 sites
-- [ ] Query field forms to get total number of sites visited
-- [ ] Summarize site counts by category for Methods section
+### 2.1 Create `data/floodplain_scenarios.csv`
+Columns: `scenario_id`, `flood_factor`, `ecological_process`, `description`, `citations`, `stream_filter`
 
-### 2b.2 QGIS Review
-- [ ] Review comments in `/Users/airvine/Projects/gis/restoration_wedzin_kwa` for errors/omissions
-- [ ] Export site data for report integration
+Planned scenarios:
+| scenario_id | flood_factor | ecological_process |
+|-------------|-------------|-------------------|
+| bankfull | 1-2 | Active channel / bankfull extent |
+| rearing | 3-4 | Off-channel rearing habitat |
+| functional | 6 | Functional floodplain / active valley flat |
+| migration | 8-12 | Channel migration zone |
 
-### 2b.3 Add Missing Site Locations
-- [ ] Benthic invertebrate sampling sites (3 sites, Neexdzii Kwah mainstem)
-  - [ ] Find name and reference ID for existing CABIN site (Site 3, downstream Houston)
-- [ ] eDNA sampling sites (below Bulkley Falls + 1km downstream)
-- [ ] Verify all sites have proper attributes
+### 2.2 Parameterize from CSV
+- [ ] Update `scripts/lulc_network-extract.R` to read scenarios CSV
+- [ ] Loop VCA over each `flood_factor`
+- [ ] Use `bcfishpass.streams_co_vw` (coho potential habitat)
+- [ ] Switch to order >= 3 for VCA / order >= 1 for anchors
 
 ---
 
-## Phase 3: Climate & Remote Sensing Documentation
+## Phase 3: Run VCA Scenarios
 **Status:** `pending`
 
-### 3.1 Climate Anomaly Analysis
-- [ ] Verify climate anomaly appendix documents bc_climate_anomaly fork (newgraph branch)
-- [ ] Document climate perspective before/during study period
-- [ ] Illustrate climate pattern differences within Neexdzii Kwah watershed
-
-### 3.2 Precipitation Patterns
-- [ ] Review `../new_graphiti/posts/2024-06-19-precipitation/index.qmd`
-- [ ] Document 3D interactive precipitation visualization in report
-- [ ] Reference reproducible workflow demonstration
-
-### 3.3 Land Cover Classification
-- [ ] Review `../new_graphiti/posts/2024-06-30-land-cover/index.qmd`
-- [ ] Document baseline land cover classification proof of concept
-- [ ] Add as recommendation for future large-scale change detection
-
-### 3.4 Time Series Documentation
-- [ ] Read and understand `../new_graphiti/posts/2026-01-08-stac-ortho-mosaics/index.qmd`
-- [ ] Document methodology for time series analysis
-- [ ] Add Maxam Creek / Bulkley Lake confluence example to report
-- [ ] Create/reference time series figures
-
-### 3.5 Historic Ortho Recommendation
-- [ ] Review `../new_graphiti/posts/2024-11-15-bcdata-ortho-historic/index.qmd`
-- [ ] Review budget line item in `admin/2025_2026/neexdzi_kwa_budget_options_20251119.xlsx`
-- [ ] Write recommendation for purchasing/processing/storing historic ortho datasets
-- [ ] Add to Recommendations section
+- [ ] Run flooded VCA for each scenario
+- [ ] Export layers to GIS project
+- [ ] Validate against known features (e.g., Bulkley floodplain extent)
 
 ---
 
-## Phase 4: Field Methods Documentation
+## Phase 4: LULC Change Detection
 **Status:** `pending`
 
-### 4.1 Benthic Invertebrate Sampling
-- [x] Document cabin kick methods (cite environmentcanada2012Canadianaquatic from Zotero)
-- [x] Note 3 sites in Neexdzii Kwah mainstem
-- [x] Reference Cordillera Lab (Summerland) for sample processing
-- [x] Note results upload to federal CABIN database
-- [x] Add methods to `0300-methods.Rmd`
-- [ ] Add results/locations to `0400-results.Rmd`
-
-### 4.2 eDNA Sampling
-- [ ] Document eDNA sampling methods (user to provide details)
-- [ ] Sites: below Bulkley Falls + 1km downstream
-- [ ] Add to QGIS project
-- [ ] Pull locations into report
+- [ ] Run drift classification per scenario AOI
+- [ ] Compare land cover change across nested zones
+- [ ] Generate summary statistics
 
 ---
 
-## Phase 5: UAV & Remote Sensing Methods
+## Phase 5: Report Integration
 **Status:** `pending`
 
-### 5.1 UAV Mapping Methodology
-- [ ] Document extensive watershed UAV mapping work
-- [ ] Document image processing workflow (ngr functions → orthomosaics)
-- [ ] Document STAC collection workflows (stac_uav_bc scripts)
-- [ ] Document VM setup: postgres + stac-fastapi-pgstac
-- [ ] Document serving via images.a11s.one
-- [ ] Reference existing `scripts/gis/uav_process.Rmd`
-
-### 5.2 iPhone LiDAR / 3D Vegetation Monitoring
-- [ ] Document innovative vegetation monitoring methodology (iPhone LiDAR → Sketchfab)
-- [ ] Add new 3D model to Attachment 1 (Riparian Prescription Example)
-- [ ] Consider side-by-side comparison layout (baseline vs +1 growing season)
-- [ ] Get Sketchfab embed link for new model
-
----
-
-## Phase 6: Final Integration & Review
-**Status:** `pending`
-
-- [ ] Verify all cross-references work
-- [ ] Check citations (especially new ones: reynoldson_etal2001CABINcanadian)
-- [ ] Build report and verify rendering
-- [ ] Review all figures/tables render correctly
-- [ ] Final cleanup of uncommitted changes
+- [ ] Update methods: describe nested scenario approach
+- [ ] Fix "watershed picker" → break points reference
+- [ ] Document FWA input (streams_co_vw)
+- [ ] Update results: summary table of scenarios
+- [ ] Update appendix 2043 with new figures
 
 ---
 
@@ -191,30 +117,10 @@
 
 ---
 
-## Companion App Coordination
-| App | Action | Status |
-|-----|--------|--------|
-| `restoration_wedzin_kwa_2024_recomendations` | Sync if recommendations change | pending |
+## Key Technical Notes
 
-**Note:** Shiny app uses `xciter` for citations. Updates require coordination.
-
----
-
-## Files to Create/Modify
-| File | Action | Status |
-|------|--------|--------|
-| `0050-executive-summary.Rmd` | Simplify, move content | pending |
-| `0300-methods.Rmd` | Major expansion | pending |
-| `0400-results.Rmd` | Major expansion | pending |
-| `0500-recomendations.Rmd` | Add historic ortho, land cover recs | pending |
-| `2040-appendix-climate-anomaly.Rmd` | Verify bc_climate_anomaly docs | pending |
-| `2080-Attachment_1_riparian_prescription.Rmd` | Add 3D model | pending |
-| QGIS project | Add sites, review | pending |
-
----
-
-## User Input Needed
-- [ ] eDNA sampling methods details
-- [ ] Sketchfab link for new 3D model
-- [ ] Confirmation on benthic site locations
-- [ ] Any additional tasks to add
+- **VCA bankfull regression:** `bankfull_depth = (upstream_area^0.280 * 0.196 * precip^0.355)^0.607 * 0.145`
+- **Precipitation critical:** Without real MAP from `map_upstream`, flood depth underestimated ~4x on Bulkley
+- **Stream network:** `streams_co_vw` = 6,030 1st-order segments (1,832 km) — scoped to coho potential habitat
+- **DB tunnel:** localhost:63333 → bcfishpass/fwapg
+- **Reminder:** Run `claude mcp remove db-newgraph` when done
