@@ -69,7 +69,9 @@ total_tree_loss <- round(abs(sum(lulc_tree_delta$delta_ha)), 0)
 top3 <- head(lulc_tree_delta, 3)
 
 # Gross pixel-level transitions from whole-floodplain rasters
-fp_dir <- here::here("data", "lulc", "rasters", "floodplain")
+# Use scenario-specific raster dir, fall back to legacy
+fp_dir <- here::here("data", "lulc", "rasters", "co_ff06")
+if (!dir.exists(fp_dir)) fp_dir <- here::here("data", "lulc", "rasters", "floodplain")
 
 # Trees -> ag: from the saved transition raster (already filtered to from_class=Trees)
 trans_freq <- terra::freq(terra::rast(file.path(fp_dir, "transition.tif")))
@@ -91,7 +93,7 @@ reverse_to_trees <- full_trans$summary |>
 net_trees_ag <- gross_trees_to_ag - reverse_to_trees
 ```
 
-Land cover classification within the modelled floodplain (IO LULC 10 m, Sentinel-2 derived) shows a consistent pattern of tree cover loss and agriculture expansion between 2017 and 2023. Pixel-level transition analysis identified `r gross_trees_to_ag` ha of floodplain tree cover that converted to agriculture classes (Crops + Rangeland + Bare Ground), while `r reverse_to_trees` ha shifted from agriculture back to trees — a net loss of approximately `r net_trees_ag` ha. The total net tree cover decline across all classes was `r total_tree_loss` ha. The greatest losses occurred in `r top3$subbasin[1]` (`r round(abs(top3$delta_ha[1]), 0)` ha), `r top3$subbasin[2]` (`r round(abs(top3$delta_ha[2]), 0)` ha), and `r top3$subbasin[3]` (`r round(abs(top3$delta_ha[3]), 0)` ha). An interactive map of classified land cover with transition overlays, along with detailed sub-basin summaries, is presented in [Appendix - LULC](#app-lulc).
+Land cover classification within the modelled floodplain — delineated using the Valley Confinement Algorithm at flood factor 6 for coho habitat streams of 3rd order and greater (see [Methods](#time-series-analysis)) — shows a consistent pattern of tree cover loss and agriculture expansion between 2017 and 2023. Pixel-level transition analysis identified `r gross_trees_to_ag` ha of floodplain tree cover that converted to agriculture classes (Crops + Rangeland + Bare Ground), while `r reverse_to_trees` ha shifted from agriculture back to trees — a net loss of approximately `r net_trees_ag` ha. The total net tree cover decline across all classes was `r total_tree_loss` ha. The greatest losses occurred in `r top3$subbasin[1]` (`r round(abs(top3$delta_ha[1]), 0)` ha), `r top3$subbasin[2]` (`r round(abs(top3$delta_ha[2]), 0)` ha), and `r top3$subbasin[3]` (`r round(abs(top3$delta_ha[3]), 0)` ha). An interactive map of classified land cover with transition overlays, along with detailed sub-basin summaries, is presented in [Appendix - LULC](#app-lulc).
 
 Not all detected tree loss represents agricultural conversion — some transitions reflect timber harvest within the floodplain, where recent cutblocks are classified as rangeland or bare ground at 10 m resolution. Even where harvested areas regenerate or are replanted, young closed-canopy forests do not provide the same watershed function as mature riparian stands — they contribute less large woody debris, offer less structural diversity for fish habitat, and have different hydrological characteristics. Other pixel-level transitions reflect channel migration, seasonal differences in vegetation health due to drought, or classification noise — particularly along actively shifting reaches and at field-forest edges. Despite these sources of uncertainty, the overall trajectory of floodplain tree cover loss is consistent across sub-basins and time steps, and the magnitude of change is well above what classification error alone would produce. These trends highlight where protection of remaining mature floodplain forest, engagement with landowners, and restoration of degraded reaches may be most effective.
 
