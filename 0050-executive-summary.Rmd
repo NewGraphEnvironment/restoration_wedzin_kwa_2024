@@ -22,7 +22,7 @@ This report presents a governance and prioritization framework for restoration o
 <br>
 
 **Site assessments.** Field reviews at 26 locations over 2024–2025 documented conditions at past restoration sites, historic prescription locations, and newly proposed areas. A recurring theme was riparian and floodplain vegetation removal, channelization of streams and cattle-related degradation at scales far exceeding the footprint of past restoration investments. At sites where past work has been completed, riparian buffer widths were narrower than what current understanding suggests is
-  needed for effective recovery. Road and rail erosion protection consistently lacked vegetated riprap, soft armouring, and effective riparian buffers. UAV flights at the majority of sites provide high-resolution baseline imagery for future monitoring, cataloged via [`stac_uav_bc`](https://github.com/NewGraphEnvironment/stac_uav_bc).
+  needed for effective recovery. Road and rail erosion protection consistently lacked vegetated riprap, soft armouring, and effective riparian buffers. UAV flights at the majority of sites provide high-resolution baseline imagery for future monitoring, cataloged via [`stac_uav_bc`](https://github.com/NewGraphEnvironment/stac_uav_bc). These observations feed directly into the prioritization framework and provide the baseline against which future restoration effectiveness will be measured.
 
 <br>
 
