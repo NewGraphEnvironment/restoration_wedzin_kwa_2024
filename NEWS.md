@@ -1,4 +1,14 @@
 
+# restoration_wedzin_kwa_2024 DRAFT 0.2.3 (2026-03-13)
+
+- add Research as Territorial Stewardship section to recommendations: UN Decade on Ecosystem Restoration principles, UNDRIP, root causes framing that integrates both habitat degradation and exploitation
+- fold exploitation caveat into UN Decade Commitment 1 (address root causes) — habitat loss and fishing pressure as co-equal drivers
+- refine executive summary tool descriptions: `fresh` as stream network spatial hydrology, `stac_dem_bc` as provincial LiDAR DEM catalog, `breaks` as interactive sub-basin delineation
+- weave territorial stewardship and UN Decade framing into executive summary closing
+- tighten executive summary: drop stac_dem_bc detail paragraph, generalize mobile GIS, simplify guideline names, clean airphoto catalog URL
+- rewrite acknowledgement: Wet'suwet'en hereditary house system, balhats, clan-based laws, oral tradition (Morin 2016)
+- update AI disclosure: "analysis, writing, and code development" across exec summary PDF and main report
+
 # restoration_wedzin_kwa_2024 DRAFT 0.2.2 (2026-03-13)
 
 - rewrite executive summary: framework-first structure with governance, sub-basin delineation, floodplain model sensitivity range (680–1,000+ ha), collaborative GIS, aquatic health monitoring, and tools as deliverables

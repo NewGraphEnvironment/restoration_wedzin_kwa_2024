@@ -33,37 +33,40 @@ build_date <- format(Sys.Date(), "%Y-%m-%d")
 }
 </style>
 
-<div style="text-align: center; margin-bottom: 0.3em;">
+
+<div style="text-align: center; margin-top: 2em; margin-bottom: 1em;">
 <img src="fig/logo_sern/SERNbc-Logo-FULL.jpg" style="width: 220px;" />
 </div>
 
-<div class="version-block" style="text-align: center; margin-bottom: 1em; padding: 0.6em 1em; background: #f5f5f5; border-radius: 4px; font-size: 0.85em; line-height: 1.4;">
+<div style="text-align: center; font-size: 0.85em; line-height: 1.6;">
 
-**Version `r version` DRAFT** | `r build_date`
+Version `r version` DRAFT | `r build_date`
 
-[Full Report](`r params$report_url`)
+</div>
 
-[Source Code and Data](`r params$repo_url`)
-
-[Changelog](`r paste0(params$repo_url, '/blob/main/NEWS.md')`)
+<div style="text-align: center; margin-top: 3em; margin-bottom: 1em; font-size: 0.85em; line-height: 1.8;">
 
 *Prepared for the Wet'suwet'en Treaty Office Society*
 
-*Prepared by Al Irvine, R.P.Bio - New Graph Environment Ltd.*  
+*Prepared by Al Irvine, R.P.Bio — New Graph Environment Ltd.*
 
 *on behalf of the Society for Ecosystem Restoration in Northern British Columbia*
 
 </div>
 
-```{r exec-summary, child='0050-executive-summary.Rmd'}
-```
+<div style="text-align: center; margin-top: 5em; font-size: 0.8em; line-height: 1.6;">
 
-<div style="margin-top: 2em; padding-top: 1em; border-top: 1px solid #ccc; font-size: 0.85em;">
-
-This executive summary is extracted from the [full report](`r params$report_url`). The report is a living document — current version, revision history, and open tasks are tracked at the links above.
-
-*Claude Sonnet 4.6 (Anthropic) assisted with literature synthesis, drafting, and technical writing. All scientific interpretation, data analysis, and conclusions are the responsibility of the authors.*
+[Full Report](`r params$report_url`) | [Source Code and Data](`r params$repo_url`) | [Changelog](`r paste0(params$repo_url, '/blob/main/NEWS.md')`) | [Latest Executive Summary](`r paste0(params$report_url, '/executive_summary.pdf')`)
 
 </div>
+
+<div style="text-align: center; margin-top: 3em; font-size: 0.75em; font-style: italic; line-height: 1.4;">
+
+Claude Opus 4.6 (Anthropic) assisted with analysis, writing, and code development. All scientific interpretation and conclusions are the responsibility of the authors.
+
+</div>
+
+```{r exec-summary, child='0050-executive-summary.Rmd'}
+```
 
 # References {-}

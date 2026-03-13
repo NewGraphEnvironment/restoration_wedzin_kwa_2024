@@ -16,7 +16,7 @@ date: |
  |
  | Version `r desc::desc_get_version()` DRAFT `r format(Sys.Date(), "%Y-%m-%d")`
  |
- | *Claude Opus 4.6 (Anthropic) assisted with literature synthesis, drafting, and technical writing. All scientific interpretation, data analysis, and conclusions are the responsibility of the authors.*
+ | *Claude Opus 4.6 (Anthropic) assisted with analysis, writing, and code development. All scientific interpretation and conclusions are the responsibility of the authors.*
 toc-title: Table of Contents
 site: bookdown::bookdown_site
 output: 
@@ -107,9 +107,9 @@ knitr::write_bib(c(
 
 # Acknowledgement {.front-matter .unnumbered}
 
-We understand our well-being as inseparable from the health of the land and waters we work within. When we care for ecosystems, we care for ourselves and for the communities connected to them.
+We understand our well-being as inseparable from the health of the land and waters we work within. When we care for ecosystems, we care for ourselves.
 
-This work takes place within the Yintah of the Wet'suwet'en people, who have governed these lands and waters through their hereditary chief system for thousands of years. The Neexdzii Kwa (Upper Bulkley River) and its tributaries sustain salmon, steelhead, and the communities connected to them. We are grateful to the Office of the Wet'suwet'en for their partnership and guidance in this work.
+This work takes place within the Yintah of the Wet'suwet'en people, who have governed these lands and waters through their hereditary house system for thousands of years — through the balhats (feast system), clan-based laws, hereditary leadership, and an oral tradition grounded in accuracy, continuity, and collective memory [@morin2016NiwhtsideniHibiiten]. The Neexdzii Kwa (Upper Bulkley River) and its tributaries sustain ecosystems, wildlife, salmon, and the communities connected to them.
 
 ```{js, logo-header, echo = FALSE, eval= T}
 title=document.getElementById('header');
