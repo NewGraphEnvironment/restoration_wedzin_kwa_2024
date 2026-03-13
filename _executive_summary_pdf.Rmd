@@ -1,0 +1,45 @@
+---
+title: "Neexdzii Kwah Restoration Plan"
+subtitle: "Executive Summary"
+output:
+  pagedown::html_paged:
+    css: ["default-fonts", "default-page", "default"]
+    self_contained: true
+params:
+  report_url: 'https://newgraphenvironment.github.io/restoration_wedzin_kwa_2024'
+  repo_url: 'https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024'
+bibliography: references.bib
+citeproc: true
+link-citations: true
+---
+
+```{r exec-pdf-setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+version <- desc::desc_get_version()
+build_date <- format(Sys.Date(), "%Y-%m-%d")
+```
+
+<div class="version-block" style="text-align: center; margin-bottom: 1.5em; padding: 1em; background: #f5f5f5; border-radius: 4px; font-size: 0.9em;">
+
+**Version `r version` DRAFT** | `r build_date`
+
+[Full Report](`r params$report_url`) |
+[Project Issues](`r paste0(params$repo_url, '/issues')`) |
+[Changelog](`r paste0(params$repo_url, '/blob/main/NEWS.md')`)
+
+*Prepared for the Wet'suwet'en Treaty Office Society on behalf of SERN BC by New Graph Environment Ltd.*
+
+</div>
+
+```{r exec-summary, child='0050-executive-summary.Rmd'}
+```
+
+<div style="margin-top: 2em; padding-top: 1em; border-top: 1px solid #ccc; font-size: 0.85em;">
+
+This executive summary is extracted from the full report available at [`r params$report_url`](`r params$report_url`). The report is a living document — current version, revision history, and open tasks are tracked at the links above.
+
+*Claude Sonnet 4.6 (Anthropic) assisted with literature synthesis, drafting, and technical writing. All scientific interpretation, data analysis, and conclusions are the responsibility of the authors.*
+
+</div>
+
+# References {-}
