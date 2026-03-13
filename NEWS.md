@@ -1,4 +1,16 @@
 
+# restoration_wedzin_kwa_2024 DRAFT 0.2.2 (2026-03-13)
+
+- rewrite executive summary: framework-first structure with governance, sub-basin delineation, floodplain model sensitivity range (680–1,000+ ha), collaborative GIS, aquatic health monitoring, and tools as deliverables
+- add standalone executive summary PDF (`docs/executive_summary.pdf`) built via pagedown on every `scripts/run.R` build, stamped with version, date, and report links
+- add `stac_dem_bc` (50,000+ LiDAR DEMs via STAC API) to floodplain modelling and tools list
+- add collaborative GIS section to executive summary: Mergin Maps field platform, 45+ provincial layers, spatial integration
+- add `breaks` app to sub-basin delineation tools
+- weave interdisciplinary education into all three framework examples: restoration sites as shared learning environments for all parties ([#130](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/130))
+- add bridging text before recommendations shiny table to connect legacy items to the prioritization framework
+- add Toboggan Creek hatchery legacy section to background fisheries: 40 years of enhancement, 38% hatchery proportion, genetic mixing, lapsed reporting ([#131](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/131))
+- sharpen exploitation caveat in recommendations: plain language on fishing pressure as precondition for recovery
+
 # restoration_wedzin_kwa_2024 DRAFT 0.2.1 (2026-03-12)
 
 - add historic aerial photograph STAC collection to methods and results (9,741 photos, 1963-2019 via `fly`/`stac_airphoto_bc`) ([#126](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/126))

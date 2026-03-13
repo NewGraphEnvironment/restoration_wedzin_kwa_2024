@@ -363,6 +363,12 @@ Mean male chinook fork length at the Tyee Test Fishery has declined from approxi
 
 <br>
 
+#### Hatchery Legacy
+
+Hatchery enhancement of Neexdzii Kwa chinook operated from 1985 to 2023 via the Toboggan Creek facility, collecting approximately 100,000 eggs per year from 15–32 females [@peacock_etal1996ReviewStock; @price_etal2026rebuildinggiis]. In 1983–1984, juveniles from Upper Wedzin Kwa-origin eggs were released into the Neexdzii Kwa, introducing genetics from a population that was not historically mixed with the local stock. Hatchery-origin fish averaged 38% of Neexdzii Kwa spawners across 14 years with data, ranging from 20% to 55% [@price_etal2026rebuildinggiis] — a proportion shown to significantly reduce wild population performance in chinook, coho, and steelhead across the Pacific Northwest [@chilcote_etal2011Reducedrecruitment], with measurable fitness decline after a single generation of hatchery rearing [@araki_etal2008Fitnesshatcheryreared] that is passed to offspring [@christie_etal2014reproductivesuccess]. From 2010 until the programme ended, annual reporting to DFO lapsed, eliminating 13 years of documentation on broodstock composition and fish health. The genetic and demographic effects of 40 years of hatchery operation on an already-depleted wild population have not been assessed [@naish_etal2007EvaluationEffects].
+
+<br>
+
 #### Implications for Restoration
 
 With harvest management operating at the Skeena scale and largely outside watershed-level control, freshwater habitat restoration is one of the few interventions available to support population recovery at the watershed scale. Improving spawning and rearing habitat quality, reconnecting side channels, and restoring riparian function directly address the freshwater survival bottleneck that compounds the effects of ocean and harvest-driven mortality. The remainder of this report focuses on identifying, prioritizing, and monitoring these habitat restoration opportunities within the Neexdzii Kwah.

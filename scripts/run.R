@@ -10,7 +10,7 @@
   rmarkdown::render(
     "_executive_summary_pdf.Rmd",
     output_format = pagedown::html_paged(
-      css = c("default-fonts", "default-page", "default"),
+      css = c("default-fonts", "default-page", "default", "style-pagedown.css"),
       self_contained = TRUE
     ),
     output_file = "executive_summary.html",
