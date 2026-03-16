@@ -1,0 +1,57 @@
+
+
+# **Appendix - Aerial Imagery** {-#app-uav-imagery}
+
+```{r uav-get-app, eval = T}
+
+bbox = c(-126.77000, 54.08832, -125.88822, 54.68786)
+
+q <- rstac::stac("https://images.a11s.one/") |>
+    rstac::stac_search(
+      collections = "imagery-uav-bc-prod",
+                      bbox = bbox
+                     ) |>
+  rstac::post_request()
+
+uav_raw <- q |>
+  rstac::items_fetch()
+
+uav_tab <- tibble::tibble(url_download = purrr::map_chr(uav_raw$features, ~ purrr::pluck(.x, "assets", "image", "href"))) |>
+  dplyr::mutate(stub = stringr::str_replace_all(url_download, "https://imagery-uav-bc.s3.amazonaws.com/", "")) |>
+  tidyr::separate(
+    col = stub,
+    into = c("region", "watershed_group", "year", "item", "rest"),
+    sep = "/",
+    extra = "drop"
+  ) |>
+  dplyr::mutate(
+    link_view =
+                  dplyr::case_when(
+                    !tools::file_path_sans_ext(basename(url_download)) %in% c("dsm", "dtm") ~
+                      ngr::ngr_str_link_url(
+                        url_base = "https://viewer.a11s.one/?cog=",
+                        url_resource = url_download,
+                        url_resource_path = FALSE,
+                        anchor_text= tools::file_path_sans_ext(basename(url_download))),
+                    T ~ "-"),
+                        link_download = ngr::ngr_str_link_url(url_base = url_download, anchor_text = url_download)
+    )|>
+  dplyr::select(year, item, link_view, link_download)
+
+uav_tab |>
+  readr::write_csv(
+  "data/inputs_extracted/uav.csv"
+)
+
+```
+
+```{r tab-uav-imagery-app-cap, results="asis", eval= gitbook_on}
+my_caption <- "Drone imagery download and viewer links."
+
+my_tab_caption()
+```
+
+```{r tab-uav-imagery-app, eval= gitbook_on}
+uav_tab |>
+  my_dt_table(cols_freeze_left = 0, escape = FALSE)
+```

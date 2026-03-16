@@ -1,6 +1,6 @@
 # Results
 
-## Field Review
+## Field Assessments
 
 Field site reviews were conducted in 2024 and 2025, with assessments documented at 26 locations. Sites were categorized by visit purpose and restoration status:
 
@@ -41,7 +41,17 @@ A brief summary of key observations:
 -   The protection of road and rail infrastructure through streambank armoring is not adequately incorporating best practices for vegetating riprap, soft armouring where possible and establishing/restoring effective riparian buffers.
 
 
-## Land Cover Change
+## Remote Sensing & Imagery
+
+### Aerial Imagery
+
+Orthoimagery has been gathered in the Neexdzii Kwah watershed for past monitoring of historic restoration sites, as part of fish passage restoration planning efforts, and specifically for this project by Matt Sakals (WLRS Provincial Drone Specialist) and New Graph Environment Ltd. team members. Data has been processed and stored as Cloud Optimized GeoTIFFs on AWS, and cataloged using the SpatioTemporal Asset Catalog ([STAC](https://github.com/NewGraphEnvironment/stac_uav_bc)) standard. This means imagery can be queried programmatically based on spatial extent and time range, and loaded directly into applications such as QGIS without needing to know specific file paths — a significant improvement over traditional file-based storage where data is effectively inaccessible unless you already know where it is. Outputs are linked within the collaborative GIS project. A table of download and viewer links is provided in [Appendix - Aerial Imagery](#app-uav-imagery).
+
+#### Historic Aerial Photographs
+
+A collection of 9,741 georeferenced provincial aerial photograph thumbnails (1963–2019) covering the Neexdzii Kwah watershed has been processed and served as a STAC collection (see [Historic Aerial Photographs](#historic-airphotos) in Methods). These photographs are queryable by location and time range alongside the UAV imagery, and are available within the collaborative GIS project. At thumbnail resolution, the collection is sufficient for identifying change trajectories — for example, comparing 1968 riparian conditions against current cleared areas, or documenting the progressive filling of side channels. High-resolution scans of specific photos of interest can be acquired from the province for detailed analysis where the thumbnails reveal compelling change. Details on the georeferencing and processing pipeline are documented in the [`fly`](https://github.com/NewGraphEnvironment/fly) R package and described in [Methods](#historic-airphotos).
+
+### Land Cover Change
 
 ```{r lulc-results-summary}
 lulc_all <- readRDS(here::here("data", "lulc", "lulc_summary.rds"))
@@ -97,47 +107,7 @@ Land cover classification within the modelled floodplain — delineated using th
 
 Not all detected tree loss represents agricultural conversion — some transitions reflect timber harvest within the floodplain, where recent cutblocks are classified as rangeland or bare ground at 10 m resolution. Even where harvested areas regenerate or are replanted, young closed-canopy forests do not provide the same watershed function as mature riparian stands — they contribute less large woody debris, offer less structural diversity for fish habitat, and have different hydrological characteristics. Other pixel-level transitions reflect channel migration, seasonal differences in vegetation health due to drought, or classification noise — particularly along actively shifting reaches and at field-forest edges. Despite these sources of uncertainty, the overall trajectory of floodplain tree cover loss is consistent across sub-basins and time steps, and the magnitude of change is well above what classification error alone would produce. These trends highlight where protection of remaining mature floodplain forest, engagement with landowners, and restoration of degraded reaches may be most effective.
 
-## Sub-Basin Prioritization
-
-Table \@ref(tab:tab-area-priority-cap) integrates land cover change, fish habitat modelling, land ownership, and cultural site data to characterize each sub-basin. Below Bulkley Falls, the middle reaches show the steepest declines — Bulkley Byman-JDavid (-14.5%) and Bulkley Houston-McKilligan (-11.1%) — while the reach closest to Houston (Bulkley-Houston, -8.3%) is comparatively stable but contains the most coho spawning habitat (40 km). The Bulkley Richfield-Falls sub-basin has the largest modelled floodplain below the falls (1,060 ha), the highest coho spawning length (60.8 km), and a near-even split of private (648 ha) and non-private (564 ha) floodplain — existing restoration investments here provide a foundation for expansion. Above Bulkley Falls, Maxam Creek stands out with 59.4% agriculture expansion, 97 ha of reserve land, and a documented traditional fishing site. Buck Creek Downstream Falls has 2 cultural sites and the highest chinook spawning density (60.5 km). These data provide the empirical foundation for the prioritization framework described in [Recommendations](#recommendations), where governance structure and community input guide how investment is directed across sub-basins.
-
-```{r tab-area-priority-cap, results="asis"}
-my_caption <- "Sub-basin prioritization data for the Neexdzii Kwah watershed. Floodplain tree loss and agriculture change are from drift land cover classification (2017-2023). Fish habitat lengths are modelled spawning and rearing from bcfishpass. Non-private floodplain ownership includes Crown Provincial, Untitled Provincial, Crown Agency, Local Government, Federal, and Unclassified parcels from the PMBC parcel fabric. Reserves are from CLAB and cultural sites from @gottesfeld_rabnett2007SkeenaFish. Sub-basins are ordered by tree loss rate within the floodplain."
-my_tab_caption(tip_flag = FALSE)
-```
-
-```{r tab-area-priority}
-area_scores <- readr::read_csv(
-  here::here("data", "prioritization", "area_scores.csv"),
-  show_col_types = FALSE
-) |>
-  dplyr::arrange(tree_loss_pct) |>
-  dplyr::mutate(
-    dplyr::across(c(area_km2, floodplain_area_ha), ~ round(.x, 0)),
-    dplyr::across(c(fp_private_ha, fp_crown_ha), ~ round(.x, 0)),
-    position = gsub("_", " ", gsub("below_|above_", "", position))
-  ) |>
-  dplyr::mutate(fisheries_value = NA_character_) |>
-  dplyr::select(
-    `Sub-basin` = name_basin,
-    `Area (km²)` = area_km2,
-    `Floodplain (ha)` = floodplain_area_ha,
-    `Tree Loss (%)` = tree_loss_pct,
-    `Ag Change (%)` = ag_change_pct,
-    `CO Spawn (km)` = co_spawn_km,
-    `CO Rear (km)` = co_rear_km,
-    `CH Spawn (km)` = ch_spawn_km,
-    `Private FP (ha)` = fp_private_ha,
-    `Non-Private FP (ha)` = fp_crown_ha,
-    `Reserves (ha)` = reserve_area_ha,
-    `Fisheries Value` = fisheries_value,
-    `Cultural Sites` = n_cultural_sites
-  )
-
-my_dt_table(area_scores, page_length = 14, cols_freeze_left = 0)
-```
-
-## Climate Anomaly Trends
+### Climate Anomaly Trends
 
 ```{r climate-results-summary}
 # Pull key values for inline text
@@ -200,7 +170,62 @@ The amount of precipitation has not changed — no season shows a statistically 
 Trend statistics, spatial anomaly maps, and time series plots are presented in [Appendix - Climate Anomaly Data](#app-climate-anomaly).
 
 
-## Collaborative GIS Environment
+## Background Research & Analysis
+
+### Sub-Basin Prioritization
+
+Table \@ref(tab:tab-area-priority-cap) integrates land cover change, fish habitat modelling, land ownership, and cultural site data to characterize each sub-basin. Below Bulkley Falls, the middle reaches show the steepest declines — Bulkley Byman-JDavid (-14.5%) and Bulkley Houston-McKilligan (-11.1%) — while the reach closest to Houston (Bulkley-Houston, -8.3%) is comparatively stable but contains the most coho spawning habitat (40 km). The Bulkley Richfield-Falls sub-basin has the largest modelled floodplain below the falls (1,060 ha), the highest coho spawning length (60.8 km), and a near-even split of private (648 ha) and non-private (564 ha) floodplain — existing restoration investments here provide a foundation for expansion. Above Bulkley Falls, Maxam Creek stands out with 59.4% agriculture expansion, 97 ha of reserve land, and a documented traditional fishing site. Buck Creek Downstream Falls has 2 cultural sites and the highest chinook spawning density (60.5 km). These data provide the empirical foundation for the prioritization framework described in [Recommendations](#recommendations), where governance structure and community input guide how investment is directed across sub-basins. An initial proof of concept for site-level parameter ranking — using GIS overlay of point locations against fish habitat, land tenure, cultural significance, and disturbance layers — is presented in [Appendix – Example of Potential Restoration Sites Prioritized](#sites-ranked). This approach will gain precision as floodplain type mapping advances and sites that pass through the governance framework's diagnostic gates can be scored against modelled habitat polygons rather than simple point intersections.
+
+```{r tab-area-priority-cap, results="asis"}
+my_caption <- "Sub-basin prioritization data for the Neexdzii Kwah watershed. Floodplain tree loss and agriculture change are from drift land cover classification (2017-2023). Fish habitat lengths are modelled spawning and rearing from bcfishpass. Non-private floodplain ownership includes Crown Provincial, Untitled Provincial, Crown Agency, Local Government, Federal, and Unclassified parcels from the PMBC parcel fabric. Reserves are from CLAB and cultural sites from @gottesfeld_rabnett2007SkeenaFish. Sub-basins are ordered by tree loss rate within the floodplain."
+my_tab_caption()
+```
+
+```{r tab-area-priority}
+area_scores <- readr::read_csv(
+  here::here("data", "prioritization", "area_scores.csv"),
+  show_col_types = FALSE
+) |>
+  dplyr::arrange(tree_loss_pct) |>
+  dplyr::mutate(
+    dplyr::across(c(area_km2, floodplain_area_ha), ~ round(.x, 0)),
+    dplyr::across(c(fp_private_ha, fp_crown_ha), ~ round(.x, 0)),
+    position = gsub("_", " ", gsub("below_|above_", "", position))
+  ) |>
+  dplyr::mutate(fisheries_value = NA_character_) |>
+  dplyr::select(
+    `Sub-basin` = name_basin,
+    `Area (km²)` = area_km2,
+    `Floodplain (ha)` = floodplain_area_ha,
+    `Tree Loss (%)` = tree_loss_pct,
+    `Ag Change (%)` = ag_change_pct,
+    `CO Spawn (km)` = co_spawn_km,
+    `CO Rear (km)` = co_rear_km,
+    `CH Spawn (km)` = ch_spawn_km,
+    `Private FP (ha)` = fp_private_ha,
+    `Non-Private FP (ha)` = fp_crown_ha,
+    `Reserves (ha)` = reserve_area_ha,
+    `Fisheries Value` = fisheries_value,
+    `Cultural Sites` = n_cultural_sites
+  )
+
+my_dt_table(area_scores, page_length = 14, cols_freeze_left = 0)
+```
+
+### Fish Passage
+
+High priority fish passage restoration opportunities in the Neexdzii Kwah watershed include mulitple culverts on Highway 16 such as Richfield Creek, Johnny David Creek, and Byman Creek along with crossings on private roads, secondary roads and the railway such as Ailport Creek, Perow Creek, tributary to Buck Creek (PSCIS 197640) and Cesford Creek. Some sites have had past work (Johnny David) and others are currently progressing through the design process (trib to Buck) with details presented in the reports below - which are updated intermittently. Of note @irvine_schick2025SkeenaWatershed includes summary tables within the "Results and Discussion" section which detail all sites surveyed since 2020 and link the reader to individual reports and detailed site memos for each site (when available). Additionally, the top priorities within the greater Bulkley River watershed group are ranked numerically within the table includeing Richfield Creek, Ailport Creek, Cesford Creek and Johnny David Creek within the top ten.
+
+-   [Skeena Watershed Fish Passage Restoration Planning 2024](https://www.newgraphenvironment.com/fish_passage_skeena_2024_reporting/)[@irvine_schick2025SkeenaWatershed]
+-   [Skeena Watershed Fish Passage Restoration Planning 2023](https://www.newgraphenvironment.com/fish_passage_skeena_2023_reporting/)[@irvine_schick2024SkeenaWatershed]
+-   [Bulkley Watershed Fish Passage Restoration Planning 2022](https://www.newgraphenvironment.com/fish_passage_bulkley_2022_reporting/)[@irvine_etal2023BulkleyWatershed]
+-   [Bulkley River and Morice River Watershed Groups Fish Passage Restoration Planning 2021](https://www.newgraphenvironment.com/fish_passage_skeena_2021_reporting/)[@irvine2022BulkleyRiver]
+-   [Bulkley River and Morice River Watershed Groups Fish Passage Restoration Planning 2020](https://www.newgraphenvironment.com/fish_passage_bulkley_2020_reporting/)[@irvine2021BulkleyRiver]
+-   Development Of Aquatic Restoration Designs And On-Farm Cattle Management Improvements within the Wet'suwet'en First Nation Territory [@gaboury_smith2016DevelopmentAquatic]
+
+Lateral connectivity analysis for railway barriers has been run for areas of the Neexdzii Kwah and tributary floodplains using [flooded](https://github.com/NewGraphEnvironment/flooded), with results included as the `lateral_habitat.tif` layer in the shared GIS project. Floodplain extents were modelled using the Valley Confinement Algorithm implemented in flooded, sub-basin delineation was performed with [fresh](https://github.com/NewGraphEnvironment/fresh), and land cover change detection was conducted using [drift](https://github.com/NewGraphEnvironment/drift) — with results presented in [Appendix - LULC](#app-lulc). Future analysis incorporating major roadways (currently under development) will further inform restoration site selection. Additionally, numerous sites proposed for riparian area and erosion protection activities have been identified through local knowledge and landowner engagement and are viewable in the shared GIS project.
+
+## Collaborative Data Management
 
 The shared QGIS project (`restoration_wedzin_kwa`) serves as the spatial integration layer for this work — a single environment where all background information can be viewed together and taken into the field via Mergin Maps on mobile devices. The project contains approximately 45 provincial background layers from the BC Data Catalogue alongside locally generated analysis outputs. Key layer categories include:
 
@@ -215,173 +240,10 @@ The shared QGIS project (`restoration_wedzin_kwa`) serves as the spatial integra
 
 The ability to overlay these layers — reach breaks alongside intrinsic potential modelling, fish presence observations next to historic prescriptions, floodplain change detection over current land tenure — allows users to understand the spatial context of each location and make informed decisions about restoration priorities. Critically, this is not just an office tool: through Mergin Maps integration, the full project travels into the field on mobile devices, serving as the primary navigation and orientation system during site visits and providing the platform for standardized data collection in real time.
 
-## Aerial Imagery
-
-Orthoimagery has been gathered in the Neexdzii Kwah watershed for past monitoring of historic restoration sites, as part of fish passage restoration planning efforts, and specifically for this project by Matt Sakals (WLRS Provincial Drone Specialist) and New Graph Environment Ltd. team members. Data has been processed and stored as Cloud Optimized GeoTIFFs on AWS, and cataloged using the SpatioTemporal Asset Catalog ([STAC](https://github.com/NewGraphEnvironment/stac_uav_bc)) standard. This means imagery can be queried programmatically based on spatial extent and time range, and loaded directly into applications such as QGIS without needing to know specific file paths — a significant improvement over traditional file-based storage where data is effectively inaccessible unless you already know where it is. Outputs are linked within the collaborative GIS project. A table of download and viewer links is provided in [Appendix - Aerial Imagery](#app-uav-imagery).
-
-## Historic Data Products
+### Historic Data Products
 
 A key deliverable of this project was the compilation, extraction, and spatialization of historic restoration data from multiple sources. This work involved extracting tabular data from PDF reports, converting site coordinates to spatial formats, and linking descriptions to GIS layers within the shared `restoration_wedzin_kwa` project. Background context for these historic reports is provided in the [Historic Restoration Context](#historic-restoration-context) section. The resulting spatial layers are stored in `sites_restoration.gpkg` within the collaborative GIS project.
 
 Coordinates of points of interest documented in @price2014UpperBulkley — including locations of river channelization, potential barriers to fish migration, and areas of upwelling groundwater — were extracted from the PDF report using `tabulapdf` and converted to a spatial layer. Restoration prescriptions and riparian polygon data from @mackay_etal1998MidBulkleyDetailed were extracted through two complementary workflows: regex parsing of unstructured PDF text to extract 18 fields per prescription, and georeferencing of appendix maps to spatialize riparian polygons using chainage measurements indexed to the BC Freshwater Atlas via `fwapgr`. Site locations from @gaboury_smith2016DevelopmentAquatic have also been extracted and spatialized. Amalgamated results from the SSAF State of the Value Report for Fish and Fish Habitat [@skeenasustainabilityassessmentforum2021Skeenasustainability] have been integrated into the shared GIS project.
 
 Detailed tables of extracted data are provided in [Appendix - Historic Data Products](#app-historic-data).
-
-
-## Future Restoration Site Selection
-
-### Historic Aerial Photographs
-
-A collection of 9,741 georeferenced provincial aerial photograph thumbnails (1963–2019) covering the Neexdzii Kwah watershed has been processed and served as a STAC collection (see [Historic Aerial Photographs](#historic-airphotos) in Methods). These photographs are queryable by location and time range alongside the UAV imagery, and are available within the collaborative GIS project. At thumbnail resolution, the collection is sufficient for identifying change trajectories — for example, comparing 1968 riparian conditions against current cleared areas, or documenting the progressive filling of side channels. High-resolution scans of specific photos of interest can be acquired from the province for detailed analysis where the thumbnails reveal compelling change. Details on the georeferencing and processing pipeline are documented in the [`fly`](https://github.com/NewGraphEnvironment/fly) R package and described in [Methods](#historic-airphotos).
-
-### Fish Passage
-
-High priority fish passage restoration opportunities in the Neexdzii Kwah watershed include mulitple culverts on Highway 16 such as Richfield Creek, Johnny David Creek, and Byman Creek along with crossings on private roads, secondary roads and the railway such as Ailport Creek, Perow Creek, tributary to Buck Creek (PSCIS 197640) and Cesford Creek. Some sites have had past work (Johnny David) and others are currently progressing through the design process (trib to Buck) with details presented in the reports below - which are updated intermittently. Of note @irvine_schick2025SkeenaWatershed includes summary tables within the "Results and Discussion" section which detail all sites surveyed since 2020 and link the reader to individual reports and detailed site memos for each site (when available). Additionally, the top priorities within the greater Bulkley River watershed group are ranked numerically within the table includeing Richfield Creek, Ailport Creek, Cesford Creek and Johnny David Creek within the top ten.
-
--   [Skeena Watershed Fish Passage Restoration Planning 2024](https://www.newgraphenvironment.com/fish_passage_skeena_2024_reporting/)[@irvine_schick2025SkeenaWatershed]
--   [Skeena Watershed Fish Passage Restoration Planning 2023](https://www.newgraphenvironment.com/fish_passage_skeena_2023_reporting/)[@irvine_schick2024SkeenaWatershed]
--   [Bulkley Watershed Fish Passage Restoration Planning 2022](https://www.newgraphenvironment.com/fish_passage_bulkley_2022_reporting/)[@irvine_etal2023BulkleyWatershed]
--   [Bulkley River and Morice River Watershed Groups Fish Passage Restoration Planning 2021](https://www.newgraphenvironment.com/fish_passage_skeena_2021_reporting/)[@irvine2022BulkleyRiver]
--   [Bulkley River and Morice River Watershed Groups Fish Passage Restoration Planning 2020](https://www.newgraphenvironment.com/fish_passage_bulkley_2020_reporting/)[@irvine2021BulkleyRiver]
--   Development Of Aquatic Restoration Designs And On-Farm Cattle Management Improvements within the Wet’suwet’en First Nation Territory [@gaboury_smith2016DevelopmentAquatic]
-
-Lateral connectivity analysis for railway barriers has been run for areas of the Neexdzii Kwah and tributary floodplains using [flooded](https://github.com/NewGraphEnvironment/flooded), with results included as the `lateral_habitat.tif` layer in the shared GIS project. Floodplain extents were modelled using the Valley Confinement Algorithm implemented in flooded, sub-basin delineation was performed with [fresh](https://github.com/NewGraphEnvironment/fresh), and land cover change detection was conducted using [drift](https://github.com/NewGraphEnvironment/drift) — with results presented in [Appendix - LULC](#app-lulc). Future analysis incorporating major roadways (currently under development) will further inform restoration site selection. Additionally, numerous sites proposed for riparian area and erosion protection activities have been identified through local knowledge and landowner engagement and are viewable in the shared GIS project.
-
-### Parameter Ranking to Select Future Restoration Sites
-
-Potential restoration sites are ranked using a weighted scoring system that combines ecological value, cultural significance, and practical considerations. Each site is evaluated against the parameters in Table \@ref(tab:tab-gis-params), with scores summed to produce a total ranking. Higher-weighted parameters reflect greater importance to restoration success — for example, sites of cultural significance to the Wet'suwet'en receive the highest individual score, while the presence of modelled habitat for a single species contributes a smaller increment. The system is designed to be iterative: as new data layers become available (e.g., additional indicators from the SSAF State of the Value assessment [@skeenasustainabilityassessmentforum2021Skeenasustainability]), they can be incorporated by adding rows to the [input spreadsheet](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/restoration_site_priority_parameters.csv) and assigning weights. Outputs from an initial proof of concept run are included within the shared GIS project and collated within [Appendix – Example of Potential Restoration Sites Prioritized](#sites-ranked).
-
-<br>
-
-```{r gis-params-update_meta, eval = params$update_gis}
-
-# load the data
-gis_params_raw_all <- readr::read_csv(
-  "data/inputs_raw/restoration_site_priority_parameters_raw.csv"
-)
-
-
-gis_params_raw_to_update <- gis_params_raw_all|>
-  # dplyr::filter(!is.na(source_layer) &
-  #                 !is.na(source_column_name) &
-  #                 !str_detect(source_layer, "bcfishobs|bcfishpass")) |>
-    dplyr::filter(!is.na(source_layer) &
-                  !is.na(source_column_name) &
-                    # remove bcfishpass, esi, local hab layers
-                  !stringr::str_detect(source_layer, "bcfishobs|bcfishpass|chinook|skeena_east")) |>
-  # we know that tenures and the land ownership layers are problematic so lets remove
-  dplyr::filter(!stringr::str_detect(source_layer, "whse_forest_tenure.ften_range_poly_carto_vw|whse_cadastre.pmbc_parcel_fabric_poly_svw"))
-
-
-# grab the details about the source_layer as source_schema_table_details and then the
-# source_column_name as source_column_name_details
-gis_param_details_prep_schtab <- dplyr::left_join(
-
-  gis_params_raw_to_update,
-
-  rfp::rfp_meta_bcd_xref(),
-
-  by = c("source_layer" = "object_name")
-)
-
-
-# grab the column details
-params_cols_des <- purrr::map2_df(
-  gis_param_details_prep_schtab$source_layer,
-  gis_param_details_prep_schtab$source_column_name,
-  rfp::rfp_meta_bcd_xref_col_comments
-  )
-
-# left_join the column details to the gis_param_details_prep_schtab
-gis_param_details_prep <- dplyr::left_join(
-  gis_param_details_prep_schtab,
-  params_cols_des,
-  by = c("source_layer" = "object_name", "source_column_name" = "col_name")
-)
-
-# need to add back all the layers filtered out above - this should not be repeated but will do for now
-gis_params_raw_all_updated <- dplyr::bind_rows(
-  gis_params_raw_all |>
-    dplyr::filter(is.na(source_layer) |
-                    is.na(source_column_name) |
-                    stringr::str_detect(source_layer, "bcfishobs|bcfishpass|chinook|skeena_east") |
-                    # not accessible via bcdata
-                    stringr::str_detect(source_layer, "whse_forest_tenure.ften_range_poly_carto_vw|whse_cadastre.pmbc_parcel_fabric_poly_svw")),
-  gis_param_details_prep
-) |>
-  dplyr::mutate(url_browser = dplyr::case_when(
-    stringr::str_detect(source_layer, "bcfishobs|bcfishpass") ~ "https://smnorris.github.io/bcfishpass/06_data_dictionary.html",
-    TRUE ~ url_browser)
-  ) |>
-  dplyr::mutate(is_wet_cultural_site = source_column_name == "wet_cultural_site") |>
-  dplyr::arrange(
-    desc(is_wet_cultural_site),
-    rank
-    # source_layer,
-    # source_column_name,
-    # column_name
-  )|>
-  dplyr::select(-is_wet_cultural_site)
-# dplyr::arrange(rank, source_layer, source_column_name, column_name)
-
-# this is time consuming so lets save it as a csv and make this chunk conditional on the gis_update flag
-gis_params_raw_all_updated |>
-  readr::write_csv("data/restoration_site_priority_parameters.csv")
-
-```
-
-```{r gis-params, eval = TRUE}
-tab_gis_params_raw <- readr::read_csv("data/restoration_site_priority_parameters.csv")
-```
-
-```{r tab-gis-params}
-# non-bcfishpass ranked parameters
-tab_non_bp <- tab_gis_params_raw |>
-  dplyr::filter(rank == TRUE, !stringr::str_detect(source_column_name, "^model_")) |>
-  dplyr::transmute(
-    Parameter = dplyr::case_when(
-      source_column_name == "wet_cultural_site" ~ "Cultural significance",
-      source_column_name == "bulkley_falls_downstream" ~ "Downstream of Bulkley Falls",
-      source_column_name == "floodplain_ind" ~ "Modelled floodplain",
-      source_column_name == "owner_type" ~ "Land ownership",
-      source_column_name == "AU_TOT_Disturb_all_PCNT_cl" ~ "Total watershed disturbance",
-      source_column_name == "Rip_Tot_All_Dstrb_PCNT_cl" ~ "Riparian disturbance",
-      TRUE ~ source_column_name
-    ),
-    Rationale = dplyr::case_when(
-      source_column_name == "wet_cultural_site" ~ "Sites identified through Wet'suwet'en traditional knowledge as having cultural significance receive the highest weighting — reflecting that restoration of culturally important areas provides value beyond ecological function.",
-      source_column_name == "bulkley_falls_downstream" ~ "Sites downstream of Bulkley Falls are more likely to support salmon populations and are weighted accordingly.",
-      source_column_name == "floodplain_ind" ~ "Restoration targets floodplain function — sites within the modelled floodplain are where work can most directly improve lateral connectivity, off-channel habitat, and natural flood attenuation. Connected floodplain scores highest; disconnected floodplain (e.g., behind infrastructure) scores moderate.",
-      source_column_name == "owner_type" ~ "Crown and public lands score highest — reflecting accessibility, governance certainty, and long-term security of restoration investments. Private lands score lowest due to access constraints.",
-      source_column_name == "AU_TOT_Disturb_all_PCNT_cl" ~ "Percentage of the assessment watershed affected by human, fire, or insect disturbance. Higher disturbance = higher score, reflecting greater need and potential benefit from restoration. Source: SSAF State of the Value Report for Fish and Fish Habitat.",
-      source_column_name == "Rip_Tot_All_Dstrb_PCNT_cl" ~ "Percentage of stream length within 30m of total disturbance (human, fire, insect). Higher riparian disturbance = higher score, reflecting degraded streamside conditions with restoration potential. Source: SSAF State of the Value Report for Fish and Fish Habitat.",
-      TRUE ~ ""
-    ),
-    `Score (Low)` = weight_score_low,
-    `Score (Mod)` = weight_score_mod,
-    `Score (High)` = weight_score_high,
-    `Max Score` = pmax(weight_score_low, weight_score_mod, weight_score_high, na.rm = TRUE)
-  )
-
-# summarize bcfishpass habitat rows into one — count how many species are scored
-n_bp <- tab_gis_params_raw |>
-  dplyr::filter(rank == TRUE, stringr::str_detect(source_column_name, "^model_")) |>
-  nrow()
-
-tab_bp <- tibble::tibble(
-  Parameter = "Modelled fish habitat (bcfishpass)",
-  Rationale = glue::glue(
-    "Intrinsic potential spawning and rearing habitat modelled by bcfishpass for {n_bp} species-lifecycle combinations (chinook, coho, steelhead x spawning, rearing). Each scores 0 (absent) or 1 (present) — sites with more species accumulate higher totals (max {n_bp})."
-  ),
-  `Score (Low)` = 0,
-  `Score (Mod)` = NA_real_,
-  `Score (High)` = n_bp,
-  `Max Score` = n_bp
-)
-
-dplyr::bind_rows(tab_non_bp, tab_bp) |>
-  dplyr::arrange(dplyr::desc(`Max Score`), Parameter) |>
-  dplyr::select(-`Max Score`) |>
-  fpr::fpr_kable(caption_text = "Active parameters used to rank potential restoration sites. Each site receives a score for each parameter based on Low, Moderate, or High classification. Scores are summed to produce a total site ranking. The system is extensible — additional parameters from the SSAF assessment or other sources can be added to the input spreadsheet.", scroll = FALSE)
-
-```

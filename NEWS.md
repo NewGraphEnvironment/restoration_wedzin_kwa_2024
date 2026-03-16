@@ -1,4 +1,12 @@
 
+# restoration_wedzin_kwa_2024 DRAFT 0.2.4 (2026-03-16)
+
+- align Results section structure with Methods: matching parent headings (Field Assessments, Remote Sensing & Imagery, Background Research & Analysis, Collaborative Data Management) ([#132](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/132))
+- move Collaborative Data Management from Methods position 2 to position 4 so both chapters follow the same narrative flow
+- reorder appendix files to match Results sequence (Field → Aerial → LULC → Climate → Fish Species → Sites Priority → Historic Data)
+- add bridging text connecting appendix site-ranking proof of concept to governance framework and future floodplain type mapping
+- fix Zotero title case for smith_gaboury 2016/2017 as-built reports to resolve citeproc citation key warning
+
 # restoration_wedzin_kwa_2024 DRAFT 0.2.3 (2026-03-13)
 
 - add Research as Territorial Stewardship section to recommendations: UN Decade on Ecosystem Restoration principles, UNDRIP, root causes framing that integrates both habitat degradation and exploitation

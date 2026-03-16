@@ -1,0 +1,180 @@
+
+
+
+# **Appendix – Example of Potential Restoration Sites Prioritized** {-#sites-ranked}
+
+## Parameter Ranking to Select Future Restoration Sites {-}
+
+Potential restoration sites are ranked using a weighted scoring system that combines ecological value, cultural significance, and practical considerations. Each site is evaluated against the parameters in Table \@ref(tab:tab-gis-params), with scores summed to produce a total ranking. Higher-weighted parameters reflect greater importance to restoration success — for example, sites of cultural significance to the Wet'suwet'en receive the highest individual score, while the presence of modelled habitat for a single species contributes a smaller increment. The system is designed to be iterative: as new data layers become available (e.g., additional indicators from the SSAF State of the Value assessment [@skeenasustainabilityassessmentforum2021Skeenasustainability]), they can be incorporated by adding rows to the [input spreadsheet](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/restoration_site_priority_parameters.csv) and assigning weights. Outputs from an initial proof of concept run are included within the shared GIS project and collated below.
+
+<br>
+
+```{r gis-params-update_meta, eval = params$update_gis}
+
+# load the data
+gis_params_raw_all <- readr::read_csv(
+  "data/inputs_raw/restoration_site_priority_parameters_raw.csv"
+)
+
+
+gis_params_raw_to_update <- gis_params_raw_all|>
+  # dplyr::filter(!is.na(source_layer) &
+  #                 !is.na(source_column_name) &
+  #                 !str_detect(source_layer, "bcfishobs|bcfishpass")) |>
+    dplyr::filter(!is.na(source_layer) &
+                  !is.na(source_column_name) &
+                    # remove bcfishpass, esi, local hab layers
+                  !stringr::str_detect(source_layer, "bcfishobs|bcfishpass|chinook|skeena_east")) |>
+  # we know that tenures and the land ownership layers are problematic so lets remove
+  dplyr::filter(!stringr::str_detect(source_layer, "whse_forest_tenure.ften_range_poly_carto_vw|whse_cadastre.pmbc_parcel_fabric_poly_svw"))
+
+
+# grab the details about the source_layer as source_schema_table_details and then the
+# source_column_name as source_column_name_details
+gis_param_details_prep_schtab <- dplyr::left_join(
+
+  gis_params_raw_to_update,
+
+  rfp::rfp_meta_bcd_xref(),
+
+  by = c("source_layer" = "object_name")
+)
+
+
+# grab the column details
+params_cols_des <- purrr::map2_df(
+  gis_param_details_prep_schtab$source_layer,
+  gis_param_details_prep_schtab$source_column_name,
+  rfp::rfp_meta_bcd_xref_col_comments
+  )
+
+# left_join the column details to the gis_param_details_prep_schtab
+gis_param_details_prep <- dplyr::left_join(
+  gis_param_details_prep_schtab,
+  params_cols_des,
+  by = c("source_layer" = "object_name", "source_column_name" = "col_name")
+)
+
+# need to add back all the layers filtered out above - this should not be repeated but will do for now
+gis_params_raw_all_updated <- dplyr::bind_rows(
+  gis_params_raw_all |>
+    dplyr::filter(is.na(source_layer) |
+                    is.na(source_column_name) |
+                    stringr::str_detect(source_layer, "bcfishobs|bcfishpass|chinook|skeena_east") |
+                    # not accessible via bcdata
+                    stringr::str_detect(source_layer, "whse_forest_tenure.ften_range_poly_carto_vw|whse_cadastre.pmbc_parcel_fabric_poly_svw")),
+  gis_param_details_prep
+) |>
+  dplyr::mutate(url_browser = dplyr::case_when(
+    stringr::str_detect(source_layer, "bcfishobs|bcfishpass") ~ "https://smnorris.github.io/bcfishpass/06_data_dictionary.html",
+    TRUE ~ url_browser)
+  ) |>
+  dplyr::mutate(is_wet_cultural_site = source_column_name == "wet_cultural_site") |>
+  dplyr::arrange(
+    desc(is_wet_cultural_site),
+    rank
+    # source_layer,
+    # source_column_name,
+    # column_name
+  )|>
+  dplyr::select(-is_wet_cultural_site)
+# dplyr::arrange(rank, source_layer, source_column_name, column_name)
+
+# this is time consuming so lets save it as a csv and make this chunk conditional on the gis_update flag
+gis_params_raw_all_updated |>
+  readr::write_csv("data/restoration_site_priority_parameters.csv")
+
+```
+
+```{r gis-params, eval = TRUE}
+tab_gis_params_raw <- readr::read_csv("data/restoration_site_priority_parameters.csv")
+```
+
+```{r tab-gis-params}
+# non-bcfishpass ranked parameters
+tab_non_bp <- tab_gis_params_raw |>
+  dplyr::filter(rank == TRUE, !stringr::str_detect(source_column_name, "^model_")) |>
+  dplyr::transmute(
+    Parameter = dplyr::case_when(
+      source_column_name == "wet_cultural_site" ~ "Cultural significance",
+      source_column_name == "bulkley_falls_downstream" ~ "Downstream of Bulkley Falls",
+      source_column_name == "floodplain_ind" ~ "Modelled floodplain",
+      source_column_name == "owner_type" ~ "Land ownership",
+      source_column_name == "AU_TOT_Disturb_all_PCNT_cl" ~ "Total watershed disturbance",
+      source_column_name == "Rip_Tot_All_Dstrb_PCNT_cl" ~ "Riparian disturbance",
+      TRUE ~ source_column_name
+    ),
+    Rationale = dplyr::case_when(
+      source_column_name == "wet_cultural_site" ~ "Sites identified through Wet'suwet'en traditional knowledge as having cultural significance receive the highest weighting — reflecting that restoration of culturally important areas provides value beyond ecological function.",
+      source_column_name == "bulkley_falls_downstream" ~ "Sites downstream of Bulkley Falls are more likely to support salmon populations and are weighted accordingly.",
+      source_column_name == "floodplain_ind" ~ "Restoration targets floodplain function — sites within the modelled floodplain are where work can most directly improve lateral connectivity, off-channel habitat, and natural flood attenuation. Connected floodplain scores highest; disconnected floodplain (e.g., behind infrastructure) scores moderate.",
+      source_column_name == "owner_type" ~ "Crown and public lands score highest — reflecting accessibility, governance certainty, and long-term security of restoration investments. Private lands score lowest due to access constraints.",
+      source_column_name == "AU_TOT_Disturb_all_PCNT_cl" ~ "Percentage of the assessment watershed affected by human, fire, or insect disturbance. Higher disturbance = higher score, reflecting greater need and potential benefit from restoration. Source: SSAF State of the Value Report for Fish and Fish Habitat.",
+      source_column_name == "Rip_Tot_All_Dstrb_PCNT_cl" ~ "Percentage of stream length within 30m of total disturbance (human, fire, insect). Higher riparian disturbance = higher score, reflecting degraded streamside conditions with restoration potential. Source: SSAF State of the Value Report for Fish and Fish Habitat.",
+      TRUE ~ ""
+    ),
+    `Score (Low)` = weight_score_low,
+    `Score (Mod)` = weight_score_mod,
+    `Score (High)` = weight_score_high,
+    `Max Score` = pmax(weight_score_low, weight_score_mod, weight_score_high, na.rm = TRUE)
+  )
+
+# summarize bcfishpass habitat rows into one — count how many species are scored
+n_bp <- tab_gis_params_raw |>
+  dplyr::filter(rank == TRUE, stringr::str_detect(source_column_name, "^model_")) |>
+  nrow()
+
+tab_bp <- tibble::tibble(
+  Parameter = "Modelled fish habitat (bcfishpass)",
+  Rationale = glue::glue(
+    "Intrinsic potential spawning and rearing habitat modelled by bcfishpass for {n_bp} species-lifecycle combinations (chinook, coho, steelhead x spawning, rearing). Each scores 0 (absent) or 1 (present) — sites with more species accumulate higher totals (max {n_bp})."
+  ),
+  `Score (Low)` = 0,
+  `Score (Mod)` = NA_real_,
+  `Score (High)` = n_bp,
+  `Max Score` = n_bp
+)
+
+dplyr::bind_rows(tab_non_bp, tab_bp) |>
+  dplyr::arrange(dplyr::desc(`Max Score`), Parameter) |>
+  dplyr::select(-`Max Score`) |>
+  fpr::fpr_kable(caption_text = "Active parameters used to rank potential restoration sites. Each site receives a score for each parameter based on Low, Moderate, or High classification. Scores are summed to produce a total site ranking. The system is extensible — additional parameters from the SSAF assessment or other sources can be added to the input spreadsheet.", scroll = FALSE)
+
+```
+
+## Prioritized Sites {-}
+
+A summary of potential restoration sites prioritized based on ranking criteria detailed in Table \@ref(tab:tab-gis-params)
+is presented in Table \@ref(tab:tab-sites-ranked-cap). Please note that data is preliminary with ranking parameters and
+weights evolving based on ongoing research and consultation.
+
+```{r tab-sites-ranked-cap, results="asis"}
+my_caption <- ("Example of potential restoration sites prioritized.")
+my_tab_caption()
+```
+
+```{r sites-copy, eval=params$update_gis}
+# copy over the sites from the gis project into the repo for reproducability
+path_in <- "/Users/airvine/Projects/gis/restoration_wedzin_kwa/sites_prioritized.geojson"
+path_out <- "data/gis/sites_prioritized.geojson"
+
+
+# convert to wsg84 so displays natively on github
+sf::st_read(path_in, quiet = TRUE) |>
+  sf::st_transform(4326) |>
+  sf::st_write(path_out, quiet = TRUE, delete_dsn = TRUE)
+
+```
+
+
+```{r tab-sites-ranked}
+path <- "data/gis/sites_prioritized.geojson"
+
+sf::st_read(path, quiet = TRUE) |>
+  dplyr::filter(source != "ncfdc_1998_riparian") |>
+  sf::st_drop_geometry() |>
+  my_dt_table(cols_freeze_left = 2, page_length = 5, escape = TRUE)
+
+```
+
+
