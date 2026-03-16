@@ -28,6 +28,9 @@ library(fresh)
 
 sf_use_s2(FALSE)
 
+# --- DB connection (fresh conn-first API) ---
+conn <- frs_db_conn()
+
 # --- Paths ---
 out_dir <- here::here("data", "prioritization")
 lulc_dir <- here::here("data", "lulc")
@@ -52,6 +55,7 @@ drm <- 166030.4
 
 message("Querying coho habitat streams from DB...")
 co_result <- frs_network(
+  conn,
   blue_line_key = blk,
   downstream_route_measure = drm,
   tables = list(
@@ -69,6 +73,7 @@ co_streams <- sf::st_zm(co_streams, drop = TRUE)
 
 message("Querying chinook habitat streams from DB...")
 ch_result <- frs_network(
+  conn,
   blue_line_key = blk,
   downstream_route_measure = drm,
   tables = list(
@@ -220,3 +225,5 @@ area_scores <- area_scores |>
 readr::write_csv(area_scores, file.path(out_dir, "area_scores.csv"))
 message("\nWrote: data/prioritization/area_scores.csv")
 message("Columns: ", paste(names(area_scores), collapse = ", "))
+
+DBI::dbDisconnect(conn)

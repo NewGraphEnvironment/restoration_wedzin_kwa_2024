@@ -36,6 +36,9 @@ library(readr)
 sf_use_s2(FALSE)
 terra::terraOptions(threads = 12)
 
+# --- DB connection (fresh conn-first API) ---
+conn <- frs_db_conn()
+
 # --- Boundary: Neexdzii Kwa / Wedzin Kwa confluence on Bulkley mainstem ---
 blk <- 360873822
 drm <- 166030.4
@@ -77,6 +80,7 @@ for (i in seq_len(nrow(run_scenarios))) {
   message("Querying co habitat (order ", sc$min_order, "+) and waterbodies...")
 
   results <- frs_network(
+    conn,
     blue_line_key = blk,
     downstream_route_measure = drm,
     tables = list(
@@ -160,4 +164,5 @@ for (i in seq_len(nrow(run_scenarios))) {
   message("  Saved: ", basename(out_raster), ", ", basename(out_vector))
 }
 
+DBI::dbDisconnect(conn)
 message("\nDone. Floodplain AOI(s) ready for drift pipeline (lulc_classify.R).")
