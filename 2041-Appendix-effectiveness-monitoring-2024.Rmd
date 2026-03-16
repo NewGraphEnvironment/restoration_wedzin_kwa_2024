@@ -1,0 +1,423 @@
+
+
+# **Appendix - Effectiveness Monitoring Data and Potential Restoration Site Review** {-#app-eff-mon}
+
+<!--
+To update this table:
+1. Ensure QGIS project (restoration_wedzin_kwa) is synced and up to date locally
+2. Run scripts/gis/amalgamate_field_forms.R to regenerate:
+   - /Users/airvine/Projects/gis/restoration_wedzin_kwa/data_field/sites_reviewed_2024_202506.geojson
+   - data/gis/sites_reviewed_2024_202506.geojson
+3. Rebuild the report
+-->
+
+Site locations are available as a downloadable [`sites_reviewed_2024_202506.geojson`](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/gis/sites_reviewed_2024_202506.geojson) which renders as an interactive map on GitHub.
+
+```{r tab-ree1-caption, results="asis"}
+# Table \@ref(tab:tab-ree1-caption)
+my_caption <- ("Results from effectiveness monitoring data collected in 2024 and 2025")
+my_tab_caption()
+```
+
+```{r citation-convert, eval = FALSE}
+# clean up the citations -  just doing this once bc it is really slow!!!
+path_gis <- "/Users/airvine/Projects/gis/restoration_wedzin_kwa/data_field/sites_reviewed_2024_202506.geojson"
+path_repo <- "data/gis/sites_reviewed_2024_202506.geojson"
+
+dat <- sf::st_read(
+  path_repo
+)
+
+dat |> 
+  sf::st_drop_geometry() |> 
+  dplyr::mutate(
+    date = as.Date(date_time_start)
+  ) |> 
+  dplyr::select(
+    # date_time_start,
+    site_id,
+    date,
+    reference = citation_key,
+    uav_flight,
+    works_completed,
+    new_site,
+    assessment_comment
+  ) |> 
+  xciter::xct_keys_to_inline_table_col(col_format = "reference") |> 
+  #   clean up when NA ends up in citation column
+  dplyr::mutate(
+    reference = dplyr::if_else(
+      reference == "NA",
+      "",
+      reference
+    )
+  ) |> 
+  # purrr::set_names(~ tools::toTitleCase(gsub("_", " ", .x)))
+  readr::write_csv("data/inputs_extracted/monitoring_2024_2025.csv", na = "")
+
+```
+
+
+```{r tab-ree1}
+
+dat_raw <- readr::read_csv(
+  "data/inputs_extracted/monitoring_2024_2025.csv"
+) 
+
+label_short <- function(x) {
+  x |>
+    gsub("bulkley_meints_", "", x = _) |>
+    gsub("bulkley_", "", x = _) |>
+    gsub("-2021$", "", x = _) |>
+    gsub("_0(\\d)", " \\1", x = _) |>
+    gsub("_", " ", x = _) |>
+    tools::toTitleCase() |>
+    gsub("Mickilligan Road", "McKilligan", x = _) |>
+    gsub("Mckilligan Rd", "McKilligan", x = _) |>
+    gsub("Foxy Maxan Confluence", "Foxy-Maxan", x = _)
+}
+
+dat <- dat_raw |>
+  dplyr::mutate(
+    label = label_short(site_id),
+    type = dplyr::case_when(
+      works_completed == "yes" &
+        !grepl("mud|kenneth", site_id, ignore.case = TRUE) ~
+        "Effectiveness Monitoring",
+      
+      works_completed == "yes" &
+        grepl("mud|kenneth", site_id, ignore.case = TRUE) ~
+        "Fraser Site",
+      
+      
+      TRUE ~ "Potential Site"
+    ),
+    type = factor(type, levels = c("Effectiveness Monitoring", "Potential Site", "Fraser Site"))
+  ) |>
+  dplyr::mutate(
+    assessment_comment = dplyr::case_when(
+      reference == "Gottesfeld and Rabnett (2007)" ~
+        paste0("Newly proposed site adjacent to traditional fishing site. ", assessment_comment),
+      new_site == "yes" ~
+        paste0("Newly proposed site. ", assessment_comment),
+      TRUE ~ assessment_comment
+    ),
+    uav_flight = dplyr::if_else(
+      uav_flight == "No",
+      NA_character_,
+      uav_flight
+    ) 
+  )|> 
+  dplyr::arrange(type, label) |>
+  dplyr::select(
+    label,
+    date,
+    type,
+    reference,
+    uav_flight,
+    assessment_comment
+  ) |> 
+  tibble::rowid_to_column()
+
+dat |>
+  my_dt_table(cols_freeze_left = 2, page_length = 5)
+
+
+```
+
+
+```{r photo-setup, include=FALSE}
+dir_photos <- "data/photos/sites"
+path_sites_geojson <- "data/gis/sites_reviewed_2024_202506.geojson"
+
+sites_all <- sf::st_read(path_sites_geojson, quiet = TRUE) |>
+  dplyr::distinct(site_id, .keep_all = TRUE)
+```
+
+
+## Effectiveness Monitoring {-}
+
+### BR1 — Bulkley River {-}
+
+```{r site-br1-summary}
+site <- dplyr::filter(sites_all, site_id == "BR1-2021")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-br1-photos, results='asis'}
+photo_render("BR1-2021", dir_photos)
+```
+
+### BR2 — Bulkley River {-}
+
+```{r site-br2-summary}
+site <- dplyr::filter(sites_all, site_id == "BR2-2021")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-br2-photos, results='asis'}
+photo_render("BR2-2021", dir_photos)
+```
+
+### BR5 — Bulkley River {-}
+
+```{r site-br5-summary}
+site <- dplyr::filter(sites_all, site_id == "BR5")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-br5-photos, results='asis'}
+photo_render("BR5", dir_photos)
+```
+
+### Buc207 — Buck Creek {-}
+
+```{r site-buc207-summary}
+site <- dplyr::filter(sites_all, site_id == "Buc207")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-buc207-photos, results='asis'}
+photo_render("Buc207", dir_photos)
+```
+
+### Craker Rd Lower — Bulkley River {-}
+
+```{r site-craker-lower-summary}
+site <- dplyr::filter(sites_all, site_id == "bulkley_meints_craker_rd_lower")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-craker-lower-photos, results='asis'}
+photo_render("bulkley_meints_craker_rd_lower", dir_photos)
+```
+
+### McKilligan Upper — Bulkley River {-}
+
+```{r site-mckilligan-upper-summary}
+site <- dplyr::filter(sites_all, site_id == "Mickilligan Road Upper")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-mckilligan-upper-photos, results='asis'}
+photo_render("Mickilligan Road Upper", dir_photos)
+```
+
+### MX1 — Maxan Creek {-}
+
+```{r site-mx1-summary}
+site <- dplyr::filter(sites_all, site_id == "MX1")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-mx1-photos, results='asis'}
+photo_render("MX1", dir_photos)
+```
+
+### MX2 — Maxan Creek {-}
+
+```{r site-mx2-summary}
+site <- dplyr::filter(sites_all, site_id == "MX2")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-mx2-photos, results='asis'}
+photo_render("MX2", dir_photos)
+```
+
+
+## Potential Site {-}
+
+### Buc172 — Buck Creek {-}
+
+```{r site-buc172-summary}
+site <- dplyr::filter(sites_all, site_id == "Buc172")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-buc172-photos, results='asis'}
+photo_render("Buc172", dir_photos)
+```
+
+### Buc7 — Buck Creek {-}
+
+```{r site-buc7-summary}
+site <- dplyr::filter(sites_all, site_id == "buc7")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-buc7-photos, results='asis'}
+photo_render("buc7", dir_photos)
+```
+
+### Bul32 — Bulkley River {-}
+
+```{r site-bul32-summary}
+site <- dplyr::filter(sites_all, site_id == "bul32")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-bul32-photos, results='asis'}
+photo_render("bul32", dir_photos)
+```
+
+### Bul38 — Bulkley River {-}
+
+```{r site-bul38-summary}
+site <- dplyr::filter(sites_all, site_id == "Bul38")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-bul38-photos, results='asis'}
+photo_render("Bul38", dir_photos)
+```
+
+### Craker Rd Middle — Bulkley River {-}
+
+```{r site-craker-middle-summary}
+site <- dplyr::filter(sites_all, site_id == "bulkley_meints_craker_rd_middle")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-craker-middle-photos, results='asis'}
+photo_render("bulkley_meints_craker_rd_middle", dir_photos)
+```
+
+### Craker Rd Upper — Bulkley River {-}
+
+```{r site-craker-upper-summary}
+site <- dplyr::filter(sites_all, site_id == "bulkley_meints_craker_rd_upper")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-craker-upper-photos, results='asis'}
+photo_render("bulkley_meints_craker_rd_upper", dir_photos)
+```
+
+### Foxy-Maxan — Foxy Creek {-}
+
+```{r site-foxy-maxan-summary}
+site <- dplyr::filter(sites_all, site_id == "Foxy Maxan Confluence")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-foxy-maxan-photos, results='asis'}
+photo_render("Foxy Maxan Confluence", dir_photos)
+```
+
+### McKilligan Middle — Bulkley River {-}
+
+```{r site-mckilligan-middle-summary}
+site <- dplyr::filter(sites_all, site_id == "Mckilligan Rd middle")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-mckilligan-middle-photos, results='asis'}
+photo_render("Mckilligan Rd middle", dir_photos)
+```
+
+### Meints 1 — Bulkley River {-}
+
+```{r site-meints1-summary}
+site <- dplyr::filter(sites_all, site_id == "Meints_01")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-meints1-photos, results='asis'}
+photo_render("Meints_01", dir_photos)
+```
+
+### Wilson 1 — Bulkley River {-}
+
+```{r site-wilson1-summary}
+site <- dplyr::filter(sites_all, site_id == "bulkley_wilson_01")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-wilson1-photos, results='asis'}
+photo_render("bulkley_wilson_01", dir_photos)
+```
+
+### Wilson 2 — Bulkley River {-}
+
+```{r site-wilson2-summary}
+site <- dplyr::filter(sites_all, site_id == "bulkley_wilson_02")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-wilson2-photos, results='asis'}
+photo_render("bulkley_wilson_02", dir_photos)
+```
+
+### Wilson 3 — Bulkley River {-}
+
+```{r site-wilson3-summary}
+site <- dplyr::filter(sites_all, site_id == "bulkley_wilson_03")
+viewer_url <- stac_uav_viewer(site)
+site_summary_table(site)
+```
+
+`r if (!is.na(viewer_url)) paste0("[UAV Orthophoto Viewer](", viewer_url, "){target='_blank'}")`
+
+```{r site-wilson3-photos, results='asis'}
+photo_render("bulkley_wilson_03", dir_photos)
+```
+
+

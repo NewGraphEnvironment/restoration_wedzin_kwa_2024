@@ -43,21 +43,6 @@ Three sites were sampled on the Neexdzii Kwah mainstem within known high-value C
 Samples were preserved in 10% formalin and submitted to Cordillera Consulting Inc. (Summerland, BC) for sorting and taxonomic identification to genus/species level. Results will be uploaded to the federal CABIN database.
 
 
-## Collaborative Data Management
-
-### GIS Environment
-
-A collaborative GIS environment (`restoration_wedzin_kwa`) was established using [QGIS](https://qgis.org/en/site/) and [Mergin Maps](https://merginmaps.com/) to enable project team members to view, edit, and analyze shared spatial data on desktop computers and mobile devices in the field. The environment is used to develop and share maps, conduct spatial analyses, communicate restoration plans to stakeholders, and provide standardized digital forms for field assessments. The platform also tracks restoration activity progress and monitors landscape changes over time.
-
-<br>
-
-The QGIS project was created using scripts in [`dff-2022`](https://github.com/NewGraphEnvironment/dff-2022) that:
-
-  - download and clip layers from the [BC Data Catalogue](https://catalogue.data.gov.bc.ca/) and custom AWS buckets for the watershed area of interest
-  - create a project directory with layer symbology, naming conventions, and metadata
-  - store layer metadata in the `rfp_tracking` table within `background_layers.gpkg`, along with user-supplied stream width/gradient inputs to `bcfishpass` for modeling high-value fish habitat
-
-
 ## Remote Sensing & Imagery
 
 ### Historic Aerial Photographs {#historic-airphotos}
@@ -116,6 +101,21 @@ Past work to spatially delineate areas of high value habitat known to be utilize
 
 #### Parameter Ranking
 Analysis of background and current data can be used to inform priority ranking criteria used to select sites for restoration activities in the long term. Although the process is ongoing - GIS and user input parameters were selected based on ongoing project team meetings and review of available spatial information to rank future restoration sites.   Using custom functions and scripted workflows based on layers kept within the shared GIS project - we prioritized proposed sites dynamically based on a range of metrics and user defined ranking.  Scripts to conduct the analysis can be found [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/scripts/gis/prioritize.R) with custom functions [here](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/scripts/functions.R).
+
+
+## Collaborative Data Management
+
+### GIS Environment
+
+A collaborative GIS environment (`restoration_wedzin_kwa`) was established using [QGIS](https://qgis.org/en/site/) and [Mergin Maps](https://merginmaps.com/) to enable project team members to view, edit, and analyze shared spatial data on desktop computers and mobile devices in the field. The environment is used to develop and share maps, conduct spatial analyses, communicate restoration plans to stakeholders, and provide standardized digital forms for field assessments. The platform also tracks restoration activity progress and monitors landscape changes over time.
+
+<br>
+
+The QGIS project was created using scripts in [`dff-2022`](https://github.com/NewGraphEnvironment/dff-2022) that:
+
+  - download and clip layers from the [BC Data Catalogue](https://catalogue.data.gov.bc.ca/) and custom AWS buckets for the watershed area of interest
+  - create a project directory with layer symbology, naming conventions, and metadata
+  - store layer metadata in the `rfp_tracking` table within `background_layers.gpkg`, along with user-supplied stream width/gradient inputs to `bcfishpass` for modeling high-value fish habitat
 
 
 ## Open Source Reporting Framework

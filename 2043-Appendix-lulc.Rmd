@@ -317,14 +317,14 @@ lulc_all |>
 
 For this analysis, "Agriculture" groups three IO LULC classes that can represent different phases of the same land use at 10 m resolution: **Rangeland** (fallow, grazed pasture), **Crops** (actively growing), and **Bare Ground** (tilled or harvested). A single field can be classified differently depending on the satellite overpass date relative to the growing season.
 
-```{r plot-lulc-ag-stacked, fig.cap="Composition of the Agriculture superclass within each sub-basin's modelled floodplain. Rangeland dominates; Crops and Bare Ground are minor components.", fig.width=12, fig.height=6}
+```{r plot-lulc-ag-stacked, fig.cap="Composition of the Agriculture superclass within each sub-basin's modelled floodplain. Rangeland dominates; Crops and Bare Ground are minor components.", fig.width=12, fig.height=8}
 lulc_all |>
   filter(class_name %in% ag_classes) |>
   mutate(year = factor(year),
          class_name = factor(class_name, levels = c("Bare Ground", "Crops", "Rangeland"))) |>
   ggplot(aes(x = year, y = pct, fill = class_name)) +
   geom_col() +
-  facet_wrap(~subbasin, nrow = 2) +
+  facet_wrap(~subbasin, nrow = 3) +
   scale_fill_manual(
     values = c("Rangeland" = "#FFBB22", "Crops" = "#E49635", "Bare Ground" = "#A59B8F"),
     name = NULL
