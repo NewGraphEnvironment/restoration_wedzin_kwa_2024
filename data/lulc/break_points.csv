@@ -1,15 +1,15 @@
-"id","lon","lat","blk","drm","gnis_name","dist_m","name_basin"
-1,-126.129913330078,54.3787712656632,360881038,718.699934427767,"Maxan Creek",15.8,"Maxam Creek"
-2,-126.517181396484,54.4572722367844,360862508,314.501432924284,"Aitken Creek",66.6,"Aitken Creek"
-3,-126.743627276847,54.4103463003412,360873822,165115.803738253,"Bulkley River",33.8,"Bulkley-Houston"
-4,-126.654600201584,54.3994024270122,360886221,838.238394833247,"Buck Creek",10.4,"Buck Creek Downstream Falls"
-5,-126.249933575045,54.4611892144508,360873822,233563.558349372,"Bulkley River",11.9,"Bulkley Upstream Falls"
-6,-126.036715382362,54.4007067013744,360873822,265377.515136299,"Bulkley River",26.2,"Taman Creek"
-7,-126.505427348905,54.188261145031,360886221,46584.7922920367,"Buck Creek",30.7,"Buck Creek Upstream Falls"
-8,-126.265700758957,54.4710391461725,360846413,533.664139950647,NA,11.2,"Gilmore-Day Lakes"
-9,-126.446318775415,54.5141854254832,360873822,207453.032080402,"Bulkley River",54.6,"Bulkley Byman-JDavid"
-10,-126.342860106379,54.5072657077276,360873822,217936.244608126,"Bulkley River",4.1,"Bulkley Richfield-Falls"
-12,-126.561621576548,54.4441359594758,360873822,188452.260797103,"Bulkley River",2.7,"Bulkley Houston-McKilligan"
-13,-126.373041830957,54.5146446969222,360873822,214943.997011195,"Bulkley River",1.2,"Bulkley JDavid-Richfield"
-14,-126.114620380104,54.3202101357216,360881038,16619.1680785328,"Maxan Creek",5.6,"Maxan Lake"
-15,-126.142515353858,54.3032359037814,360877225,3225.5533531874,"Foxy Creek",11,"Foxy Creek"
+id,lon,lat,blk,drm,gnis_name,dist_m,name_basin,fisheries_value,description
+1,-126.1299133,54.37877127,360881038,718.6999344,Maxan Creek,15.8,Maxan Creek,3,Maxan Creek from outlet of Maxan Lake to confluence with Bulkley Lake
+2,-126.5171814,54.45727224,360862508,314.5014329,Aitken Creek,66.6,Aitken Creek,3,Aitken Creek watershed entering Bulkley River near Houston
+3,-126.7436273,54.4103463,360873822,165115.8037,Bulkley River,33.8,Bulkley-Houston,5,"Neexdzii Kwa (Upper Bulkley River) from Wedzin Kwa (Morice River) confluence to McKilligan Road upstream of Houston.  Includes Rasberry Creek, McKillligan Creek and Henry Creek."
+4,-126.6546002,54.39940243,360886221,838.2383948,Buck Creek,10.4,Buck Creek Below Falls,5,Buck Creek from mouth upstream to Buck Falls located just downstream of the Buck Flats Road bridge 46.7km upstream from confluence with Neexdzii Kwa confluence.
+5,-126.2499336,54.46118921,360873822,233563.5583,Bulkley River,11.9,Bulkley River Above Falls,3,Neexdzii Kwa (Upper Bulkley River) mainstem and tributaries upstream of Bulkley Falls to inlet of Bulkley Lake
+6,-126.0367154,54.4007067,360873822,265377.5151,Bulkley River,26.2,Taman Creek,2,Taman Creek watershed (local name for Bulkley River upstream of Bulkley Lake).
+7,-126.5054273,54.18826115,360886221,46584.79229,Buck Creek,30.7,Buck Creek Above Falls,2,Buck Creek and tributaries upstream of Buck Falls; includes Klo Creek and Goosley Lake.
+8,-126.2657008,54.47103915,360846413,533.66414,NA,11.2,Gilmore-Day Lakes,3,"Gilmore Lake, Sunset Lake, Elwin Lake and Day Lakes."
+9,-126.4463188,54.51418543,360873822,207453.0321,Bulkley River,54.6,Byman,4,Neexdzii Kwa (Upper Bulkley River) mainstem McKilligan Road to befor Johnny David Creek. Includes Perow Creek and Byman Creek.
+10,-126.3428601,54.50726571,360873822,217936.2446,Bulkley River,4.1,Richfield-Falls,5,Neexdzii Kwa (Upper Bulkley River) mainstem  from upstream of Richfiled to Bulkley Falls. Includes Cesford Creek and Ailport Creek watersheds.
+12,-126.5616216,54.44413596,360873822,188452.2608,Bulkley River,2.7,Houston-McKilligan,5,Neexdzii Kwa (Upper Bulkley River) mainstem from McKilligan Road to upstream of McQuarrie Creek confluence. Includes Barren Creek and McQuarrie Creek.  
+13,-126.3730418,54.5146447,360873822,214943.997,Bulkley River,1.2,Johnny David-Richfield,5,Neexdzii Kwa (Upper Bulkley River) from upstream of Byman Creek to upstream of Richfield Creek. Includes Johnny David and Richfield Creek watersheds.
+14,-126.1146204,54.32021014,360881038,16619.16808,Maxan Creek,5.6,Maxan Lake,2,Maxan Lake and headwater tributaries above lake outlet
+15,-126.1425154,54.3032359,360877225,3225.553353,Foxy Creek,11,Foxy Creek,2,Foxy Creek watershed
