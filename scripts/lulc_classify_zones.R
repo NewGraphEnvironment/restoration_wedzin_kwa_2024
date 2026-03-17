@@ -54,17 +54,15 @@ scenarios <- tibble::tribble(
 )
 
 # --- Load zone polygons ---
-# These come from VCA runs at each flood_factor (lulc_network-extract.R, Phase 3)
-# For now, only ff06 exists (current floodplain_neexdzii_co.gpkg)
+# These come from VCA runs at each flood_factor (fwa_extract_flood.R)
 # TODO: replace with multi-layer GeoPackage once VCA scenarios are run
 zones_path <- file.path(out_dir, "floodplain_scenarios.gpkg")
 
 if (!file.exists(zones_path)) {
   message("floodplain_scenarios.gpkg not found — falling back to ff06 only")
-  # Use existing floodplain as the ff06 zone
   zone_polys <- list(
     zone_ff06 = sf::st_read(
-      file.path(out_dir, "floodplain_neexdzii_co.gpkg"), quiet = TRUE
+      file.path(out_dir, "floodplain_neexdzii_co_ff06.gpkg"), quiet = TRUE
     ) |> sf::st_transform(4326)
   )
   # Filter scenarios to just what we have
@@ -137,7 +135,7 @@ for (i in seq_len(nrow(subbasins))) {
     rasters <- dft_stac_fetch(clip, source = "io-lulc", years = years)
     classified <- dft_rast_classify(rasters, source = "io-lulc")
     summary <- dft_rast_summarize(classified, unit = "ha")
-    summary$subbasin <- reach
+    summary$name_basin <- reach
     summary$zone <- zone_id
     summary$zone_area_ha <- round(area_m2 / 1e4, 1)
 
@@ -149,14 +147,14 @@ for (i in seq_len(nrow(subbasins))) {
 lulc_zones <- dplyr::bind_rows(results)
 saveRDS(lulc_zones, file.path(out_dir, "lulc_summary_zones.rds"))
 message("\nWrote ", file.path(out_dir, "lulc_summary_zones.rds"))
-message("  ", length(unique(lulc_zones$subbasin)), " reaches × ",
+message("  ", length(unique(lulc_zones$name_basin)), " reaches × ",
         length(unique(lulc_zones$zone)), " zones × ",
         length(years), " years")
 
 # --- Quick summary: tree loss per reach × zone ---
 tree_loss <- lulc_zones |>
   dplyr::filter(class_name == "Trees", year %in% c(2017, 2023)) |>
-  dplyr::select(subbasin, zone, year, area) |>
+  dplyr::select(name_basin, zone, year, area) |>
   tidyr::pivot_wider(names_from = year, values_from = area, names_prefix = "trees_") |>
   dplyr::mutate(
     loss_ha = trees_2023 - trees_2017,

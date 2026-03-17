@@ -1,4 +1,15 @@
 
+# restoration_wedzin_kwa_2024 DRAFT 0.2.5 (2026-03-17)
+
+- integrate `frs_watershed_split()` into reproducible pipeline from `break_points.csv` through to report tables ([#135](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/135))
+- consolidate scripts: `fwa_extract_flood.R` (subbasins + streams + floodplain), `prioritization_score.R` (all scoring); remove `prioritization_build.R` and `lulc_watershed-picker.R`
+- rename sub-basins for clarity, add description and fisheries value columns
+- add sub-basin description table and study area map with sub-basin boundaries
+- express tree loss and ag gain as % of floodplain in results table and inline text
+- rewrite Maxan Creek recommendation: floodplain degradation trajectory, historic fishing sites, process-based restoration potential
+- clarify First Nations reserve lands throughout
+- remove legacy floodplain gpkg fallback; standardize `name_basin` column across pipeline
+
 # restoration_wedzin_kwa_2024 DRAFT 0.2.4 (2026-03-16)
 
 - align Results section structure with Methods: matching parent headings (Field Assessments, Remote Sensing & Imagery, Background Research & Analysis, Collaborative Data Management) ([#132](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/132))

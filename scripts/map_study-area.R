@@ -42,7 +42,8 @@ reg <- gq_registry_read("data/gis/gq_registry.json")
 
 # --- Load cached layers ---------------------------------------------------
 
-neexdzii <- readRDS(file.path(cache, "neexdzii.rds"))
+neexdzii  <- readRDS(file.path(cache, "neexdzii.rds"))
+subbasins <- st_read("data/lulc/subbasins.gpkg", quiet = TRUE)
 streams  <- readRDS(file.path(cache, "streams.rds"))
 lakes    <- readRDS(file.path(cache, "lakes.rds"))
 parks    <- readRDS(file.path(cache, "parks.rds"))
@@ -93,12 +94,11 @@ lake_labels <- lakes[!is.na(lakes$name) & lakes$area_km2 > 1, ]
 
 # Towns within/near Neexdzii Kwah
 towns <- st_sf(
-  name = c("Houston", "Smithers", "Burns Lake", "Topley"),
+  name = c("Houston", "Smithers", "Burns Lake"),
   geometry = st_sfc(
     st_point(c(-126.648, 54.398)),
     st_point(c(-127.176, 54.779)),
     st_point(c(-125.764, 54.230)),
-    st_point(c(-126.246, 54.566)),
     crs = 4326
   )
 )
@@ -145,8 +145,13 @@ m <- tm_shape(basemap_stars, bbox = bbox) +
 
   # Watershed boundary
   tm_shape(neexdzii) +
-  tm_polygons(fill = "#a8c8e0", fill_alpha = 0.25,
+  tm_polygons(fill = "#a8c8e0", fill_alpha = 0.15,
               col = "#2c3e50", lwd = 2.0) +
+
+  # Sub-basins
+  tm_shape(subbasins) +
+  tm_borders(col = "#5d4e37", lwd = 1.0, lty = "dashed") +
+  tm_text("name_basin", size = 0.50, col = "#3B2716", fontface = "bold") +
 
   # Parks
   tm_shape(parks) +
@@ -193,12 +198,12 @@ m <- tm_shape(basemap_stars, bbox = bbox) +
     fill.legend = tm_legend(title = "Site Type"),
     shape.legend = tm_legend(show = FALSE)
   ) +
-  tm_text("label", size = 0.65, col = "grey20",
+  tm_text("label", size = 0.55, col = "black", fontface = "bold",
           options = opt_tm_text(
             point.label = TRUE,
             point.label.method = "SANN",
             point.label.gap = 0.2,
-            shadow = TRUE
+            shadow = FALSE
           )) +
 
   # Towns
@@ -206,10 +211,6 @@ m <- tm_shape(basemap_stars, bbox = bbox) +
   tm_dots(fill = "black", size = 0.30) +
   tm_text("name", size = 0.65, xmod = 0.8, ymod = -0.6,
           col = "grey10", fontface = "bold") +
-
-  # Watershed label
-  tm_shape(neexdzii) +
-  tm_text("watershed", size = 0.80, fontface = "bold", col = "#1a3c5e") +
 
   # Scale bar — bottom-left to give keymap its own corner
   tm_scalebar(breaks = c(0, 10, 20),
