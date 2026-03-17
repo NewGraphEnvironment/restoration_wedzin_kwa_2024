@@ -1,9 +1,13 @@
 #!/usr/bin/env Rscript
 #
-# lulc_network-extract.R
+# fwa_extract_flood.R
 #
-# Extract coho stream network and waterbodies for the Neexdzii Kwa using
-# fresh::frs_network(), then generate floodplain AOI(s) using flooded.
+# 1. Generate sub-basin polygons from break_points.csv via frs_watershed_split()
+# 2. Extract coho stream network and waterbodies via frs_network()
+# 3. Generate floodplain AOI(s) using flooded VCA
+#
+# All columns in break_points.csv (name_basin, description, fisheries_value)
+# are carried through to subbasins.gpkg automatically.
 #
 # Reads scenario parameters from data/lulc/flood_scenarios.csv:
 #   - min_order: stream order filter for flood model streams
@@ -11,21 +15,22 @@
 #   - flood_factor: VCA flood depth multiplier
 #
 # Usage:
-#   Rscript scripts/lulc_network-extract.R           # runs co_ff06
-#   Rscript scripts/lulc_network-extract.R co_ff04   # runs specific scenario
-#   Rscript scripts/lulc_network-extract.R all        # runs all scenarios
+#   Rscript scripts/fwa_extract_flood.R           # runs co_ff06
+#   Rscript scripts/fwa_extract_flood.R co_ff04   # runs specific scenario
+#   Rscript scripts/fwa_extract_flood.R all        # runs all scenarios
 #
 # Requires:
 #   - SSH tunnel: ssh -L 63333:<db_host>:5432 <ssh_host>
 #   - R packages: flooded, fresh, sf, terra, readr
 #   - DEM/slope from bcfishpass habitat_lateral model
 #
-# Outputs per scenario:
+# Outputs:
+#   data/lulc/subbasins.gpkg                          (sub-basin polygons)
 #   data/lulc/floodplain_neexdzii_{scenario_id}.tif   (raster)
 #   data/lulc/floodplain_neexdzii_{scenario_id}.gpkg  (vector)
 #   data/lulc/streams_neexdzii_{scenario_id}.gpkg     (stream network)
 #
-# Relates to #67, #123
+# Relates to #67, #123, #135
 
 library(flooded)
 library(fresh)
@@ -38,6 +43,17 @@ terra::terraOptions(threads = 12)
 
 # --- DB connection (fresh conn-first API) ---
 conn <- frs_db_conn()
+
+# --- Step 1: Generate sub-basins from break_points.csv ---
+message("=== Generating sub-basins ===")
+bp <- readr::read_csv(
+  here::here("data", "lulc", "break_points.csv"),
+  show_col_types = FALSE
+)
+subbasins <- frs_watershed_split(conn, bp)
+sb_path <- here::here("data", "lulc", "subbasins.gpkg")
+sf::st_write(subbasins, sb_path, layer = "subbasins", delete_dsn = TRUE, quiet = TRUE)
+message("  ", nrow(subbasins), " sub-basins → ", basename(sb_path))
 
 # --- Boundary: Neexdzii Kwa / Wedzin Kwa confluence on Bulkley mainstem ---
 blk <- 360873822

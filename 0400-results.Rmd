@@ -24,7 +24,7 @@ Field site reviews were conducted in 2024 and 2025, with assessments documented 
 
 <br>
 
-```{r fig-map-study-area, fig.cap='Study area map showing field review site locations within the Neexdzii Kwah (upper Bulkley River) watershed. Sites are classified as effectiveness monitoring (completed restoration works) or potential restoration sites.', out.width="100%"}
+```{r fig-map-study-area, fig.cap='Study area map showing sub-basin boundaries and field review site locations within the Neexdzii Kwah (upper Bulkley River) watershed. Sites are classified as effectiveness monitoring (completed restoration works) or potential restoration sites.', out.width="100%"}
 knitr::include_graphics("fig/map_study-area.png")
 ```
 
@@ -66,7 +66,7 @@ lulc_grouped <- lulc_all |>
     )
   ) |>
   dplyr::filter(!is.na(group)) |>
-  dplyr::group_by(subbasin, year, group) |>
+  dplyr::group_by(name_basin, year, group) |>
   dplyr::summarize(area = sum(area), .groups = "drop")
 
 lulc_tree_delta <- lulc_grouped |>
@@ -103,7 +103,7 @@ reverse_to_trees <- full_trans$summary |>
 net_trees_ag <- gross_trees_to_ag - reverse_to_trees
 ```
 
-Land cover classification within the modelled floodplain — delineated using the Valley Confinement Algorithm at flood factor 6 for coho habitat streams of 3rd order and greater (see [Methods](#time-series-analysis)) — shows a consistent pattern of tree cover loss and agriculture expansion between 2017 and 2023. Pixel-level transition analysis identified `r gross_trees_to_ag` ha of floodplain tree cover that converted to agriculture classes (Crops + Rangeland + Bare Ground), while `r reverse_to_trees` ha shifted from agriculture back to trees — a net loss of approximately `r net_trees_ag` ha. The total net tree cover decline across all classes was `r total_tree_loss` ha. The greatest losses occurred in `r top3$subbasin[1]` (`r round(abs(top3$delta_ha[1]), 0)` ha), `r top3$subbasin[2]` (`r round(abs(top3$delta_ha[2]), 0)` ha), and `r top3$subbasin[3]` (`r round(abs(top3$delta_ha[3]), 0)` ha). An interactive map of classified land cover with transition overlays, along with detailed sub-basin summaries, is presented in [Appendix - LULC](#app-lulc).
+Land cover classification within the modelled floodplain — delineated using the Valley Confinement Algorithm at flood factor 6 for coho habitat streams of 3rd order and greater (see [Methods](#time-series-analysis)) — shows a consistent pattern of tree cover loss and agriculture expansion between 2017 and 2023. Pixel-level transition analysis identified `r gross_trees_to_ag` ha of floodplain tree cover that converted to agriculture classes (Crops + Rangeland + Bare Ground), while `r reverse_to_trees` ha shifted from agriculture back to trees — a net loss of approximately `r net_trees_ag` ha. The total net tree cover decline across all classes was `r total_tree_loss` ha. The greatest losses occurred in `r top3$name_basin[1]` (`r round(abs(top3$delta_ha[1]), 0)` ha), `r top3$name_basin[2]` (`r round(abs(top3$delta_ha[2]), 0)` ha), and `r top3$name_basin[3]` (`r round(abs(top3$delta_ha[3]), 0)` ha). An interactive map of classified land cover with transition overlays, along with detailed sub-basin summaries, is presented in [Appendix - LULC](#app-lulc).
 
 Not all detected tree loss represents agricultural conversion — some transitions reflect timber harvest within the floodplain, where recent cutblocks are classified as rangeland or bare ground at 10 m resolution. Even where harvested areas regenerate or are replanted, young closed-canopy forests do not provide the same watershed function as mature riparian stands — they contribute less large woody debris, offer less structural diversity for fish habitat, and have different hydrological characteristics. Other pixel-level transitions reflect channel migration, seasonal differences in vegetation health due to drought, or classification noise — particularly along actively shifting reaches and at field-forest edges. Despite these sources of uncertainty, the overall trajectory of floodplain tree cover loss is consistent across sub-basins and time steps, and the magnitude of change is well above what classification error alone would produce. These trends highlight where protection of remaining mature floodplain forest, engagement with landowners, and restoration of degraded reaches may be most effective.
 
@@ -174,43 +174,83 @@ Trend statistics, spatial anomaly maps, and time series plots are presented in [
 
 ### Sub-Basin Prioritization
 
-Table \@ref(tab:tab-area-priority-cap) integrates land cover change, fish habitat modelling, land ownership, and cultural site data to characterize each sub-basin. Below Bulkley Falls, the middle reaches show the steepest declines — Bulkley Byman-JDavid (-14.5%) and Bulkley Houston-McKilligan (-11.1%) — while the reach closest to Houston (Bulkley-Houston, -8.3%) is comparatively stable but contains the most coho spawning habitat (40 km). The Bulkley Richfield-Falls sub-basin has the largest modelled floodplain below the falls (1,060 ha), the highest coho spawning length (60.8 km), and a near-even split of private (648 ha) and non-private (564 ha) floodplain — existing restoration investments here provide a foundation for expansion. Above Bulkley Falls, Maxam Creek stands out with 59.4% agriculture expansion, 97 ha of reserve land, and a documented traditional fishing site. Buck Creek Downstream Falls has 2 cultural sites and the highest chinook spawning density (60.5 km). These data provide the empirical foundation for the prioritization framework described in [Recommendations](#recommendations), where governance structure and community input guide how investment is directed across sub-basins. An initial proof of concept for site-level parameter ranking — using GIS overlay of point locations against fish habitat, land tenure, cultural significance, and disturbance layers — is presented in [Appendix – Example of Potential Restoration Sites Prioritized](#sites-ranked). This approach will gain precision as floodplain type mapping advances and sites that pass through the governance framework's diagnostic gates can be scored against modelled habitat polygons rather than simple point intersections.
-
-```{r tab-area-priority-cap, results="asis"}
-my_caption <- "Sub-basin prioritization data for the Neexdzii Kwah watershed. Floodplain tree loss and agriculture change are from drift land cover classification (2017-2023). Fish habitat lengths are modelled spawning and rearing from bcfishpass. Non-private floodplain ownership includes Crown Provincial, Untitled Provincial, Crown Agency, Local Government, Federal, and Unclassified parcels from the PMBC parcel fabric. Reserves are from CLAB and cultural sites from @gottesfeld_rabnett2007SkeenaFish. Sub-basins are ordered by tree loss rate within the floodplain."
-my_tab_caption()
-```
-
-```{r tab-area-priority}
-area_scores <- readr::read_csv(
+```{r subbasin-summary-prep}
+# area_scores loaded in tab-subbasin-desc chunk below — load here for inline text
+as <- readr::read_csv(
   here::here("data", "prioritization", "area_scores.csv"),
   show_col_types = FALSE
 ) |>
-  dplyr::arrange(tree_loss_pct) |>
   dplyr::mutate(
-    dplyr::across(c(area_km2, floodplain_area_ha), ~ round(.x, 0)),
-    dplyr::across(c(fp_private_ha, fp_crown_ha), ~ round(.x, 0)),
-    position = gsub("_", " ", gsub("below_|above_", "", position))
+    tree_loss_fp_pct = round(tree_loss_ha / floodplain_area_ha * 100, 1),
+    ag_change_fp_pct = round(ag_change_ha / floodplain_area_ha * 100, 1)
+  )
+
+# Top 2 by tree loss as % of floodplain (>10%)
+top2 <- as |> dplyr::filter(tree_loss_fp_pct <= -10) |> dplyr::arrange(tree_loss_fp_pct)
+
+# Two largest floodplains below falls (falls_downstream == 0)
+fp_below <- as |>
+  dplyr::filter(falls_downstream == 0) |>
+  dplyr::arrange(dplyr::desc(floodplain_area_ha)) |>
+  head(2)
+```
+
+Sub-basin boundaries are shown in Figure \@ref(fig:fig-map-study-area). Table \@ref(tab:tab-subbasin-desc-cap) provides an overview of each sub-basin and Table \@ref(tab:tab-area-priority-cap) details land cover change, fish habitat, land ownership, and cultural site metrics. The two largest floodplain areas below the falls barrier limiting salmon distribution are `r fp_below$name_basin[1]` (`r round(fp_below$floodplain_area_ha[1], 0)` ha) and `r fp_below$name_basin[2]` (`r round(fp_below$floodplain_area_ha[2], 0)` ha). Expressed as a percentage of modelled floodplain area, `r top2$name_basin[1]` (`r abs(top2$tree_loss_fp_pct[1])`%) and `r top2$name_basin[2]` (`r abs(top2$tree_loss_fp_pct[2])`%) lost the most floodplain tree cover between 2017 and 2023, with agriculture expansion closely mirroring those losses. These data provide the empirical foundation for the prioritization framework described in [Recommendations](#recommendations), where governance structure and community input guide how investment is directed across sub-basins.
+
+```{r tab-subbasin-desc-cap, results="asis"}
+my_caption <- "Sub-basin overview for the Neexdzii Kwah watershed. Fisheries value is rated 1-5 (5 = highest). Floodplain area is modelled using the Valley Confinement Algorithm at flood factor 6 for coho habitat streams of 3rd order and greater."
+my_tab_caption(tip_flag = FALSE)
+```
+
+```{r tab-subbasin-desc}
+area_scores <- readr::read_csv(
+  here::here("data", "prioritization", "area_scores.csv"),
+  show_col_types = FALSE
+)
+
+area_scores |>
+  dplyr::mutate(
+    dplyr::across(c(area_km2, floodplain_area_ha), ~ round(.x, 0))
   ) |>
-  dplyr::mutate(fisheries_value = NA_character_) |>
   dplyr::select(
     `Sub-basin` = name_basin,
-    `Area (km²)` = area_km2,
+    `Area (km2)` = area_km2,
     `Floodplain (ha)` = floodplain_area_ha,
-    `Tree Loss (%)` = tree_loss_pct,
-    `Ag Change (%)` = ag_change_pct,
+    `Fisheries Value` = fisheries_value,
+    `Description` = description
+  ) |>
+  my_dt_table(page_length = 14, cols_freeze_left = 0)
+```
+
+```{r tab-area-priority-cap, results="asis"}
+my_caption <- "Sub-basin prioritization data for the Neexdzii Kwah watershed. Tree loss and agriculture gain are expressed as percentage of modelled floodplain area (drift land cover classification, 2017-2023). Fish habitat lengths are modelled spawning and rearing from bcfishpass. Non-private floodplain ownership includes Crown Provincial, Untitled Provincial, Crown Agency, Local Government, Federal, and Unclassified parcels from the PMBC parcel fabric. First Nations reserves are from CLAB and cultural sites from @gottesfeld_rabnett2007SkeenaFish. Sub-basins are ordered by floodplain tree loss rate."
+my_tab_caption(tip_flag = FALSE)
+```
+
+```{r tab-area-priority}
+area_scores |>
+  dplyr::mutate(
+    tree_loss_fp = round(tree_loss_ha / floodplain_area_ha * 100, 1),
+    ag_change_fp = round(ag_change_ha / floodplain_area_ha * 100, 1),
+    dplyr::across(c(fp_private_ha, fp_crown_ha), ~ round(.x, 0))
+  ) |>
+  dplyr::arrange(tree_loss_fp) |>
+  dplyr::select(
+    `Sub-basin` = name_basin,
+    `Tree Loss (% FP)` = tree_loss_fp,
+    `Ag Gain (% FP)` = ag_change_fp,
     `CO Spawn (km)` = co_spawn_km,
     `CO Rear (km)` = co_rear_km,
     `CH Spawn (km)` = ch_spawn_km,
     `Private FP (ha)` = fp_private_ha,
     `Non-Private FP (ha)` = fp_crown_ha,
-    `Reserves (ha)` = reserve_area_ha,
-    `Fisheries Value` = fisheries_value,
+    `FN Reserves (ha)` = reserve_area_ha,
     `Cultural Sites` = n_cultural_sites
-  )
-
-my_dt_table(area_scores, page_length = 14, cols_freeze_left = 0)
+  ) |>
+  my_dt_table(page_length = 14, cols_freeze_left = 0)
 ```
+
+An initial proof of concept for site-level parameter ranking — using GIS overlay of point locations against fish habitat, land tenure, cultural significance, and disturbance layers — is presented in [Appendix – Example of Potential Restoration Sites Prioritized](#sites-ranked). This approach will gain precision as floodplain type mapping advances and sites that pass through the governance framework's diagnostic gates can be scored against modelled habitat polygons rather than simple point intersections.
 
 ### Fish Passage
 

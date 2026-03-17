@@ -2,24 +2,29 @@
 #
 # prioritization_score.R
 #
-# Compute sub-basin prioritization metrics by intersecting spatial layers
-# with sub-basin polygons. Adds data-driven columns to area_scores.csv.
+# Build area-level and project-level prioritization CSVs from sub-basin
+# polygons, LULC outputs, fish habitat (DB), land ownership, reserves,
+# and cultural sites.
 #
 # Sources:
+#   - Sub-basins: data/lulc/subbasins.gpkg (from fwa_extract_flood.R)
+#     — carries name_basin, description, fisheries_value from break_points.csv
+#   - LULC: data/lulc/lulc_summary.rds (from lulc_classify.R)
 #   - Fish habitat: bcfishpass streams_co_vw + streams_ch_vw (DB via fresh)
 #   - Land ownership: background_layers.gpkg (pmbc parcels ∩ floodplain)
 #   - Reserves: background_layers.gpkg (clab_indian_reserves ∩ sub-basins)
 #   - Cultural sites: trad_fish_sites_gottesfeld_rabnett2007.gpkg ∩ sub-basins
-#   - LULC: already in area_scores.csv from prioritization_build.R
+#   - Sites: data/gis/sites_prioritized.geojson (from prioritize.R)
 #
 # Requires:
 #   - SSH tunnel: ssh -L 63333:<db_host>:5432 <ssh_host>
-#   - R packages: fresh, sf, readr, dplyr
+#   - R packages: fresh, sf, readr, dplyr, purrr, tidyr
 #
 # Outputs:
-#   data/prioritization/area_scores.csv (updated with new columns)
+#   data/prioritization/area_scores.csv    — sub-basin level metrics
+#   data/prioritization/project_scores.csv — site/project level scaffold
 #
-# Relates to #125
+# Relates to #125, #135
 
 library(sf)
 library(dplyr)
@@ -37,19 +42,59 @@ lulc_dir <- here::here("data", "lulc")
 gis_dir <- "/Users/airvine/Projects/gis/restoration_wedzin_kwa"
 cultural_sites_path <- "/Users/airvine/Library/CloudStorage/OneDrive-Personal/Projects/gis/data_secure/wetsuweten_treaty_society/trad_fish_sites_gottesfeld_rabnett2007FishPassage.gpkg"
 
+# =============================================================================
+# Part 1: Area scores
+# =============================================================================
+
 # --- Load sub-basins and floodplain ---
 message("Loading sub-basins and floodplain...")
 subbasins <- sf::st_read(file.path(lulc_dir, "subbasins.gpkg"), quiet = TRUE) |>
   sf::st_transform(3005)
 
 fp_file <- file.path(lulc_dir, "floodplain_neexdzii_co_ff06.gpkg")
-if (!file.exists(fp_file)) fp_file <- file.path(lulc_dir, "floodplain_neexdzii_co.gpkg")
-floodplain <- sf::st_read(fp_file, quiet = TRUE)
+floodplain <- sf::st_read(fp_file, quiet = TRUE) |>
+  sf::st_transform(sf::st_crs(subbasins))
 
-# --- Load existing area_scores ---
-area_scores <- readr::read_csv(file.path(out_dir, "area_scores.csv"), show_col_types = FALSE)
+# --- Floodplain area per sub-basin ---
+fp_areas <- subbasins |>
+  dplyr::mutate(
+    fp_geom = purrr::map(
+      seq_len(dplyr::n()),
+      ~ {
+        clip <- sf::st_intersection(floodplain, subbasins[.x, ])
+        if (nrow(clip) == 0) return(sf::st_sfc(sf::st_polygon(), crs = sf::st_crs(subbasins)))
+        sf::st_union(clip)
+      }
+    ),
+    floodplain_area_ha = purrr::map_dbl(fp_geom, ~ as.numeric(sf::st_area(.x)) / 10000)
+  ) |>
+  sf::st_drop_geometry() |>
+  dplyr::select(name_basin, description, fisheries_value, falls_downstream, area_km2, floodplain_area_ha)
 
-# --- 1. Fish habitat from DB (coho + chinook) ---
+# --- LULC change from drift summary ---
+lulc <- readRDS(file.path(lulc_dir, "lulc_summary.rds"))
+
+tree_change <- lulc |>
+  dplyr::filter(class_name == "Trees", year %in% c(2017, 2023)) |>
+  dplyr::select(name_basin, year, area) |>
+  tidyr::pivot_wider(names_from = year, values_from = area, names_prefix = "trees_ha_") |>
+  dplyr::mutate(
+    tree_loss_ha = trees_ha_2023 - trees_ha_2017,
+    tree_loss_pct = round(tree_loss_ha / trees_ha_2017 * 100, 1)
+  )
+
+ag_classes <- c("Crops", "Rangeland", "Bare Ground")
+ag_change <- lulc |>
+  dplyr::filter(class_name %in% ag_classes, year %in% c(2017, 2023)) |>
+  dplyr::group_by(name_basin, year) |>
+  dplyr::summarise(ag_area = sum(area), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = year, values_from = ag_area, names_prefix = "ag_ha_") |>
+  dplyr::mutate(
+    ag_change_ha = ag_ha_2023 - ag_ha_2017,
+    ag_change_pct = round(ag_change_ha / ag_ha_2017 * 100, 1)
+  )
+
+# --- Fish habitat from DB (coho + chinook) ---
 blk <- 360873822
 drm <- 166030.4
 
@@ -67,7 +112,6 @@ co_result <- frs_network(
     )
   )
 )
-# frs_network returns sf directly for single table, or list for multiple
 co_streams <- if (inherits(co_result, "sf")) co_result else co_result$streams
 co_streams <- sf::st_zm(co_streams, drop = TRUE)
 
@@ -88,11 +132,9 @@ ch_result <- frs_network(
 ch_streams <- if (inherits(ch_result, "sf")) ch_result else ch_result$streams
 ch_streams <- sf::st_zm(ch_streams, drop = TRUE)
 
-# Compute lengths
 co_streams$length_m <- as.numeric(sf::st_length(co_streams))
 ch_streams$length_m <- as.numeric(sf::st_length(ch_streams))
 
-# Spatial join: streams to sub-basins
 message("Joining streams to sub-basins...")
 co_joined <- sf::st_join(co_streams, subbasins["name_basin"], largest = TRUE)
 ch_joined <- sf::st_join(ch_streams, subbasins["name_basin"], largest = TRUE)
@@ -120,7 +162,7 @@ ch_hab <- ch_joined |>
 message("  Coho: ", nrow(co_hab), " sub-basins with habitat")
 message("  Chinook: ", nrow(ch_hab), " sub-basins with habitat")
 
-# --- 2. Land ownership within floodplain per sub-basin ---
+# --- Land ownership within floodplain per sub-basin ---
 message("Loading parcels from GIS project...")
 parcels <- sf::st_read(
   file.path(gis_dir, "background_layers.gpkg"),
@@ -128,7 +170,6 @@ parcels <- sf::st_read(
   quiet = TRUE
 ) |> sf::st_make_valid()
 
-# Intersect parcels with floodplain, then with sub-basins
 message("Intersecting parcels with floodplain...")
 fp_parcels <- sf::st_intersection(parcels, sf::st_union(floodplain)) |>
   sf::st_make_valid()
@@ -148,7 +189,7 @@ ownership <- fp_parcels_by_basin |>
 
 message("  Ownership: ", nrow(ownership), " sub-basins")
 
-# --- 3. Reserves ---
+# --- Reserves ---
 message("Loading reserves...")
 reserves <- sf::st_read(
   file.path(gis_dir, "background_layers.gpkg"),
@@ -170,7 +211,7 @@ reserve_summary <- reserves_by_basin |>
 
 message("  Reserves: ", sum(reserve_summary$n_reserves), " in ", nrow(reserve_summary), " sub-basins")
 
-# --- 4. Cultural sites ---
+# --- Cultural sites ---
 message("Loading cultural sites...")
 cultural <- sf::st_read(cultural_sites_path, quiet = TRUE)
 
@@ -186,25 +227,11 @@ cultural_summary <- cultural_by_basin |>
 
 message("  Cultural sites: ", sum(cultural_summary$n_cultural_sites), " in ", nrow(cultural_summary), " sub-basins")
 
-# --- Merge all into area_scores ---
-message("Merging into area_scores...")
-
-# Drop old columns that we're now computing (handles reruns cleanly)
-cols_to_drop <- c(
-  "fish_value_score", "cultural_significance_score",
-  "community_accessibility_score", "cumulative_pressure_score",
-  "active_degradation_flag", "area_priority_score", "notes",
-  "co_total_km", "co_spawn_km", "co_rear_km",
-  "ch_total_km", "ch_spawn_km", "ch_rear_km",
-  "fp_private_ha", "fp_crown_ha", "fp_other_ha",
-  "reserve_area_ha", "n_reserves", "n_cultural_sites"
-)
-# Also drop any .x/.y suffixed duplicates from prior bad runs
-all_drop <- c(cols_to_drop, paste0(cols_to_drop, ".x"), paste0(cols_to_drop, ".y"))
-area_scores <- area_scores |>
-  dplyr::select(-dplyr::any_of(all_drop))
-
-area_scores <- area_scores |>
+# --- Assemble area_scores ---
+message("Assembling area_scores...")
+area_scores <- fp_areas |>
+  dplyr::left_join(tree_change, by = "name_basin") |>
+  dplyr::left_join(ag_change, by = "name_basin") |>
   dplyr::left_join(co_hab, by = "name_basin") |>
   dplyr::left_join(ch_hab, by = "name_basin") |>
   dplyr::left_join(ownership, by = "name_basin") |>
@@ -221,9 +248,60 @@ fill_cols <- c(
 area_scores <- area_scores |>
   dplyr::mutate(dplyr::across(dplyr::any_of(fill_cols), ~ tidyr::replace_na(.x, 0)))
 
-# Write
 readr::write_csv(area_scores, file.path(out_dir, "area_scores.csv"))
 message("\nWrote: data/prioritization/area_scores.csv")
 message("Columns: ", paste(names(area_scores), collapse = ", "))
+
+# =============================================================================
+# Part 2: Project scores from prioritized sites
+# =============================================================================
+
+# --- Load GIS-scored sites ---
+sites <- sf::st_read(
+  here::here("data", "gis", "sites_prioritized.geojson"), quiet = TRUE
+)
+
+# --- Assign sub-basin to each site via spatial join ---
+sites_sb <- sf::st_transform(sites, sf::st_crs(subbasins)) |>
+  sf::st_join(
+    subbasins |> dplyr::select(name_basin),
+    join = sf::st_within,
+    left = TRUE
+  )
+
+# --- Build project scaffold ---
+project_scores <- sites_sb |>
+  sf::st_drop_geometry() |>
+  dplyr::select(
+    idx, site_id, site_name_proposed, source, name_basin,
+    lon, lat,
+    total_score,
+    bulkley_falls_downstream, floodplain_ind, owner_type,
+    dplyr::any_of(c("name_wet_house", "house", "clan", "clan_english", "chiefs")),
+    dplyr::starts_with("model_spawning"),
+    dplyr::starts_with("model_rearing")
+  ) |>
+  dplyr::mutate(
+    gate_diagnostic_certainty = NA,
+    gate_active_degradation_clear = NA,
+    gate_access_willingness = NA,
+    project_type = NA_character_,
+    watershed_function_gain = NA_integer_,
+    root_cause_alignment = NA_integer_,
+    scale_of_benefit_ha = NA_real_,
+    fish_habitat_connectivity = NA_integer_,
+    probability_of_success = NA_integer_,
+    cultural_significance = NA_integer_,
+    collective_wellbeing = NA_integer_,
+    passive_first_bonus = NA_integer_,
+    delivery_bucket = NA_integer_,
+    framework_score = NA_integer_,
+    notes = NA_character_
+  )
+
+readr::write_csv(project_scores, file.path(out_dir, "project_scores.csv"))
+message("Wrote: data/prioritization/project_scores.csv")
+
+message("\nDone. ", nrow(area_scores), " sub-basins, ", nrow(project_scores), " sites")
 
 DBI::dbDisconnect(conn)

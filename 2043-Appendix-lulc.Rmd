@@ -30,9 +30,7 @@ subbasins <- sf::st_read(
   file.path(lulc_dir, "subbasins.gpkg"), quiet = TRUE
 ) |> sf::st_transform(4326)
 
-# Load scenario-specific floodplain, fall back to legacy name
 fp_file <- file.path(lulc_dir, "floodplain_neexdzii_co_ff06.gpkg")
-if (!file.exists(fp_file)) fp_file <- file.path(lulc_dir, "floodplain_neexdzii_co.gpkg")
 floodplain <- sf::st_read(fp_file, quiet = TRUE) |> sf::st_transform(4326)
 
 # name_basin comes from break_points.csv via fresh::frs_watershed_split
@@ -266,11 +264,11 @@ ag_classes <- c("Crops", "Rangeland", "Bare Ground")
 # Compute change from 2017 to 2023 for each class and sub-basin (pct and area)
 lulc_delta <- lulc_all |>
   filter(year %in% c(2017, 2023)) |>
-  select(subbasin, year, class_name, pct, area) |>
+  select(name_basin, year, class_name, pct, area) |>
   pivot_wider(names_from = year, values_from = c(pct, area), names_sep = "_") |>
   mutate(delta_pct = pct_2023 - pct_2017,
          delta_ha = area_2023 - area_2017) |>
-  arrange(subbasin, class_name)
+  arrange(name_basin, class_name)
 
 # Grouped agriculture delta
 lulc_grouped <- lulc_all |>
@@ -282,7 +280,7 @@ lulc_grouped <- lulc_all |>
     )
   ) |>
   filter(!is.na(group)) |>
-  group_by(subbasin, year, group) |>
+  group_by(name_basin, year, group) |>
   summarize(pct = sum(pct), area = sum(area), .groups = "drop")
 
 lulc_grouped_delta <- lulc_grouped |>
@@ -304,7 +302,7 @@ lulc_all |>
   mutate(year = factor(year)) |>
   ggplot(aes(x = year, y = pct, fill = class_name)) +
   geom_col(position = "dodge") +
-  facet_wrap(~subbasin, scales = "free_y") +
+  facet_wrap(~name_basin, scales = "free_y") +
   scale_fill_brewer(palette = "Set2", name = "Land Cover") +
   theme_minimal() +
   labs(
@@ -324,7 +322,7 @@ lulc_all |>
          class_name = factor(class_name, levels = c("Bare Ground", "Crops", "Rangeland"))) |>
   ggplot(aes(x = year, y = pct, fill = class_name)) +
   geom_col() +
-  facet_wrap(~subbasin, nrow = 3) +
+  facet_wrap(~name_basin, nrow = 3) +
   scale_fill_manual(
     values = c("Rangeland" = "#FFBB22", "Crops" = "#E49635", "Bare Ground" = "#A59B8F"),
     name = NULL
@@ -344,7 +342,7 @@ lulc_grouped |>
   ggplot(aes(x = year, y = pct, color = group, group = group)) +
   geom_line(linewidth = 1) +
   geom_point(size = 3) +
-  facet_wrap(~subbasin, nrow = 2) +
+  facet_wrap(~name_basin, nrow = 2) +
   scale_color_manual(values = c("Trees" = "#006400", "Agriculture" = "#c0392b"), name = NULL) +
   theme_minimal() +
   labs(
@@ -358,16 +356,16 @@ lulc_grouped |>
 Tree loss and agriculture gain do not sum to zero because other IO LULC classes (Built Area, Water, Flooded Vegetation) also gain or lose area between years. The `other_ha` column captures this residual — positive values indicate net area flowing into non-tree, non-agriculture classes (e.g., Built Area expansion, water level changes). Classification noise at 10 m pixel boundaries and differences in Sentinel-2 overpass timing between years also contribute.
 
 ```{r lulc-summary-table}
-# One-row-per-subbasin summary with key metrics
+# One-row-per-sub-basin summary with key metrics
 fp_areas <- lulc_all |>
   filter(year == 2017) |>
-  group_by(subbasin) |>
+  group_by(name_basin) |>
   summarize(fp_ha = round(sum(area), 1), .groups = "drop")
 
 summary_tab <- lulc_grouped_delta |>
-  select(subbasin, group, delta_pct, delta_ha) |>
+  select(name_basin, group, delta_pct, delta_ha) |>
   pivot_wider(names_from = group, values_from = c(delta_pct, delta_ha)) |>
-  left_join(fp_areas, by = "subbasin") |>
+  left_join(fp_areas, by = "name_basin") |>
   mutate(
     tree_loss_pct = round(delta_pct_Trees, 1),
     tree_loss_ha = round(delta_ha_Trees, 1),
@@ -375,7 +373,7 @@ summary_tab <- lulc_grouped_delta |>
     ag_gain_ha = round(delta_ha_Agriculture, 1),
     other_ha = round(-tree_loss_ha - ag_gain_ha, 1)
   ) |>
-  select(subbasin, fp_ha, tree_loss_pct, tree_loss_ha, ag_gain_pct, ag_gain_ha, other_ha) |>
+  select(name_basin, fp_ha, tree_loss_pct, tree_loss_ha, ag_gain_pct, ag_gain_ha, other_ha) |>
   arrange(tree_loss_ha)
 ```
 
@@ -397,15 +395,15 @@ knitr::kable(summary_tab, digits = 1,
 
 ```{r plot-lulc-ranking-ha, fig.cap="Change in tree cover and agriculture area (ha) within modelled floodplain by sub-basin, 2017-2023. Agriculture = Crops + Rangeland + Bare Ground.", fig.width=10, fig.height=6}
 ranking_ha <- lulc_grouped_delta |>
-  select(subbasin, group, delta_ha) |>
+  select(name_basin, group, delta_ha) |>
   pivot_wider(names_from = group, values_from = delta_ha) |>
   mutate(net_shift = Agriculture - Trees) |>
   arrange(desc(net_shift))
 
 ranking_ha |>
   pivot_longer(cols = c(Trees, Agriculture), names_to = "class", values_to = "delta") |>
-  mutate(subbasin = factor(subbasin, levels = ranking_ha$subbasin)) |>
-  ggplot(aes(x = subbasin, y = delta, fill = class)) +
+  mutate(name_basin = factor(name_basin, levels = ranking_ha$name_basin)) |>
+  ggplot(aes(x = name_basin, y = delta, fill = class)) +
   geom_col(position = "dodge") +
   scale_fill_manual(values = c("Trees" = "#006400", "Agriculture" = "#c0392b"), name = NULL) +
   geom_hline(yintercept = 0, linewidth = 0.5) +
@@ -427,10 +425,10 @@ my_tab_caption()
 
 ```{r tab-lulc-wide, eval=gitbook_on}
 wide <- lulc_all |>
-  left_join(fp_areas, by = "subbasin") |>
-  select(subbasin, fp_ha, year, class_name, pct) |>
+  left_join(fp_areas, by = "name_basin") |>
+  select(name_basin, fp_ha, year, class_name, pct) |>
   pivot_wider(names_from = year, values_from = pct) |>
-  arrange(subbasin, class_name)
+  arrange(name_basin, class_name)
 
 wide |>
   my_dt_table(cols_freeze_left = 3, page_length = 25)
@@ -438,10 +436,10 @@ wide |>
 
 ```{r tab-lulc-wide-static, eval=identical(gitbook_on, FALSE)}
 wide <- lulc_all |>
-  left_join(fp_areas, by = "subbasin") |>
-  select(subbasin, fp_ha, year, class_name, pct) |>
+  left_join(fp_areas, by = "name_basin") |>
+  select(name_basin, fp_ha, year, class_name, pct) |>
   pivot_wider(names_from = year, values_from = pct) |>
-  arrange(subbasin, class_name)
+  arrange(name_basin, class_name)
 
 knitr::kable(wide, digits = 1,
   caption = "Land cover composition (% of modelled floodplain) by sub-basin and year. fp_ha = total modelled floodplain area.")

@@ -52,12 +52,7 @@ subbasins <- sf::st_read(
   file.path(out_dir, "subbasins.gpkg"), quiet = TRUE
 ) |> sf::st_transform(4326)
 
-# Floodplain file: try scenario-specific name, fall back to legacy name
 fp_file <- file.path(out_dir, paste0("floodplain_neexdzii_", scenario_id, ".gpkg"))
-if (!file.exists(fp_file)) {
-  fp_file <- file.path(out_dir, "floodplain_neexdzii_co.gpkg")
-  message("  Using legacy floodplain: ", basename(fp_file))
-}
 floodplain <- sf::st_read(fp_file, quiet = TRUE) |> sf::st_transform(4326)
 
 # Use name_basin from break_points.csv (carried through via fresh::frs_watershed_split)
@@ -107,7 +102,7 @@ for (i in seq_len(nrow(subbasins))) {
   rasters <- dft_stac_fetch(fp_clip, source = "io-lulc", years = years)
   classified <- dft_rast_classify(rasters, source = "io-lulc")
   summary <- dft_rast_summarize(classified, unit = "ha")
-  summary$subbasin <- lab
+  summary$name_basin <- lab
   results[[i]] <- summary
 }
 
