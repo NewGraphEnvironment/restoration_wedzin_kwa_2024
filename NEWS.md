@@ -6,6 +6,8 @@
 - reorder appendix files to match Results sequence (Field → Aerial → LULC → Climate → Fish Species → Sites Priority → Historic Data)
 - add bridging text connecting appendix site-ranking proof of concept to governance framework and future floodplain type mapping
 - fix Zotero title case for smith_gaboury 2016/2017 as-built reports to resolve citeproc citation key warning
+- migrate `frs_network()` calls to fresh conn-first API in `prioritization_score.R` and `lulc_network-extract.R` ([#35](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/35))
+- update sub-basin names in `break_points.csv` for clarity and add description column
 
 # restoration_wedzin_kwa_2024 DRAFT 0.2.3 (2026-03-13)
 
