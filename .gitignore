@@ -8,6 +8,9 @@ rsconnect
 
 
 */~$*
+
+# RAG store (built from Zotero PDFs via scripts/rag_build.R)
+data/rag/
 data/skt/*
 # exception
 !data/skt/ssaf-state-of-the-values-report-for-fish-and-fish-habitat-2020-data/ssaf_esi_t1_watershed_datadict_2020-11-17.xlsx

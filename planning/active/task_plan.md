@@ -11,13 +11,14 @@
 ---
 
 ## Phase 1: Literature Review & Scenario Lock
-**Status:** `pending`
+**Status:** `complete`
+**Upstream:** Research here feeds [flooded#28](https://github.com/NewGraphEnvironment/flooded/issues/28) — VCA parameter documentation + default scenarios will live in flooded
 
-- [ ] 1.1 Semantic search Zotero for each scenario's ecological basis
-- [ ] 1.2 Build BBT citation keys per scenario via `/zotero-lookup`
-- [ ] 1.3 Document rationale in findings.md
-- [ ] 1.4 Add columns to `data/lulc/flood_scenarios.csv`: `ecological_process`, `citations`
-- [ ] 1.5 Note: flood_factor-to-process mapping is interpretive framework, not calibrated thresholds
+- [x] 1.1 Semantic search Zotero for each scenario's ecological basis
+- [x] 1.2 Build BBT citation keys per scenario via `/zotero-lookup`
+- [x] 1.3 Document rationale in findings.md — cover ALL VCA params (flood_factor, slope_threshold, max_width, cost_threshold, size_threshold, hole_threshold, precip), not just flood_factor
+- [x] 1.4 Add columns to `data/lulc/flood_scenarios.csv`: `ecological_process`, `citations`
+- [x] 1.5 Note: flood_factor-to-process mapping is interpretive framework, not calibrated thresholds
 
 ---
 
