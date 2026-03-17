@@ -398,115 +398,115 @@ div.csl-indent {
 <div id="price2014upperbulkley---extracted-waypoints" class="section level2 unnumbered hasAnchor">
 <h2><span class="citation">Price (2014)</span> - Extracted Waypoints<a href="app-historic-data.html#price2014upperbulkley---extracted-waypoints" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Coordinates of points of interest documented in <span class="citation">Price (2014)</span> were extracted from the PDF report using <code>tabulapdf</code> and converted to a spatial layer (<code>sites_restoration.gpkg</code>, layer name = <code>price_2014</code>). The extracted data includes locations of river channelization, potential barriers to fish migration, and areas of upwelling groundwater. Data is also available in <a href="https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/inputs_extracted/price_2014_waypoints.csv">price_2014_waypoints.csv</a>.</p>
-<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="app-historic-data.html#cb115-1" tabindex="-1"></a>path <span class="ot">&lt;-</span> <span class="st">&quot;/Users/airvine/zotero/storage/7JCL42Y3/price_2014_upper_bulkley_floodplain_habitat_-_modifications,_physical_barriers,_and_sites.pdf&quot;</span></span>
-<span id="cb115-2"><a href="app-historic-data.html#cb115-2" tabindex="-1"></a></span>
-<span id="cb115-3"><a href="app-historic-data.html#cb115-3" tabindex="-1"></a><span class="co"># name our csv we are creating</span></span>
-<span id="cb115-4"><a href="app-historic-data.html#cb115-4" tabindex="-1"></a>path_file <span class="ot">&lt;-</span> <span class="st">&quot;data/inputs_extracted/price_2014_waypoints.csv&quot;</span></span>
-<span id="cb115-5"><a href="app-historic-data.html#cb115-5" tabindex="-1"></a></span>
-<span id="cb115-6"><a href="app-historic-data.html#cb115-6" tabindex="-1"></a><span class="co"># define page to extract table</span></span>
-<span id="cb115-7"><a href="app-historic-data.html#cb115-7" tabindex="-1"></a>page <span class="ot">&lt;-</span> <span class="dv">32</span></span>
-<span id="cb115-8"><a href="app-historic-data.html#cb115-8" tabindex="-1"></a></span>
-<span id="cb115-9"><a href="app-historic-data.html#cb115-9" tabindex="-1"></a></span>
-<span id="cb115-10"><a href="app-historic-data.html#cb115-10" tabindex="-1"></a><span class="co"># #if you wanted to define the area to extract would run with this the first time</span></span>
-<span id="cb115-11"><a href="app-historic-data.html#cb115-11" tabindex="-1"></a><span class="co"># tabulapdf::locate_areas(path, pages = page)</span></span>
-<span id="cb115-12"><a href="app-historic-data.html#cb115-12" tabindex="-1"></a></span>
-<span id="cb115-13"><a href="app-historic-data.html#cb115-13" tabindex="-1"></a></span>
-<span id="cb115-14"><a href="app-historic-data.html#cb115-14" tabindex="-1"></a><span class="co"># to get....</span></span>
-<span id="cb115-15"><a href="app-historic-data.html#cb115-15" tabindex="-1"></a><span class="co"># tab_area = list(c(151.17224,  87.13111, 715.14139,604.27249 ))</span></span>
-<span id="cb115-16"><a href="app-historic-data.html#cb115-16" tabindex="-1"></a><span class="co"># but....looks like it will guess correct with no help so let&#39;s do that</span></span>
-<span id="cb115-17"><a href="app-historic-data.html#cb115-17" tabindex="-1"></a>tabulapdf<span class="sc">::</span><span class="fu">extract_tables</span>(path,</span>
-<span id="cb115-18"><a href="app-historic-data.html#cb115-18" tabindex="-1"></a>                                  <span class="at">pages =</span> page,</span>
-<span id="cb115-19"><a href="app-historic-data.html#cb115-19" tabindex="-1"></a>                                  <span class="co"># method = &quot;lattice&quot;,</span></span>
-<span id="cb115-20"><a href="app-historic-data.html#cb115-20" tabindex="-1"></a>                                  <span class="co"># output = c(&quot;tibble&quot;),</span></span>
-<span id="cb115-21"><a href="app-historic-data.html#cb115-21" tabindex="-1"></a>                                  <span class="co"># guess = FALSE,</span></span>
-<span id="cb115-22"><a href="app-historic-data.html#cb115-22" tabindex="-1"></a>                                  <span class="co"># area = tab_area</span></span>
-<span id="cb115-23"><a href="app-historic-data.html#cb115-23" tabindex="-1"></a>                                  ) <span class="sc">|&gt;</span></span>
-<span id="cb115-24"><a href="app-historic-data.html#cb115-24" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">pluck</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span></span>
-<span id="cb115-25"><a href="app-historic-data.html#cb115-25" tabindex="-1"></a>  <span class="co"># need to make the first row be the names due to muti-line header</span></span>
-<span id="cb115-26"><a href="app-historic-data.html#cb115-26" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">row_to_names</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span></span>
-<span id="cb115-27"><a href="app-historic-data.html#cb115-27" tabindex="-1"></a>  <span class="co"># now let&#39;s burn it to a csv so we can correct the types</span></span>
-<span id="cb115-28"><a href="app-historic-data.html#cb115-28" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">write_csv</span>(path_file)</span>
-<span id="cb115-29"><a href="app-historic-data.html#cb115-29" tabindex="-1"></a></span>
-<span id="cb115-30"><a href="app-historic-data.html#cb115-30" tabindex="-1"></a><span class="co"># read it back in to get the types right</span></span>
-<span id="cb115-31"><a href="app-historic-data.html#cb115-31" tabindex="-1"></a>tab1 <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(path_file)</span>
-<span id="cb115-32"><a href="app-historic-data.html#cb115-32" tabindex="-1"></a></span>
-<span id="cb115-33"><a href="app-historic-data.html#cb115-33" tabindex="-1"></a><span class="co"># now let&#39;s define the rest of the pages to extract from</span></span>
-<span id="cb115-34"><a href="app-historic-data.html#cb115-34" tabindex="-1"></a>page <span class="ot">&lt;-</span> <span class="dv">33</span><span class="sc">:</span><span class="dv">36</span></span>
-<span id="cb115-35"><a href="app-historic-data.html#cb115-35" tabindex="-1"></a></span>
-<span id="cb115-36"><a href="app-historic-data.html#cb115-36" tabindex="-1"></a></span>
-<span id="cb115-37"><a href="app-historic-data.html#cb115-37" tabindex="-1"></a><span class="co"># build a function to pull them all out at the same time</span></span>
-<span id="cb115-38"><a href="app-historic-data.html#cb115-38" tabindex="-1"></a>extract_tables_multi <span class="ot">&lt;-</span> <span class="cf">function</span>(page){</span>
-<span id="cb115-39"><a href="app-historic-data.html#cb115-39" tabindex="-1"></a>  tabulapdf<span class="sc">::</span><span class="fu">extract_tables</span>(path,</span>
-<span id="cb115-40"><a href="app-historic-data.html#cb115-40" tabindex="-1"></a>                                  <span class="at">pages =</span> page,</span>
-<span id="cb115-41"><a href="app-historic-data.html#cb115-41" tabindex="-1"></a>                                  ) <span class="sc">|&gt;</span></span>
-<span id="cb115-42"><a href="app-historic-data.html#cb115-42" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">pluck</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span></span>
-<span id="cb115-43"><a href="app-historic-data.html#cb115-43" tabindex="-1"></a>    <span class="co"># use the names from the header table</span></span>
-<span id="cb115-44"><a href="app-historic-data.html#cb115-44" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">set_names</span>(<span class="at">nm =</span> <span class="fu">names</span>(tab1))</span>
-<span id="cb115-45"><a href="app-historic-data.html#cb115-45" tabindex="-1"></a>}</span>
-<span id="cb115-46"><a href="app-historic-data.html#cb115-46" tabindex="-1"></a></span>
-<span id="cb115-47"><a href="app-historic-data.html#cb115-47" tabindex="-1"></a><span class="co"># run our function</span></span>
-<span id="cb115-48"><a href="app-historic-data.html#cb115-48" tabindex="-1"></a>tabs_extra <span class="ot">&lt;-</span> page <span class="sc">|&gt;</span></span>
-<span id="cb115-49"><a href="app-historic-data.html#cb115-49" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">map_df</span>(</span>
-<span id="cb115-50"><a href="app-historic-data.html#cb115-50" tabindex="-1"></a>    extract_tables_multi</span>
-<span id="cb115-51"><a href="app-historic-data.html#cb115-51" tabindex="-1"></a>  )</span>
-<span id="cb115-52"><a href="app-historic-data.html#cb115-52" tabindex="-1"></a></span>
-<span id="cb115-53"><a href="app-historic-data.html#cb115-53" tabindex="-1"></a><span class="co"># join our og table to our multi-page output but fix a type</span></span>
-<span id="cb115-54"><a href="app-historic-data.html#cb115-54" tabindex="-1"></a>tab <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(</span>
-<span id="cb115-55"><a href="app-historic-data.html#cb115-55" tabindex="-1"></a>  tab1 <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">number =</span> <span class="fu">as.numeric</span>(number)),</span>
-<span id="cb115-56"><a href="app-historic-data.html#cb115-56" tabindex="-1"></a>  tabs_extra</span>
-<span id="cb115-57"><a href="app-historic-data.html#cb115-57" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb115-58"><a href="app-historic-data.html#cb115-58" tabindex="-1"></a>  <span class="co"># clean the names for the report</span></span>
-<span id="cb115-59"><a href="app-historic-data.html#cb115-59" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">set_names</span>(<span class="at">nm =</span> stringr<span class="sc">::</span><span class="fu">str_to_title</span>(<span class="fu">names</span>(tab1))) <span class="sc">|&gt;</span></span>
-<span id="cb115-60"><a href="app-historic-data.html#cb115-60" tabindex="-1"></a>  <span class="co"># add a theme</span></span>
-<span id="cb115-61"><a href="app-historic-data.html#cb115-61" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Theme =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
-<span id="cb115-62"><a href="app-historic-data.html#cb115-62" tabindex="-1"></a>  stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;spawning|Spawners&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Spawning&quot;</span>,</span>
-<span id="cb115-63"><a href="app-historic-data.html#cb115-63" tabindex="-1"></a>  stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;culvert|bridge|crossing&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Stream Crossing&quot;</span>,</span>
-<span id="cb115-64"><a href="app-historic-data.html#cb115-64" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;richfield&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Other&quot;</span>,</span>
-<span id="cb115-65"><a href="app-historic-data.html#cb115-65" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;floodplain&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Floodplain&quot;</span>,</span>
-<span id="cb115-66"><a href="app-historic-data.html#cb115-66" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;rail&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Railway&quot;</span>,</span>
-<span id="cb115-67"><a href="app-historic-data.html#cb115-67" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;field|cattle&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Agriculture&quot;</span>,</span>
-<span id="cb115-68"><a href="app-historic-data.html#cb115-68" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;beaver&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Beaver&quot;</span>,</span>
-<span id="cb115-69"><a href="app-historic-data.html#cb115-69" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;forest|clearcut|cutblock&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Forestry&quot;</span>,</span>
-<span id="cb115-70"><a href="app-historic-data.html#cb115-70" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;rip-rap&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Rip-rap&quot;</span>,</span>
-<span id="cb115-71"><a href="app-historic-data.html#cb115-71" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;Log jam&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Log jam&quot;</span>,</span>
-<span id="cb115-72"><a href="app-historic-data.html#cb115-72" tabindex="-1"></a></span>
-<span id="cb115-73"><a href="app-historic-data.html#cb115-73" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;Other&quot;</span> <span class="co"># Default to Other if no other conditions are met</span></span>
-<span id="cb115-74"><a href="app-historic-data.html#cb115-74" tabindex="-1"></a>  )) <span class="sc">|&gt;</span></span>
-<span id="cb115-75"><a href="app-historic-data.html#cb115-75" tabindex="-1"></a></span>
-<span id="cb115-76"><a href="app-historic-data.html#cb115-76" tabindex="-1"></a>  <span class="co">#there is an issue at row 182... so fix by appending UB-643 to 645 [UB- to the beginning of the photo series column</span></span>
-<span id="cb115-77"><a href="app-historic-data.html#cb115-77" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="st">`</span><span class="at">Photo Series</span><span class="st">`</span> <span class="ot">=</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
-<span id="cb115-78"><a href="app-historic-data.html#cb115-78" tabindex="-1"></a>    Number <span class="sc">==</span> <span class="dv">182</span> <span class="sc">~</span> <span class="fu">paste0</span>(<span class="st">&quot;UB-643 to 645 [UB-&quot;</span>, <span class="st">`</span><span class="at">Photo Series</span><span class="st">`</span>),</span>
-<span id="cb115-79"><a href="app-historic-data.html#cb115-79" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">`</span><span class="at">Photo Series</span><span class="st">`</span></span>
-<span id="cb115-80"><a href="app-historic-data.html#cb115-80" tabindex="-1"></a>  )) <span class="sc">|&gt;</span></span>
-<span id="cb115-81"><a href="app-historic-data.html#cb115-81" tabindex="-1"></a>  <span class="co"># remove rows without a Number</span></span>
-<span id="cb115-82"><a href="app-historic-data.html#cb115-82" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Number))</span>
-<span id="cb115-83"><a href="app-historic-data.html#cb115-83" tabindex="-1"></a></span>
-<span id="cb115-84"><a href="app-historic-data.html#cb115-84" tabindex="-1"></a><span class="co"># burn over our csv so we can put as table in report</span></span>
-<span id="cb115-85"><a href="app-historic-data.html#cb115-85" tabindex="-1"></a>tab <span class="sc">|&gt;</span></span>
-<span id="cb115-86"><a href="app-historic-data.html#cb115-86" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">write_csv</span>(path_file, <span class="at">na =</span> <span class="st">&#39;&#39;</span>)</span>
-<span id="cb115-87"><a href="app-historic-data.html#cb115-87" tabindex="-1"></a></span>
-<span id="cb115-88"><a href="app-historic-data.html#cb115-88" tabindex="-1"></a><span class="co"># create a spatial file and save to the shared project</span></span>
-<span id="cb115-89"><a href="app-historic-data.html#cb115-89" tabindex="-1"></a>tab <span class="sc">|&gt;</span></span>
-<span id="cb115-90"><a href="app-historic-data.html#cb115-90" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span></span>
-<span id="cb115-91"><a href="app-historic-data.html#cb115-91" tabindex="-1"></a>  <span class="co"># convert the time to character to preserve as gpkg won&#39;t accept</span></span>
-<span id="cb115-92"><a href="app-historic-data.html#cb115-92" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">time =</span> <span class="fu">as.character</span>(time)) <span class="sc">|&gt;</span></span>
-<span id="cb115-93"><a href="app-historic-data.html#cb115-93" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(easting)) <span class="sc">|&gt;</span></span>
-<span id="cb115-94"><a href="app-historic-data.html#cb115-94" tabindex="-1"></a>    sf<span class="sc">::</span><span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">&quot;easting&quot;</span>, <span class="st">&quot;northing&quot;</span>), <span class="at">crs =</span> <span class="dv">26909</span>) <span class="sc">|&gt;</span></span>
-<span id="cb115-95"><a href="app-historic-data.html#cb115-95" tabindex="-1"></a>    sf<span class="sc">::</span><span class="fu">st_transform</span>(<span class="dv">3005</span>) <span class="sc">|&gt;</span></span>
-<span id="cb115-96"><a href="app-historic-data.html#cb115-96" tabindex="-1"></a>  <span class="co"># put time after number and put notes as last column</span></span>
-<span id="cb115-97"><a href="app-historic-data.html#cb115-97" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(number, time, theme, <span class="fu">everything</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb115-98"><a href="app-historic-data.html#cb115-98" tabindex="-1"></a></span>
-<span id="cb115-99"><a href="app-historic-data.html#cb115-99" tabindex="-1"></a>    sf<span class="sc">::</span><span class="fu">st_write</span>(</span>
-<span id="cb115-100"><a href="app-historic-data.html#cb115-100" tabindex="-1"></a>      <span class="at">dsn =</span> <span class="st">&quot;~/Projects/gis/restoration_wedzin_kwa/sites_restoration.gpkg&quot;</span>,</span>
-<span id="cb115-101"><a href="app-historic-data.html#cb115-101" tabindex="-1"></a>      <span class="at">layer =</span> <span class="st">&#39;price_2014&#39;</span>,</span>
-<span id="cb115-102"><a href="app-historic-data.html#cb115-102" tabindex="-1"></a>      <span class="at">delete_layer =</span> <span class="cn">TRUE</span></span>
-<span id="cb115-103"><a href="app-historic-data.html#cb115-103" tabindex="-1"></a>    )</span></code></pre></div>
-<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="app-historic-data.html#cb116-1" tabindex="-1"></a><span class="co"># read in the price 2014 data</span></span>
-<span id="cb116-2"><a href="app-historic-data.html#cb116-2" tabindex="-1"></a>price_2014 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/inputs_extracted/price_2014_waypoints.csv&quot;</span>)</span>
-<span id="cb116-3"><a href="app-historic-data.html#cb116-3" tabindex="-1"></a></span>
-<span id="cb116-4"><a href="app-historic-data.html#cb116-4" tabindex="-1"></a><span class="co"># present as table</span></span>
-<span id="cb116-5"><a href="app-historic-data.html#cb116-5" tabindex="-1"></a>price_2014 <span class="sc">%&gt;%</span></span>
-<span id="cb116-6"><a href="app-historic-data.html#cb116-6" tabindex="-1"></a>  fpr<span class="sc">::</span><span class="fu">fpr_kable</span>(<span class="at">caption_text =</span> <span class="st">&quot;Summary of Price (2014) waypoints for the Upper Bulkley floodplain including locations of river channelization, potential barriers to fish migration, and assessed areas of upwelling groundwater having potential importance to salmonids.&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="app-historic-data.html#cb118-1" tabindex="-1"></a>path <span class="ot">&lt;-</span> <span class="st">&quot;/Users/airvine/zotero/storage/7JCL42Y3/price_2014_upper_bulkley_floodplain_habitat_-_modifications,_physical_barriers,_and_sites.pdf&quot;</span></span>
+<span id="cb118-2"><a href="app-historic-data.html#cb118-2" tabindex="-1"></a></span>
+<span id="cb118-3"><a href="app-historic-data.html#cb118-3" tabindex="-1"></a><span class="co"># name our csv we are creating</span></span>
+<span id="cb118-4"><a href="app-historic-data.html#cb118-4" tabindex="-1"></a>path_file <span class="ot">&lt;-</span> <span class="st">&quot;data/inputs_extracted/price_2014_waypoints.csv&quot;</span></span>
+<span id="cb118-5"><a href="app-historic-data.html#cb118-5" tabindex="-1"></a></span>
+<span id="cb118-6"><a href="app-historic-data.html#cb118-6" tabindex="-1"></a><span class="co"># define page to extract table</span></span>
+<span id="cb118-7"><a href="app-historic-data.html#cb118-7" tabindex="-1"></a>page <span class="ot">&lt;-</span> <span class="dv">32</span></span>
+<span id="cb118-8"><a href="app-historic-data.html#cb118-8" tabindex="-1"></a></span>
+<span id="cb118-9"><a href="app-historic-data.html#cb118-9" tabindex="-1"></a></span>
+<span id="cb118-10"><a href="app-historic-data.html#cb118-10" tabindex="-1"></a><span class="co"># #if you wanted to define the area to extract would run with this the first time</span></span>
+<span id="cb118-11"><a href="app-historic-data.html#cb118-11" tabindex="-1"></a><span class="co"># tabulapdf::locate_areas(path, pages = page)</span></span>
+<span id="cb118-12"><a href="app-historic-data.html#cb118-12" tabindex="-1"></a></span>
+<span id="cb118-13"><a href="app-historic-data.html#cb118-13" tabindex="-1"></a></span>
+<span id="cb118-14"><a href="app-historic-data.html#cb118-14" tabindex="-1"></a><span class="co"># to get....</span></span>
+<span id="cb118-15"><a href="app-historic-data.html#cb118-15" tabindex="-1"></a><span class="co"># tab_area = list(c(151.17224,  87.13111, 715.14139,604.27249 ))</span></span>
+<span id="cb118-16"><a href="app-historic-data.html#cb118-16" tabindex="-1"></a><span class="co"># but....looks like it will guess correct with no help so let&#39;s do that</span></span>
+<span id="cb118-17"><a href="app-historic-data.html#cb118-17" tabindex="-1"></a>tabulapdf<span class="sc">::</span><span class="fu">extract_tables</span>(path,</span>
+<span id="cb118-18"><a href="app-historic-data.html#cb118-18" tabindex="-1"></a>                                  <span class="at">pages =</span> page,</span>
+<span id="cb118-19"><a href="app-historic-data.html#cb118-19" tabindex="-1"></a>                                  <span class="co"># method = &quot;lattice&quot;,</span></span>
+<span id="cb118-20"><a href="app-historic-data.html#cb118-20" tabindex="-1"></a>                                  <span class="co"># output = c(&quot;tibble&quot;),</span></span>
+<span id="cb118-21"><a href="app-historic-data.html#cb118-21" tabindex="-1"></a>                                  <span class="co"># guess = FALSE,</span></span>
+<span id="cb118-22"><a href="app-historic-data.html#cb118-22" tabindex="-1"></a>                                  <span class="co"># area = tab_area</span></span>
+<span id="cb118-23"><a href="app-historic-data.html#cb118-23" tabindex="-1"></a>                                  ) <span class="sc">|&gt;</span></span>
+<span id="cb118-24"><a href="app-historic-data.html#cb118-24" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">pluck</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb118-25"><a href="app-historic-data.html#cb118-25" tabindex="-1"></a>  <span class="co"># need to make the first row be the names due to muti-line header</span></span>
+<span id="cb118-26"><a href="app-historic-data.html#cb118-26" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">row_to_names</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb118-27"><a href="app-historic-data.html#cb118-27" tabindex="-1"></a>  <span class="co"># now let&#39;s burn it to a csv so we can correct the types</span></span>
+<span id="cb118-28"><a href="app-historic-data.html#cb118-28" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">write_csv</span>(path_file)</span>
+<span id="cb118-29"><a href="app-historic-data.html#cb118-29" tabindex="-1"></a></span>
+<span id="cb118-30"><a href="app-historic-data.html#cb118-30" tabindex="-1"></a><span class="co"># read it back in to get the types right</span></span>
+<span id="cb118-31"><a href="app-historic-data.html#cb118-31" tabindex="-1"></a>tab1 <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(path_file)</span>
+<span id="cb118-32"><a href="app-historic-data.html#cb118-32" tabindex="-1"></a></span>
+<span id="cb118-33"><a href="app-historic-data.html#cb118-33" tabindex="-1"></a><span class="co"># now let&#39;s define the rest of the pages to extract from</span></span>
+<span id="cb118-34"><a href="app-historic-data.html#cb118-34" tabindex="-1"></a>page <span class="ot">&lt;-</span> <span class="dv">33</span><span class="sc">:</span><span class="dv">36</span></span>
+<span id="cb118-35"><a href="app-historic-data.html#cb118-35" tabindex="-1"></a></span>
+<span id="cb118-36"><a href="app-historic-data.html#cb118-36" tabindex="-1"></a></span>
+<span id="cb118-37"><a href="app-historic-data.html#cb118-37" tabindex="-1"></a><span class="co"># build a function to pull them all out at the same time</span></span>
+<span id="cb118-38"><a href="app-historic-data.html#cb118-38" tabindex="-1"></a>extract_tables_multi <span class="ot">&lt;-</span> <span class="cf">function</span>(page){</span>
+<span id="cb118-39"><a href="app-historic-data.html#cb118-39" tabindex="-1"></a>  tabulapdf<span class="sc">::</span><span class="fu">extract_tables</span>(path,</span>
+<span id="cb118-40"><a href="app-historic-data.html#cb118-40" tabindex="-1"></a>                                  <span class="at">pages =</span> page,</span>
+<span id="cb118-41"><a href="app-historic-data.html#cb118-41" tabindex="-1"></a>                                  ) <span class="sc">|&gt;</span></span>
+<span id="cb118-42"><a href="app-historic-data.html#cb118-42" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">pluck</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb118-43"><a href="app-historic-data.html#cb118-43" tabindex="-1"></a>    <span class="co"># use the names from the header table</span></span>
+<span id="cb118-44"><a href="app-historic-data.html#cb118-44" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">set_names</span>(<span class="at">nm =</span> <span class="fu">names</span>(tab1))</span>
+<span id="cb118-45"><a href="app-historic-data.html#cb118-45" tabindex="-1"></a>}</span>
+<span id="cb118-46"><a href="app-historic-data.html#cb118-46" tabindex="-1"></a></span>
+<span id="cb118-47"><a href="app-historic-data.html#cb118-47" tabindex="-1"></a><span class="co"># run our function</span></span>
+<span id="cb118-48"><a href="app-historic-data.html#cb118-48" tabindex="-1"></a>tabs_extra <span class="ot">&lt;-</span> page <span class="sc">|&gt;</span></span>
+<span id="cb118-49"><a href="app-historic-data.html#cb118-49" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">map_df</span>(</span>
+<span id="cb118-50"><a href="app-historic-data.html#cb118-50" tabindex="-1"></a>    extract_tables_multi</span>
+<span id="cb118-51"><a href="app-historic-data.html#cb118-51" tabindex="-1"></a>  )</span>
+<span id="cb118-52"><a href="app-historic-data.html#cb118-52" tabindex="-1"></a></span>
+<span id="cb118-53"><a href="app-historic-data.html#cb118-53" tabindex="-1"></a><span class="co"># join our og table to our multi-page output but fix a type</span></span>
+<span id="cb118-54"><a href="app-historic-data.html#cb118-54" tabindex="-1"></a>tab <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(</span>
+<span id="cb118-55"><a href="app-historic-data.html#cb118-55" tabindex="-1"></a>  tab1 <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">number =</span> <span class="fu">as.numeric</span>(number)),</span>
+<span id="cb118-56"><a href="app-historic-data.html#cb118-56" tabindex="-1"></a>  tabs_extra</span>
+<span id="cb118-57"><a href="app-historic-data.html#cb118-57" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb118-58"><a href="app-historic-data.html#cb118-58" tabindex="-1"></a>  <span class="co"># clean the names for the report</span></span>
+<span id="cb118-59"><a href="app-historic-data.html#cb118-59" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">set_names</span>(<span class="at">nm =</span> stringr<span class="sc">::</span><span class="fu">str_to_title</span>(<span class="fu">names</span>(tab1))) <span class="sc">|&gt;</span></span>
+<span id="cb118-60"><a href="app-historic-data.html#cb118-60" tabindex="-1"></a>  <span class="co"># add a theme</span></span>
+<span id="cb118-61"><a href="app-historic-data.html#cb118-61" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Theme =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb118-62"><a href="app-historic-data.html#cb118-62" tabindex="-1"></a>  stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;spawning|Spawners&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Spawning&quot;</span>,</span>
+<span id="cb118-63"><a href="app-historic-data.html#cb118-63" tabindex="-1"></a>  stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;culvert|bridge|crossing&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Stream Crossing&quot;</span>,</span>
+<span id="cb118-64"><a href="app-historic-data.html#cb118-64" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;richfield&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Other&quot;</span>,</span>
+<span id="cb118-65"><a href="app-historic-data.html#cb118-65" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;floodplain&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Floodplain&quot;</span>,</span>
+<span id="cb118-66"><a href="app-historic-data.html#cb118-66" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;rail&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Railway&quot;</span>,</span>
+<span id="cb118-67"><a href="app-historic-data.html#cb118-67" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;field|cattle&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Agriculture&quot;</span>,</span>
+<span id="cb118-68"><a href="app-historic-data.html#cb118-68" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;beaver&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Beaver&quot;</span>,</span>
+<span id="cb118-69"><a href="app-historic-data.html#cb118-69" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;forest|clearcut|cutblock&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Forestry&quot;</span>,</span>
+<span id="cb118-70"><a href="app-historic-data.html#cb118-70" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;rip-rap&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Rip-rap&quot;</span>,</span>
+<span id="cb118-71"><a href="app-historic-data.html#cb118-71" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_detect</span>(Notes, stringr<span class="sc">::</span><span class="fu">regex</span>(<span class="st">&quot;Log jam&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="st">&quot;Log jam&quot;</span>,</span>
+<span id="cb118-72"><a href="app-historic-data.html#cb118-72" tabindex="-1"></a></span>
+<span id="cb118-73"><a href="app-historic-data.html#cb118-73" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;Other&quot;</span> <span class="co"># Default to Other if no other conditions are met</span></span>
+<span id="cb118-74"><a href="app-historic-data.html#cb118-74" tabindex="-1"></a>  )) <span class="sc">|&gt;</span></span>
+<span id="cb118-75"><a href="app-historic-data.html#cb118-75" tabindex="-1"></a></span>
+<span id="cb118-76"><a href="app-historic-data.html#cb118-76" tabindex="-1"></a>  <span class="co">#there is an issue at row 182... so fix by appending UB-643 to 645 [UB- to the beginning of the photo series column</span></span>
+<span id="cb118-77"><a href="app-historic-data.html#cb118-77" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="st">`</span><span class="at">Photo Series</span><span class="st">`</span> <span class="ot">=</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb118-78"><a href="app-historic-data.html#cb118-78" tabindex="-1"></a>    Number <span class="sc">==</span> <span class="dv">182</span> <span class="sc">~</span> <span class="fu">paste0</span>(<span class="st">&quot;UB-643 to 645 [UB-&quot;</span>, <span class="st">`</span><span class="at">Photo Series</span><span class="st">`</span>),</span>
+<span id="cb118-79"><a href="app-historic-data.html#cb118-79" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">`</span><span class="at">Photo Series</span><span class="st">`</span></span>
+<span id="cb118-80"><a href="app-historic-data.html#cb118-80" tabindex="-1"></a>  )) <span class="sc">|&gt;</span></span>
+<span id="cb118-81"><a href="app-historic-data.html#cb118-81" tabindex="-1"></a>  <span class="co"># remove rows without a Number</span></span>
+<span id="cb118-82"><a href="app-historic-data.html#cb118-82" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Number))</span>
+<span id="cb118-83"><a href="app-historic-data.html#cb118-83" tabindex="-1"></a></span>
+<span id="cb118-84"><a href="app-historic-data.html#cb118-84" tabindex="-1"></a><span class="co"># burn over our csv so we can put as table in report</span></span>
+<span id="cb118-85"><a href="app-historic-data.html#cb118-85" tabindex="-1"></a>tab <span class="sc">|&gt;</span></span>
+<span id="cb118-86"><a href="app-historic-data.html#cb118-86" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">write_csv</span>(path_file, <span class="at">na =</span> <span class="st">&#39;&#39;</span>)</span>
+<span id="cb118-87"><a href="app-historic-data.html#cb118-87" tabindex="-1"></a></span>
+<span id="cb118-88"><a href="app-historic-data.html#cb118-88" tabindex="-1"></a><span class="co"># create a spatial file and save to the shared project</span></span>
+<span id="cb118-89"><a href="app-historic-data.html#cb118-89" tabindex="-1"></a>tab <span class="sc">|&gt;</span></span>
+<span id="cb118-90"><a href="app-historic-data.html#cb118-90" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span></span>
+<span id="cb118-91"><a href="app-historic-data.html#cb118-91" tabindex="-1"></a>  <span class="co"># convert the time to character to preserve as gpkg won&#39;t accept</span></span>
+<span id="cb118-92"><a href="app-historic-data.html#cb118-92" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">time =</span> <span class="fu">as.character</span>(time)) <span class="sc">|&gt;</span></span>
+<span id="cb118-93"><a href="app-historic-data.html#cb118-93" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(easting)) <span class="sc">|&gt;</span></span>
+<span id="cb118-94"><a href="app-historic-data.html#cb118-94" tabindex="-1"></a>    sf<span class="sc">::</span><span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">&quot;easting&quot;</span>, <span class="st">&quot;northing&quot;</span>), <span class="at">crs =</span> <span class="dv">26909</span>) <span class="sc">|&gt;</span></span>
+<span id="cb118-95"><a href="app-historic-data.html#cb118-95" tabindex="-1"></a>    sf<span class="sc">::</span><span class="fu">st_transform</span>(<span class="dv">3005</span>) <span class="sc">|&gt;</span></span>
+<span id="cb118-96"><a href="app-historic-data.html#cb118-96" tabindex="-1"></a>  <span class="co"># put time after number and put notes as last column</span></span>
+<span id="cb118-97"><a href="app-historic-data.html#cb118-97" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(number, time, theme, <span class="fu">everything</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb118-98"><a href="app-historic-data.html#cb118-98" tabindex="-1"></a></span>
+<span id="cb118-99"><a href="app-historic-data.html#cb118-99" tabindex="-1"></a>    sf<span class="sc">::</span><span class="fu">st_write</span>(</span>
+<span id="cb118-100"><a href="app-historic-data.html#cb118-100" tabindex="-1"></a>      <span class="at">dsn =</span> <span class="st">&quot;~/Projects/gis/restoration_wedzin_kwa/sites_restoration.gpkg&quot;</span>,</span>
+<span id="cb118-101"><a href="app-historic-data.html#cb118-101" tabindex="-1"></a>      <span class="at">layer =</span> <span class="st">&#39;price_2014&#39;</span>,</span>
+<span id="cb118-102"><a href="app-historic-data.html#cb118-102" tabindex="-1"></a>      <span class="at">delete_layer =</span> <span class="cn">TRUE</span></span>
+<span id="cb118-103"><a href="app-historic-data.html#cb118-103" tabindex="-1"></a>    )</span></code></pre></div>
+<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="app-historic-data.html#cb119-1" tabindex="-1"></a><span class="co"># read in the price 2014 data</span></span>
+<span id="cb119-2"><a href="app-historic-data.html#cb119-2" tabindex="-1"></a>price_2014 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/inputs_extracted/price_2014_waypoints.csv&quot;</span>)</span>
+<span id="cb119-3"><a href="app-historic-data.html#cb119-3" tabindex="-1"></a></span>
+<span id="cb119-4"><a href="app-historic-data.html#cb119-4" tabindex="-1"></a><span class="co"># present as table</span></span>
+<span id="cb119-5"><a href="app-historic-data.html#cb119-5" tabindex="-1"></a>price_2014 <span class="sc">%&gt;%</span></span>
+<span id="cb119-6"><a href="app-historic-data.html#cb119-6" tabindex="-1"></a>  fpr<span class="sc">::</span><span class="fu">fpr_kable</span>(<span class="at">caption_text =</span> <span class="st">&quot;Summary of Price (2014) waypoints for the Upper Bulkley floodplain including locations of river channelization, potential barriers to fish migration, and assessed areas of upwelling groundwater having potential importance to salmonids.&quot;</span>)</span></code></pre></div>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; overflow-x: scroll; width:100%; ">
 <table class="table table-condensed table-responsive" style="font-size: 11px; margin-left: auto; margin-right: auto;">
 <caption style="font-size: initial !important;">
@@ -4573,9 +4573,9 @@ Railway
 <p>Restoration prescriptions and riparian polygon data from <span class="citation">MacKay et al. (1998)</span> were extracted and spatialized through two complementary workflows:</p>
 <p><strong>Prescription Text Extraction:</strong> Complex regex patterns were used to parse unstructured PDF text, extracting 18 fields per prescription including location, UTM coordinates, impact descriptions, goals, and proposed works. Manual correction was required to fix coordinate errors in the original document. Results are available in <a href="https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/inputs_extracted/ncfdc_1998_prescriptions.csv">ncfdc_1998_prescriptions.csv</a> and as the <code>ncfdc_1998_prescriptions_raw</code> layer in <code>sites_restoration.gpkg</code>.</p>
 <p><strong>Riparian Prescription Spatialization:</strong> Appendix maps from the original report were georeferenced in QGIS to identify reach break locations. Prescriptions in the original report used chainage (distance upstream from reach breaks) rather than coordinates. Using <code>fwapgr</code> (a wrapper for <code>fwapg</code>), reach breaks were indexed to the BC Freshwater Atlas to obtain downstream route measures, which were then combined with prescription chainage values to geolocate each riparian polygon along the stream network. Results are stored as the <code>ncfdc_1998_riparian_raw</code> layer in <code>sites_restoration.gpkg</code>.</p>
-<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="app-historic-data.html#cb117-1" tabindex="-1"></a>ncfdc_1998_71a <span class="sc">%&gt;%</span></span>
-<span id="cb117-2"><a href="app-historic-data.html#cb117-2" tabindex="-1"></a>  fpr<span class="sc">::</span><span class="fu">fpr_kable</span>(<span class="at">caption_text =</span> <span class="st">&quot;Table 71a from the NCFDC (1998) report - summary of the prioritization of sub-basins in the Neexdzii Kwah region.&quot;</span>,</span>
-<span id="cb117-3"><a href="app-historic-data.html#cb117-3" tabindex="-1"></a>                 <span class="at">scroll =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="app-historic-data.html#cb120-1" tabindex="-1"></a>ncfdc_1998_71a <span class="sc">%&gt;%</span></span>
+<span id="cb120-2"><a href="app-historic-data.html#cb120-2" tabindex="-1"></a>  fpr<span class="sc">::</span><span class="fu">fpr_kable</span>(<span class="at">caption_text =</span> <span class="st">&quot;Table 71a from the NCFDC (1998) report - summary of the prioritization of sub-basins in the Neexdzii Kwah region.&quot;</span>,</span>
+<span id="cb120-3"><a href="app-historic-data.html#cb120-3" tabindex="-1"></a>                 <span class="at">scroll =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <table class="table table-condensed table-responsive" style="font-size: 11px; margin-left: auto; margin-right: auto;">
 <caption style="font-size: initial !important;">
 <span id="tab:tab-ncfdc-1998-priority">Table 5.11: </span>Table 71a from the NCFDC (1998) report - summary of the prioritization of sub-basins in the Neexdzii Kwah region.
@@ -4766,20 +4766,20 @@ Bulkley
 </tbody>
 </table>
 <p><br></p>
-<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="app-historic-data.html#cb118-1" tabindex="-1"></a><span class="co"># read in from the path using row 4 as teh header</span></span>
-<span id="cb118-2"><a href="app-historic-data.html#cb118-2" tabindex="-1"></a></span>
-<span id="cb118-3"><a href="app-historic-data.html#cb118-3" tabindex="-1"></a>path <span class="ot">&lt;-</span> <span class="st">&quot;~/Library/CloudStorage/OneDrive-Personal/Projects/2024-069-ow-wedzin-kwa-restoration/data/ncfdc_1998/Mid Bulkley Detailed FHAP_CAP_RAP/Appendix/AppH.xls&quot;</span></span>
-<span id="cb118-4"><a href="app-historic-data.html#cb118-4" tabindex="-1"></a></span>
-<span id="cb118-5"><a href="app-historic-data.html#cb118-5" tabindex="-1"></a></span>
-<span id="cb118-6"><a href="app-historic-data.html#cb118-6" tabindex="-1"></a></span>
-<span id="cb118-7"><a href="app-historic-data.html#cb118-7" tabindex="-1"></a>path_file <span class="ot">&lt;-</span> <span class="st">&quot;data/inputs_extracted/ncfdc_1998_73_app_h.csv&quot;</span></span>
-<span id="cb118-8"><a href="app-historic-data.html#cb118-8" tabindex="-1"></a></span>
-<span id="cb118-9"><a href="app-historic-data.html#cb118-9" tabindex="-1"></a><span class="co"># read in the data, clean and burn to csv</span></span>
-<span id="cb118-10"><a href="app-historic-data.html#cb118-10" tabindex="-1"></a>readxl<span class="sc">::</span><span class="fu">read_excel</span>(path, <span class="at">skip =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
-<span id="cb118-11"><a href="app-historic-data.html#cb118-11" tabindex="-1"></a>  <span class="co"># fill down for System and Sub-basin columns</span></span>
-<span id="cb118-12"><a href="app-historic-data.html#cb118-12" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">fill</span>(System, <span class="st">`</span><span class="at">Sub-Basin</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb118-13"><a href="app-historic-data.html#cb118-13" tabindex="-1"></a>  <span class="co"># save as csv to data/inputs_extracted/ncfdc_1998_73_app_h.csv</span></span>
-<span id="cb118-14"><a href="app-historic-data.html#cb118-14" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">write_csv</span>(path_file)</span></code></pre></div>
+<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb121-1"><a href="app-historic-data.html#cb121-1" tabindex="-1"></a><span class="co"># read in from the path using row 4 as teh header</span></span>
+<span id="cb121-2"><a href="app-historic-data.html#cb121-2" tabindex="-1"></a></span>
+<span id="cb121-3"><a href="app-historic-data.html#cb121-3" tabindex="-1"></a>path <span class="ot">&lt;-</span> <span class="st">&quot;~/Library/CloudStorage/OneDrive-Personal/Projects/2024-069-ow-wedzin-kwa-restoration/data/ncfdc_1998/Mid Bulkley Detailed FHAP_CAP_RAP/Appendix/AppH.xls&quot;</span></span>
+<span id="cb121-4"><a href="app-historic-data.html#cb121-4" tabindex="-1"></a></span>
+<span id="cb121-5"><a href="app-historic-data.html#cb121-5" tabindex="-1"></a></span>
+<span id="cb121-6"><a href="app-historic-data.html#cb121-6" tabindex="-1"></a></span>
+<span id="cb121-7"><a href="app-historic-data.html#cb121-7" tabindex="-1"></a>path_file <span class="ot">&lt;-</span> <span class="st">&quot;data/inputs_extracted/ncfdc_1998_73_app_h.csv&quot;</span></span>
+<span id="cb121-8"><a href="app-historic-data.html#cb121-8" tabindex="-1"></a></span>
+<span id="cb121-9"><a href="app-historic-data.html#cb121-9" tabindex="-1"></a><span class="co"># read in the data, clean and burn to csv</span></span>
+<span id="cb121-10"><a href="app-historic-data.html#cb121-10" tabindex="-1"></a>readxl<span class="sc">::</span><span class="fu">read_excel</span>(path, <span class="at">skip =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb121-11"><a href="app-historic-data.html#cb121-11" tabindex="-1"></a>  <span class="co"># fill down for System and Sub-basin columns</span></span>
+<span id="cb121-12"><a href="app-historic-data.html#cb121-12" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">fill</span>(System, <span class="st">`</span><span class="at">Sub-Basin</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb121-13"><a href="app-historic-data.html#cb121-13" tabindex="-1"></a>  <span class="co"># save as csv to data/inputs_extracted/ncfdc_1998_73_app_h.csv</span></span>
+<span id="cb121-14"><a href="app-historic-data.html#cb121-14" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">write_csv</span>(path_file)</span></code></pre></div>
 <p><br></p>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; overflow-x: scroll; width:100%; ">
 <table class="table table-condensed table-responsive" style="font-size: 11px; margin-left: auto; margin-right: auto;">
@@ -6268,33 +6268,33 @@ Low
 </table>
 </div>
 <p><br></p>
-<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="app-historic-data.html#cb119-1" tabindex="-1"></a>ncfdc_1998 <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(</span>
-<span id="cb119-2"><a href="app-historic-data.html#cb119-2" tabindex="-1"></a>  <span class="st">&quot;data/ncfdc_1998_prescriptions_hand_bomb.csv&quot;</span>,</span>
-<span id="cb119-3"><a href="app-historic-data.html#cb119-3" tabindex="-1"></a>  <span class="at">locale =</span> readr<span class="sc">::</span><span class="fu">locale</span>(<span class="at">encoding =</span> <span class="st">&quot;UTF-8&quot;</span>)</span>
-<span id="cb119-4"><a href="app-historic-data.html#cb119-4" tabindex="-1"></a>)</span>
-<span id="cb119-5"><a href="app-historic-data.html#cb119-5" tabindex="-1"></a></span>
-<span id="cb119-6"><a href="app-historic-data.html#cb119-6" tabindex="-1"></a>ncfdc_1998_cleaned <span class="ot">&lt;-</span> ncfdc_1998 <span class="sc">|&gt;</span></span>
-<span id="cb119-7"><a href="app-historic-data.html#cb119-7" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb119-8"><a href="app-historic-data.html#cb119-8" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">across</span>(</span>
-<span id="cb119-9"><a href="app-historic-data.html#cb119-9" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">everything</span>(),</span>
-<span id="cb119-10"><a href="app-historic-data.html#cb119-10" tabindex="-1"></a>      <span class="sc">~</span> <span class="fu">as.character</span>(.) <span class="sc">|&gt;</span></span>
-<span id="cb119-11"><a href="app-historic-data.html#cb119-11" tabindex="-1"></a>        stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(<span class="st">&quot;[^[:alnum:][:space:].,]&quot;</span>, <span class="st">&quot;&quot;</span>) <span class="sc">|&gt;</span> <span class="co"># Retain alphanumeric, spaces, periods, and parentheses</span></span>
-<span id="cb119-12"><a href="app-historic-data.html#cb119-12" tabindex="-1"></a>        stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">.&quot;</span>, <span class="st">&quot;</span><span class="sc">\\\\</span><span class="st">.&quot;</span>)    <span class="sc">|&gt;</span></span>
-<span id="cb119-13"><a href="app-historic-data.html#cb119-13" tabindex="-1"></a>        stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">,&quot;</span>, <span class="st">&quot;</span><span class="sc">\\\\</span><span class="st">,&quot;</span>)</span>
-<span id="cb119-14"><a href="app-historic-data.html#cb119-14" tabindex="-1"></a>    )</span>
-<span id="cb119-15"><a href="app-historic-data.html#cb119-15" tabindex="-1"></a>  )</span>
-<span id="cb119-16"><a href="app-historic-data.html#cb119-16" tabindex="-1"></a></span>
-<span id="cb119-17"><a href="app-historic-data.html#cb119-17" tabindex="-1"></a>ncfdc_1998_cleaned <span class="sc">%&gt;%</span></span>
-<span id="cb119-18"><a href="app-historic-data.html#cb119-18" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(sub_basin<span class="sc">:</span>technical_references) <span class="sc">%&gt;%</span></span>
-<span id="cb119-19"><a href="app-historic-data.html#cb119-19" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
-<span id="cb119-20"><a href="app-historic-data.html#cb119-20" tabindex="-1"></a>    <span class="at">booktabs =</span> T,</span>
-<span id="cb119-21"><a href="app-historic-data.html#cb119-21" tabindex="-1"></a>    <span class="at">label =</span> <span class="cn">NA</span>,</span>
-<span id="cb119-22"><a href="app-historic-data.html#cb119-22" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">&quot;Summary of  NCFDC (1998) prescriptions for the Neexdzii Kwah area.&quot;</span></span>
-<span id="cb119-23"><a href="app-historic-data.html#cb119-23" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb119-24"><a href="app-historic-data.html#cb119-24" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">kable_styling</span>(<span class="fu">c</span>(<span class="st">&quot;condensed&quot;</span>, <span class="st">&quot;responsive&quot;</span>),</span>
-<span id="cb119-25"><a href="app-historic-data.html#cb119-25" tabindex="-1"></a>                              <span class="at">full_width =</span> T,</span>
-<span id="cb119-26"><a href="app-historic-data.html#cb119-26" tabindex="-1"></a>                              <span class="at">font_size =</span> font_set) <span class="sc">|&gt;</span></span>
-<span id="cb119-27"><a href="app-historic-data.html#cb119-27" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">scroll_box</span>(<span class="at">width =</span> <span class="st">&quot;100%&quot;</span>, <span class="at">height =</span> <span class="st">&quot;500px&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="app-historic-data.html#cb122-1" tabindex="-1"></a>ncfdc_1998 <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(</span>
+<span id="cb122-2"><a href="app-historic-data.html#cb122-2" tabindex="-1"></a>  <span class="st">&quot;data/ncfdc_1998_prescriptions_hand_bomb.csv&quot;</span>,</span>
+<span id="cb122-3"><a href="app-historic-data.html#cb122-3" tabindex="-1"></a>  <span class="at">locale =</span> readr<span class="sc">::</span><span class="fu">locale</span>(<span class="at">encoding =</span> <span class="st">&quot;UTF-8&quot;</span>)</span>
+<span id="cb122-4"><a href="app-historic-data.html#cb122-4" tabindex="-1"></a>)</span>
+<span id="cb122-5"><a href="app-historic-data.html#cb122-5" tabindex="-1"></a></span>
+<span id="cb122-6"><a href="app-historic-data.html#cb122-6" tabindex="-1"></a>ncfdc_1998_cleaned <span class="ot">&lt;-</span> ncfdc_1998 <span class="sc">|&gt;</span></span>
+<span id="cb122-7"><a href="app-historic-data.html#cb122-7" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb122-8"><a href="app-historic-data.html#cb122-8" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">across</span>(</span>
+<span id="cb122-9"><a href="app-historic-data.html#cb122-9" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">everything</span>(),</span>
+<span id="cb122-10"><a href="app-historic-data.html#cb122-10" tabindex="-1"></a>      <span class="sc">~</span> <span class="fu">as.character</span>(.) <span class="sc">|&gt;</span></span>
+<span id="cb122-11"><a href="app-historic-data.html#cb122-11" tabindex="-1"></a>        stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(<span class="st">&quot;[^[:alnum:][:space:].,]&quot;</span>, <span class="st">&quot;&quot;</span>) <span class="sc">|&gt;</span> <span class="co"># Retain alphanumeric, spaces, periods, and parentheses</span></span>
+<span id="cb122-12"><a href="app-historic-data.html#cb122-12" tabindex="-1"></a>        stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">.&quot;</span>, <span class="st">&quot;</span><span class="sc">\\\\</span><span class="st">.&quot;</span>)    <span class="sc">|&gt;</span></span>
+<span id="cb122-13"><a href="app-historic-data.html#cb122-13" tabindex="-1"></a>        stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">,&quot;</span>, <span class="st">&quot;</span><span class="sc">\\\\</span><span class="st">,&quot;</span>)</span>
+<span id="cb122-14"><a href="app-historic-data.html#cb122-14" tabindex="-1"></a>    )</span>
+<span id="cb122-15"><a href="app-historic-data.html#cb122-15" tabindex="-1"></a>  )</span>
+<span id="cb122-16"><a href="app-historic-data.html#cb122-16" tabindex="-1"></a></span>
+<span id="cb122-17"><a href="app-historic-data.html#cb122-17" tabindex="-1"></a>ncfdc_1998_cleaned <span class="sc">%&gt;%</span></span>
+<span id="cb122-18"><a href="app-historic-data.html#cb122-18" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(sub_basin<span class="sc">:</span>technical_references) <span class="sc">%&gt;%</span></span>
+<span id="cb122-19"><a href="app-historic-data.html#cb122-19" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb122-20"><a href="app-historic-data.html#cb122-20" tabindex="-1"></a>    <span class="at">booktabs =</span> T,</span>
+<span id="cb122-21"><a href="app-historic-data.html#cb122-21" tabindex="-1"></a>    <span class="at">label =</span> <span class="cn">NA</span>,</span>
+<span id="cb122-22"><a href="app-historic-data.html#cb122-22" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">&quot;Summary of  NCFDC (1998) prescriptions for the Neexdzii Kwah area.&quot;</span></span>
+<span id="cb122-23"><a href="app-historic-data.html#cb122-23" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb122-24"><a href="app-historic-data.html#cb122-24" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">kable_styling</span>(<span class="fu">c</span>(<span class="st">&quot;condensed&quot;</span>, <span class="st">&quot;responsive&quot;</span>),</span>
+<span id="cb122-25"><a href="app-historic-data.html#cb122-25" tabindex="-1"></a>                              <span class="at">full_width =</span> T,</span>
+<span id="cb122-26"><a href="app-historic-data.html#cb122-26" tabindex="-1"></a>                              <span class="at">font_size =</span> font_set) <span class="sc">|&gt;</span></span>
+<span id="cb122-27"><a href="app-historic-data.html#cb122-27" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">scroll_box</span>(<span class="at">width =</span> <span class="st">&quot;100%&quot;</span>, <span class="at">height =</span> <span class="st">&quot;500px&quot;</span>)</span></code></pre></div>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; overflow-x: scroll; width:100%; ">
 <table class="table table-condensed table-responsive" style="font-size: 11px; margin-left: auto; margin-right: auto;">
 <caption style="font-size: initial !important;">

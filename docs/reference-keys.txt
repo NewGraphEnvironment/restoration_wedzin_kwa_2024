@@ -9,6 +9,7 @@ fig:SEM-stages
 fig:SEM-hab-benifits
 fig:all-benefits
 fig:fig-map-study-area
+tab:tab-subbasin-desc-cap
 tab:tab-area-priority-cap
 tab:tab-workshop-rankings
 tab:tab-ree1-caption
