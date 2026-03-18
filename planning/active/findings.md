@@ -130,7 +130,16 @@ The bankfull equation is from Hall et al. (2007): **h_bf = 0.054 × A^0.170 × P
 
 Where A = upstream drainage area, P = mean annual precipitation (cm/yr).
 
-**CRITICAL: We need to verify this equation against Hall 2007 directly.** The Nagel 2014 fulltext confirms the equation but we don't have Hall 2007's PDF to verify the original coefficients. The abstract in Zotero for Hall 2007 was **manually written by us** (it mentions "flooded R package") — it is not the real abstract.
+**VERIFIED from Hall et al. 2007 (JAWRA, purchased PDF):**
+- Bankfull width: `W_b = 0.196 × A^0.280 × P^0.355` (R² = 0.47, p < 0.001, n = 1,951 field measurements, Columbia River basin)
+- Bankfull depth: `H_b = 0.145 × W_b^0.607` (from upper Salmon River basin, Knighton 1998)
+- Combined (as Nagel cites): `h_bf = 0.054 × A^0.170 × P^0.215` — confirmed by substitution
+- A = drainage area (km²), P = mean annual precipitation (cm/yr)
+- **Three times bankfull depth** gave best agreement with historical floodplain width (213 field validation sites)
+- R² = 0.47 is moderate — width equation has considerable scatter. Not calibrated for BC interior.
+- Depth equation is from upper Salmon River only — one basin in Idaho, not regional.
+
+**Implication for flooded:** The bankfull regression is a PNW equation applied to BC. This is standard practice (no BC-specific regional equations exist for this) but should be stated clearly in methods. The moderate R² means our floodplain extents have inherent uncertainty from the bankfull prediction alone, before flood_factor amplifies it.
 
 #### `min_order` (we use 3) and `anchor_order` (we use 1)
 
@@ -146,19 +155,22 @@ Where A = upstream drainage area, P = mean annual precipitation (cm/yr).
 | flood_factor defaults (5-7) | Nagel 2014, referencing Rosgen, Hall, Clarke | **High** — multiple sources cited with specific values |
 | flood_factor = 1-12 as ecological zones | **OUR FRAMEWORK** | **Interpretive** — no paper maps ff values to ecological processes |
 | max_width = 2000m | **OUR CHOICE** | Nagel uses 500-1000m. We doubled for Bulkley mainstem |
-| size_threshold = 5000 | **NEEDS VERIFICATION** | Units unclear (cells vs m²). Nagel uses 10,000 m² = 1 ha |
-| hole_threshold = 2500 | **FLOODED-SPECIFIC** | Not from Nagel 2014. Document origin |
+| size_threshold = 5000 | 5,000 m² (0.5 ha) — flooded default | Nagel uses 10,000 m² (1 ha). Ours is half — reasonable for higher-res |
+| hole_threshold = 2500 | 2,500 m² (0.25 ha) — flooded-specific | Not from Nagel 2014. Fills small holes in floodplain polygon |
 | min_order = 3 | **PROJECT DECISION** | Coho habitat scope |
 | anchor_order = 1 | **PROJECT DECISION** | Not yet functional in flooded |
 
-### Action Items from Verification
+### Verification Status (all checked 2026-03-17)
 
-- [ ] Check flooded source: does `slope_threshold` expect % or degrees? If degrees, our 9 ≈ 15.6% ≠ Nagel's 9%
-- [ ] Check flooded source: does `size_threshold` mean cells or area (m²)?
-- [ ] Check flooded source: what is `hole_threshold` and where did it come from?
-- [ ] Get Hall 2007 PDF and verify bankfull equation coefficients
-- [ ] Fix Hall 2007 abstract in Zotero — current one is manually written and mentions "flooded R package"
-- [ ] Fix Gilbert 2016 abstract in Zotero — same issue
+- [x] `slope_threshold` is percent slope — confirmed from flooded source (roxygen line 13 + computation lines 136-137)
+- [x] `size_threshold` is area in m² — confirmed (line 182: `fl_patch_rm(min_area=)`, line 173: `count * cell_area`)
+- [x] `hole_threshold` is area in m² — confirmed (line 173: `count * cell_area < hole_threshold`). Flooded-specific, not Nagel
+- [x] Hall 2007 bankfull equation verified from purchased PDF — coefficients match Nagel's citation
+- [x] Hall 2007 Zotero abstract fixed — replaced with real CrossRef abstract
+- [x] Gilbert 2016 Zotero abstract fixed — cleared fabricated abstract (no real one on CrossRef)
+- [x] Dakin Kuiper 2022 Zotero abstract fixed — cleared fabricated abstract
+- [x] Rosenfeld 2008 Zotero abstract fixed — replaced with real CrossRef abstract (numbers were correct)
+- [x] Knox 2022 Zotero abstract fixed by user — had wrong paper's abstract
 
 ---
 
@@ -198,3 +210,9 @@ Habitat restoration in the Neexdzii Kwah is necessary but not sufficient for sal
 | 2026-03-17 | VCA params (slope_threshold, cost_threshold, etc.) are Nagel 2014 PNW defaults — not calibrated for BC interior | Literature review | State clearly in methods; flooded#28 tracks upstream documentation |
 | 2026-03-17 | Bair et al. 2021 — height-above-river (detrended DEM) drives vegetation zonation. Conceptually validates using flood_factor as ecological zone proxy | Zotero semantic search | Strongest direct support for our depth-multiplier → zone mapping |
 | 2026-03-17 | 27 BBT citation keys resolved for all 6 scenarios + VCA methodology | Zotero lookup | flood_scenarios.csv updated with citations column |
+| 2026-03-17 | Hall 2007 bankfull width R²=0.47 (n=1951) — moderate fit, considerable scatter | Hall 2007 PDF | Bankfull prediction has inherent uncertainty; state in methods |
+| 2026-03-17 | Hall bankfull depth eq from upper Salmon R. only (one basin in Idaho) | Hall 2007 PDF | Not a regional depth equation — transferred from a single basin |
+| 2026-03-17 | flooded `size_threshold` is m² not cells; 5000 m² = 0.5 ha (half of Nagel's 1 ha) | flooded source | Correct as-is; document in flooded#28 |
+| 2026-03-17 | flooded `hole_threshold` is m² and is flooded-specific (not from Nagel) | flooded source | Document origin in flooded#28 |
+| 2026-03-17 | 5 fabricated Zotero abstracts found and fixed (Hall, Gilbert, Dakin Kuiper, Rosenfeld, Knox) | Zotero audit | LLM-generated abstracts in shared library — cred#22 ragnar integration will prevent this |
+| 2026-03-17 | ragnar + Ollama store built (14 PDFs, 2464 chunks) — first successful use for parameter verification | ragnar POC | Document workflow in soul skill, integrate into cred |

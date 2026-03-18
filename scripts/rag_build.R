@@ -40,6 +40,7 @@ pdf_keys <- c(
   beechie_etal2010    = "RP6YYK4Q",
   cluer_thorne2014    = "5NXAZYJ2",
   fogel_etal2022      = "CDSVRG7N",
+  hall_etal2007        = "W6LD4RRG",
   hauer_etal2016      = "S9FD5HRU",
   katz_etal2017       = "6K38RIEW",
   nagel_etal2014      = "TFBBPKGI",
