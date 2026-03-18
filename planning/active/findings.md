@@ -216,3 +216,4 @@ Habitat restoration in the Neexdzii Kwah is necessary but not sufficient for sal
 | 2026-03-17 | flooded `hole_threshold` is m² and is flooded-specific (not from Nagel) | flooded source | Document origin in flooded#28 |
 | 2026-03-17 | 5 fabricated Zotero abstracts found and fixed (Hall, Gilbert, Dakin Kuiper, Rosenfeld, Knox) | Zotero audit | LLM-generated abstracts in shared library — cred#22 ragnar integration will prevent this |
 | 2026-03-17 | ragnar + Ollama store built (14 PDFs, 2464 chunks) — first successful use for parameter verification | ragnar POC | Document workflow in soul skill, integrate into cred |
+| 2026-03-17 | ff=6 maps valley bottom (Nagel target), NOT functional floodplain. Hall ff=3 = historical floodplain on 10m. ff=4-5 on 25m DEM is defensible for functional floodplain | Literature verification | **Critical finding** — report overstates floodplain extent. Filed #138. Re-run at ff=4.5 |
