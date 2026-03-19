@@ -51,7 +51,7 @@ message("Loading sub-basins and floodplain...")
 subbasins <- sf::st_read(file.path(lulc_dir, "subbasins.gpkg"), quiet = TRUE) |>
   sf::st_transform(3005)
 
-fp_file <- file.path(lulc_dir, "floodplain_neexdzii_co_ff06.gpkg")
+fp_file <- file.path(lulc_dir, "floodplain_neexdzii_co_ff04.gpkg")
 floodplain <- sf::st_read(fp_file, quiet = TRUE) |>
   sf::st_transform(sf::st_crs(subbasins))
 

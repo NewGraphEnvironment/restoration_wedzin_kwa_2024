@@ -9,7 +9,7 @@
 #
 # Reads active scenario from data/lulc/flood_scenarios.csv to select the
 # floodplain AOI. Naming convention: floodplain_neexdzii_{scenario_id}.gpkg
-# Currently only co_ff06 exists (flood_factor = 6, the baseline).
+# Default scenario: co_ff04 (flood_factor = 4.5, functional floodplain).
 #
 # Consumes subbasins.gpkg (from break app) and floodplain polygon (from flooded).
 # Runs drift pipeline: fetch, classify, summarize, transition.
@@ -41,7 +41,7 @@ years <- c(2017, 2020, 2023)
 scenarios <- readr::read_csv(file.path(out_dir, "flood_scenarios.csv"), show_col_types = FALSE)
 scenario_id <- commandArgs(trailingOnly = TRUE)[1]
 if (is.na(scenario_id) || !scenario_id %in% scenarios$scenario_id) {
-  scenario_id <- "co_ff06"
+  scenario_id <- "co_ff04"
 }
 scenario <- scenarios |> dplyr::filter(scenario_id == !!scenario_id)
 message("=== Scenario: ", scenario_id, " (ff=", scenario$flood_factor, ") ===")

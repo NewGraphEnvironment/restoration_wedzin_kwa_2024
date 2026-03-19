@@ -62,7 +62,7 @@ if (!file.exists(zones_path)) {
   message("floodplain_scenarios.gpkg not found — falling back to ff06 only")
   zone_polys <- list(
     zone_ff06 = sf::st_read(
-      file.path(out_dir, "floodplain_neexdzii_co_ff06.gpkg"), quiet = TRUE
+      file.path(out_dir, "floodplain_neexdzii_co_ff04.gpkg"), quiet = TRUE
     ) |> sf::st_transform(4326)
   )
   # Filter scenarios to just what we have

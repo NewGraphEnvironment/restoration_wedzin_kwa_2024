@@ -80,7 +80,7 @@ top3 <- head(lulc_tree_delta, 3)
 
 # Gross pixel-level transitions from whole-floodplain rasters
 # Use scenario-specific raster dir, fall back to legacy
-fp_dir <- here::here("data", "lulc", "rasters", "co_ff06")
+fp_dir <- here::here("data", "lulc", "rasters", "co_ff04")
 if (!dir.exists(fp_dir)) fp_dir <- here::here("data", "lulc", "rasters", "floodplain")
 
 # Trees -> ag: from the saved transition raster (already filtered to from_class=Trees)
