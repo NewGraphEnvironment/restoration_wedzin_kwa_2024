@@ -255,7 +255,7 @@ stage-0
 methods
 field-assessments
 site-reviews
-benthic-invertebrate-sampling
+aquatic-health-monitoring
 remote-sensing-imagery
 historic-airphotos
 uav-imagery
@@ -275,6 +275,7 @@ gis-environment
 open-source-reporting-framework
 results
 field-assessments-1
+aquatic-health-monitoring-1
 remote-sensing-imagery-1
 aerial-imagery
 historic-aerial-photographs
