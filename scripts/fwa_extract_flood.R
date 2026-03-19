@@ -15,7 +15,7 @@
 #   - flood_factor: VCA flood depth multiplier
 #
 # Usage:
-#   Rscript scripts/fwa_extract_flood.R           # runs co_ff06
+#   Rscript scripts/fwa_extract_flood.R           # runs co_ff045
 #   Rscript scripts/fwa_extract_flood.R co_ff04   # runs specific scenario
 #   Rscript scripts/fwa_extract_flood.R all        # runs all scenarios
 #
@@ -74,7 +74,7 @@ arg <- commandArgs(trailingOnly = TRUE)[1]
 if (!is.na(arg) && arg == "all") {
   run_scenarios <- scenarios
 } else {
-  sid <- if (is.na(arg) || !arg %in% scenarios$scenario_id) "co_ff06" else arg
+  sid <- if (is.na(arg) || !arg %in% scenarios$scenario_id) "co_ff045" else arg
   run_scenarios <- scenarios[scenarios$scenario_id == sid, ]
 }
 
