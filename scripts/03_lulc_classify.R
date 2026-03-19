@@ -8,7 +8,7 @@
 #   2. Per-sub-basin: summarize for tables/plots
 #
 # Reads active scenario from data/lulc/flood_scenarios.csv to select the
-# floodplain AOI. Naming convention: floodplain_neexdzii_{scenario_id}.gpkg
+# floodplain AOI. Naming convention: floodplain_{scenario_id}.gpkg
 # Default scenario: co_ff04 (flood_factor = 4.5, functional floodplain).
 #
 # Consumes subbasins.gpkg (from break app) and floodplain polygon (from flooded).
@@ -52,7 +52,7 @@ subbasins <- sf::st_read(
   file.path(out_dir, "subbasins.gpkg"), quiet = TRUE
 ) |> sf::st_transform(4326)
 
-fp_file <- file.path(out_dir, paste0("floodplain_neexdzii_", scenario_id, ".gpkg"))
+fp_file <- file.path(out_dir, paste0("floodplain_", scenario_id, ".gpkg"))
 floodplain <- sf::st_read(fp_file, quiet = TRUE) |> sf::st_transform(4326)
 
 # Use name_basin from break_points.csv (carried through via fresh::frs_watershed_split)
