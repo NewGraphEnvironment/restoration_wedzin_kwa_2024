@@ -67,6 +67,10 @@ if (!file.exists(wb_path)) stop("Run 01_network_extract.R first: ", wb_path)
 
 message("Loading streams from ", basename(streams_path))
 streams <- sf::st_read(streams_path, quiet = TRUE) |> sf::st_zm(drop = TRUE)
+# Ensure numeric columns (gpkg can store as character)
+for (col in c("upstream_area_ha", "map_upstream", "channel_width", "stream_order")) {
+  if (col %in% names(streams)) streams[[col]] <- as.numeric(streams[[col]])
+}
 message("  ", nrow(streams), " segments, orders: ",
         paste(sort(unique(streams$stream_order)), collapse = ", "))
 

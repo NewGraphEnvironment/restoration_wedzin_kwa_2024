@@ -1,4 +1,15 @@
 
+# restoration_wedzin_kwa_2024 DRAFT 0.2.6 (2026-03-19)
+
+- recalibrate floodplain model: flood_factor reduced from 6 to 4, mapping functional floodplain rather than valley bottom extent ([#138](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/138))
+- filter waterbodies to coho-accessible network — removes headwater wetlands/lakes that diluted LULC change percentages
+- build stream network with `fresh` classification pipeline instead of bcfishpass views, reading project-local habitat threshold parameters
+- rename pipeline scripts with numbered prefixes (01–05) for execution order
+- CSV-driven flood scenarios with full VCA parameter specification and literature citations
+- add aquatic health monitoring results summarizing benthic invertebrate gradient from dedicated report
+- update executive summary with revised floodplain tree loss estimate (~760 ha, down from ~1000 ha)
+- verify all VCA parameters against source literature via ragnar semantic search ([flooded#28](https://github.com/NewGraphEnvironment/flooded/issues/28), [flooded#29](https://github.com/NewGraphEnvironment/flooded/issues/29))
+
 # restoration_wedzin_kwa_2024 DRAFT 0.2.5 (2026-03-17)
 
 - integrate `frs_watershed_split()` into reproducible pipeline from `break_points.csv` through to report tables ([#135](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/135))
