@@ -43,7 +43,7 @@ out_dir <- here::here("data", "lulc")
 buf <- 2000
 
 # --- DB connection (needed for sub-basin generation only) ---
-conn <- frs_db_conn()
+conn <- fresh::frs_db_conn()
 
 # --- Step 1: Generate sub-basins from break_points.csv ---
 message("=== Generating sub-basins ===")
@@ -51,7 +51,7 @@ bp <- readr::read_csv(
   file.path(out_dir, "break_points.csv"),
   show_col_types = FALSE
 )
-subbasins <- frs_watershed_split(conn, bp)
+subbasins <- fresh::frs_watershed_split(conn, bp)
 sb_path <- file.path(out_dir, "subbasins.gpkg")
 sf::st_write(subbasins, sb_path, layer = "subbasins", delete_dsn = TRUE, quiet = TRUE)
 message("  ", nrow(subbasins), " sub-basins -> ", basename(sb_path))
@@ -78,13 +78,30 @@ message("Loading waterbodies from ", basename(wb_path))
 waterbodies <- sf::st_read(wb_path, quiet = TRUE) |> sf::st_zm(drop = TRUE)
 message("  ", nrow(waterbodies), " features")
 
+qgis_dir <- "/Users/airvine/Projects/gis/restoration_wedzin_kwa/"
+path_dem <- file.path(qgis_dir, "dem_neexdzii.tif")
+path_slope <- file.path(qgis_dir, "slope_neexdzii.tif")
+
 # --- DEM/slope ---
-dem_path <- "/Users/airvine/Projects/repo/bcfishpass/model/habitat_lateral/data/temp/BULK/dem.tif"
-slope_path <- "/Users/airvine/Projects/repo/bcfishpass/model/habitat_lateral/data/temp/BULK/slope.tif"
+# one time clip and transfer of the dem products to shared gis project. DEM is from bcdata_py processed by bcfishpass
+# https://github.com/smnorris/bcfishpass/tree/main/model/03_habitat_lateral
+# set to run manually
+if(FALSE){
+  path_dem_og <- "/Users/airvine/Projects/repo/bcfishpass/model/habitat_lateral/data/temp/BULK/dem.tif"
+  path_slope_og <- "/Users/airvine/Projects/repo/bcfishpass/model/habitat_lateral/data/temp/BULK/slope.tif"
+  path_aoi <- "/Users/airvine/Projects/repo/restoration_wedzin_kwa_2024/data/gis/aoi.geojson"
+
+  aoi <- sf::st_read(path_aoi, quiet = TRUE) |> sf::st_transform(3005)
+  dem <- terra::rast(path_dem_og)
+  slope <- terra::rast(path_slope_og)
+
+  terra::writeRaster(terra::crop(dem, terra::vect(aoi), mask = TRUE), path_dem, overwrite = TRUE)
+  terra::writeRaster(terra::crop(slope, terra::vect(aoi), mask = TRUE), path_slope, overwrite = TRUE)
+}
 
 message("Loading DEM and slope...")
-dem_full <- terra::rast(dem_path)
-slope_full <- terra::rast(slope_path)
+dem_full <- terra::rast(path_dem)
+slope_full <- terra::rast(path_slope)
 
 # --- Crop DEM/slope to stream extent (shared across scenarios) ---
 stream_ext <- terra::ext(terra::vect(streams)) + buf

@@ -38,5 +38,7 @@ fig/map_fish-obs-above-falls_files/
 fig/map_study-area-interactive.html
 fig/map_study-area-interactive_files/
 
-# Bookdown knitr cache (regeneratable)
+# Bookdown intermediates (regeneratable)
 Restoration_Neexdzii_Kwah_2024_cache/
+Restoration_Neexdzii_Kwah_2024_files/
+Restoration_Neexdzii_Kwah_2024.Rmd

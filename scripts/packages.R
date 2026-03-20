@@ -6,10 +6,8 @@ pkgs_cran <- c(
   'bookdown',
   'rmarkdown',
   'pagedown',
-  # 'readwritesqlite',
   'RPostgres',
   'sf',
-  'tidyhydat',
   'fasstr',
   'tidyhydat',
   'ggdark',
@@ -19,14 +17,18 @@ pkgs_cran <- c(
   'kableExtra',
   "rstac",
   "leaflet",
-  "leafem",
-  "leaflet.extras",
-  "fledge"
+  "leafem"
 )
 
 pkgs_gh <- c(
+  "trafficonese/leaflet.extras",
+  "newgraphenvironment/fly",
+  "newgraphenvironment/fresh",
+  "newgraphenvironment/flooded",
   "newgraphenvironment/fpr",
-  "poissonconsulting/readwritesqlite"
+  "newgraphenvironment/fishbc@updated_data",
+  "poissonconsulting/readwritesqlite",
+  "paleolimbot/rbbt"
 )
 
 pkgs_all <- c(pkgs_cran,
@@ -42,7 +44,7 @@ if(params$update_packages){
 
 # load all the packages
 pkgs_ld <- c(pkgs_cran,
-             basename(pkgs_gh))
+             sub("@.*", "", basename(pkgs_gh)))
 
 lapply(pkgs_ld,
        require,
