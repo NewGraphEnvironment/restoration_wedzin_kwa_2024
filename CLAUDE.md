@@ -189,16 +189,33 @@ Project-specific values for global slash commands (in `~/.claude/commands/`).
 
 ## Key Scripts
 
+### Floodplain Land Cover Change Pipeline
+
+See `scripts/floodplain_lcc/README.md` for full documentation.
+
+| Script | Tool | Purpose |
+|--------|------|---------|
+| `scripts/floodplain_lcc/01_network_extract.R` | fresh | Coho-accessible stream network → `aquatic_network.gpkg` |
+| `scripts/floodplain_lcc/02_floodplain_model.R` | flooded | VCA scenarios → `floodplain.gpkg` (multi-layer) |
+| `scripts/floodplain_lcc/03_lulc_classify.R` | drift | Land cover classification → `floodplain_landcover.gpkg` + `lulc_summary.rds` |
+| `scripts/floodplain_lcc/04_lulc_zones.R` | drift | Zone-stratified LULC (future) |
+| `scripts/floodplain_lcc/05_prioritization_score.R` | — | Sub-basin scoring |
+
+CSV controls in `data/lulc/`: `flood_scenarios.csv` (`run=TRUE` rows executed), `parameters_fresh.csv`, `parameters_habitat_thresholds.csv`, `break_points.csv`. External paths from `index.Rmd` YAML `params$path_gis`.
+
+### Other Scripts
+
 | Script | Purpose |
 |--------|---------|
 | `scripts/run.R` | Master build script |
 | `scripts/packages.R` | Package dependencies |
 | `scripts/functions.R` | Custom utility functions |
+| `scripts/preview.R` | Chapter preview helper |
+| `scripts/rag_build.R` | Build ragnar DuckDB store from Zotero PDFs |
 | `scripts/api_skt.R` | Skeena Knowledge Trust API access |
 | `scripts/gis/amalgamate_field_forms.R` | Combine field survey forms |
 | `scripts/gis/prioritize.R` | Site prioritization algorithm |
 | `scripts/gis/uav_process.Rmd` | UAV imagery → STAC pipeline |
-| `scripts/lulc_picker/` | Shiny app for interactive sub-basin watershed selection |
 | `scripts/map_study-area-interactive.R` | Interactive mapgl study area map with Esri/OpenTopoMap basemaps |
 | `scripts/fwa_query.R` | FWA upstream fish observation queries (Bulkley Falls, Buck Falls) |
 
