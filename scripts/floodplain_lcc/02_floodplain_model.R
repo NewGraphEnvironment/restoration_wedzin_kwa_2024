@@ -59,14 +59,11 @@ message("  ", nrow(subbasins), " sub-basins -> ", basename(sb_path))
 DBI::dbDisconnect(conn)
 
 # --- Step 2: Load streams and waterbodies from 01_network_extract.R ---
-streams_path <- file.path(out_dir, "fresh_streams_co3.gpkg")
-wb_path <- file.path(out_dir, "fresh_waterbodies_co3.gpkg")
+network_gpkg <- file.path(out_dir, "aquatic_network.gpkg")
+if (!file.exists(network_gpkg)) stop("Run 01_network_extract.R first: ", network_gpkg)
 
-if (!file.exists(streams_path)) stop("Run 01_network_extract.R first: ", streams_path)
-if (!file.exists(wb_path)) stop("Run 01_network_extract.R first: ", wb_path)
-
-message("Loading streams from ", basename(streams_path))
-streams <- sf::st_read(streams_path, quiet = TRUE) |> sf::st_zm(drop = TRUE)
+message("Loading streams from ", basename(network_gpkg), " (layer: streams_co3)")
+streams <- sf::st_read(network_gpkg, layer = "streams_co3", quiet = TRUE) |> sf::st_zm(drop = TRUE)
 # Ensure numeric columns (gpkg can store as character)
 for (col in c("upstream_area_ha", "map_upstream", "channel_width", "stream_order")) {
   if (col %in% names(streams)) streams[[col]] <- as.numeric(streams[[col]])
@@ -74,8 +71,8 @@ for (col in c("upstream_area_ha", "map_upstream", "channel_width", "stream_order
 message("  ", nrow(streams), " segments, orders: ",
         paste(sort(unique(streams$stream_order)), collapse = ", "))
 
-message("Loading waterbodies from ", basename(wb_path))
-waterbodies <- sf::st_read(wb_path, quiet = TRUE) |> sf::st_zm(drop = TRUE)
+message("Loading waterbodies from ", basename(network_gpkg), " (layer: waterbodies_co3)")
+waterbodies <- sf::st_read(network_gpkg, layer = "waterbodies_co3", quiet = TRUE) |> sf::st_zm(drop = TRUE)
 message("  ", nrow(waterbodies), " features")
 
 # External paths from index.Rmd YAML params

@@ -258,23 +258,19 @@ summary_df <- data.frame(Metric = metrics, km_or_count = values)
 message("\n=== Summary ===")
 print(summary_df, row.names = FALSE)
 
-# --- Step 8: Save ---
-out_classified <- file.path(out_dir, "fresh_streams_classified.gpkg")
-out_streams <- file.path(out_dir, "fresh_streams_co3.gpkg")
-out_wb <- file.path(out_dir, "fresh_waterbodies_co3.gpkg")
+# --- Step 8: Save as multi-layer aquatic_network.gpkg ---
+out_gpkg <- file.path(out_dir, "aquatic_network.gpkg")
+if (file.exists(out_gpkg)) file.remove(out_gpkg)
 
-sf::st_write(streams_all, out_classified, delete_dsn = TRUE, quiet = TRUE)
-sf::st_write(streams, out_streams, delete_dsn = TRUE, quiet = TRUE)
-sf::st_write(waterbodies, out_wb, delete_dsn = TRUE, quiet = TRUE)
-message("Saved: ", basename(out_classified), ", ", basename(out_streams), ", ", basename(out_wb))
+sf::st_write(streams_all, out_gpkg, layer = "streams_classified", quiet = TRUE)
+sf::st_write(streams, out_gpkg, layer = "streams_co3", append = TRUE, quiet = TRUE)
+sf::st_write(waterbodies, out_gpkg, layer = "waterbodies_co3", append = TRUE, quiet = TRUE)
+message("Saved: ", basename(out_gpkg), " (3 layers)")
 
 # --- Copy to QGIS project for field/team use ---
-# path_gis from index.Rmd YAML params
 params <- rmarkdown::yaml_front_matter(here::here("index.Rmd"))$params
 if (dir.exists(params$path_gis)) {
-  file.copy(out_classified, file.path(params$path_gis, "fresh_streams_classified.gpkg"),
-            overwrite = TRUE)
-  file.copy(out_wb, file.path(params$path_gis, "fresh_waterbodies_co3.gpkg"),
+  file.copy(out_gpkg, file.path(params$path_gis, "aquatic_network.gpkg"),
             overwrite = TRUE)
   message("Copied to QGIS project: ", params$path_gis)
 }
