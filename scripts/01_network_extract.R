@@ -60,9 +60,8 @@ co_fresh <- params_fresh[params_fresh$species_code == "CO", ]
 # Minimum stream order for flood modelling
 min_order <- 3
 
-# Scenario suffix from spawn gradient min (e.g. 0.005 → "spawn005", 0.0025 → "spawn0025")
-spawn_min_pct <- co_fresh$spawn_gradient_min * 100
-spawn_suffix <- paste0("spawn", gsub("\\.", "", format(spawn_min_pct, nsmall = 1)))
+# Project default spawn gradient min (used for canonical co_spawning column)
+spawn_gradient_min_default <- co_fresh$spawn_gradient_min
 
 out_dir <- here::here("data", "lulc")
 fs::dir_create(out_dir)
@@ -142,7 +141,6 @@ conn |>
 
 # --- Step 5: Classify habitat within accessible reaches ---
 {
-  # Habitat gradient breaks at 5.49% — splits segments at gradient transitions
   # Break at habitat gradient threshold — splits segments at gradient
   # transitions so classification is precise
   message("Breaking at habitat gradient threshold (",
@@ -153,24 +151,44 @@ conn |>
       threshold = params_co$spawn_gradient_max,
       to = "working.breaks_habitat_neexdzii")
 
-  # Override bcfishpass spawn gradient range with our minimum from
-  # parameters_fresh.csv (0.5% — salmonids don't spawn in flat water)
-  spawn_ranges <- params_co$ranges$spawn[c("gradient", "channel_width")]
-  spawn_ranges$gradient[1] <- co_fresh$spawn_gradient_min
-
   rear_ranges <- params_co$ranges$rear[c("gradient", "channel_width")]
 
-  message("Classifying spawning and rearing habitat...")
+  # Rearing and lake rearing (single classification, no threshold variants)
+  message("Classifying rearing habitat...")
   conn |>
-    frs_classify("working.neexdzii", label = "co_spawning",
-      ranges = spawn_ranges,
-      where = "accessible IS TRUE") |>
     frs_classify("working.neexdzii", label = "co_rearing",
       ranges = rear_ranges,
       where = "accessible IS TRUE") |>
     frs_classify("working.neexdzii", label = "co_lake_rearing",
       ranges = list(channel_width = params_co$ranges$rear$channel_width),
       where = "accessible IS TRUE AND waterbody_key IN (SELECT waterbody_key FROM whse_basemapping.fwa_lakes_poly)")
+
+  # Spawning at multiple gradient minimums — same segments, different columns.
+  # Compares effect of excluding flat water (wetlands, dead channels) from
+  # spawning habitat. Segments are already broken at spawn_gradient_max.
+  spawn_mins <- c(0, 0.0025, 0.005, 0.0075)
+  spawn_labels <- paste0("co_spawning_",
+    gsub("\\.", "", format(spawn_mins * 100, nsmall = 1)))
+
+  spawn_ranges_base <- params_co$ranges$spawn[c("gradient", "channel_width")]
+
+  message("Classifying spawning at ", length(spawn_mins), " gradient minimums...")
+  for (j in seq_along(spawn_mins)) {
+    sr <- spawn_ranges_base
+    sr$gradient[1] <- spawn_mins[j]
+    conn |>
+      frs_classify("working.neexdzii", label = spawn_labels[j],
+        ranges = sr,
+        where = "accessible IS TRUE")
+    message("  ", spawn_labels[j], " (gradient >= ", spawn_mins[j] * 100, "%)")
+  }
+
+  # Keep the project default as the canonical co_spawning column
+  message("Setting co_spawning = ", spawn_labels[which(spawn_mins == co_fresh$spawn_gradient_min)])
+  DBI::dbExecute(conn, sprintf(
+    "ALTER TABLE working.neexdzii ADD COLUMN IF NOT EXISTS co_spawning BOOLEAN;
+     UPDATE working.neexdzii SET co_spawning = %s",
+    spawn_labels[which(spawn_mins == co_fresh$spawn_gradient_min)]))
 }
 
 # --- Step 6: Pull streams and waterbodies ---
@@ -240,14 +258,24 @@ message("\n=== Summary ===")
 print(summary_df, row.names = FALSE)
 
 # --- Step 8: Save ---
-out_all <- file.path(out_dir, paste0("fresh_streams_classified_", spawn_suffix, ".gpkg"))
+out_classified <- file.path(out_dir, "fresh_streams_classified.gpkg")
 out_streams <- file.path(out_dir, "fresh_streams_co3.gpkg")
 out_wb <- file.path(out_dir, "fresh_waterbodies_co3.gpkg")
 
-sf::st_write(streams_all, out_all, delete_dsn = TRUE, quiet = TRUE)
+sf::st_write(streams_all, out_classified, delete_dsn = TRUE, quiet = TRUE)
 sf::st_write(streams, out_streams, delete_dsn = TRUE, quiet = TRUE)
 sf::st_write(waterbodies, out_wb, delete_dsn = TRUE, quiet = TRUE)
-message("Saved: ", basename(out_all), ", ", basename(out_streams), ", ", basename(out_wb))
+message("Saved: ", basename(out_classified), ", ", basename(out_streams), ", ", basename(out_wb))
+
+# --- Copy to QGIS project for field/team use ---
+qgis_dir <- "/Users/airvine/Projects/gis/restoration_wedzin_kwa"
+if (dir.exists(qgis_dir)) {
+  file.copy(out_classified, file.path(qgis_dir, "fresh_streams_classified.gpkg"),
+            overwrite = TRUE)
+  file.copy(out_wb, file.path(qgis_dir, "fresh_waterbodies_co3.gpkg"),
+            overwrite = TRUE)
+  message("Copied to QGIS project: ", qgis_dir)
+}
 
 # --- Leave working tables for QA (uncomment to clean up) ---
 # for (tbl in c("working.neexdzii", "working.breaks_access_neexdzii",
@@ -258,7 +286,7 @@ DBI::dbDisconnect(conn)
 
 # --- QA map ---
 message("Generating QA map...")
-qa_path <- file.path(out_dir, paste0("fresh_map_co3_", spawn_suffix, ".png"))
+qa_path <- file.path(out_dir, "fresh_map_co3.png")
 png(qa_path, width = 2400, height = 3000, res = 200)
 
 # Classify streams for plotting
