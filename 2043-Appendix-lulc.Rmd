@@ -30,8 +30,8 @@ subbasins <- sf::st_read(
   file.path(lulc_dir, "subbasins.gpkg"), quiet = TRUE
 ) |> sf::st_transform(4326)
 
-fp_file <- file.path(lulc_dir, "floodplain_co_ff04.gpkg")
-floodplain <- sf::st_read(fp_file, quiet = TRUE) |> sf::st_transform(4326)
+fp_file <- file.path(lulc_dir, "floodplain.gpkg")
+floodplain <- sf::st_read(fp_file, layer = "co_ff04", quiet = TRUE) |> sf::st_transform(4326)
 
 # name_basin comes from break_points.csv via fresh::frs_watershed_split
 ```

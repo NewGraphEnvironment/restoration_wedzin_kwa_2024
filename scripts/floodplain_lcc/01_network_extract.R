@@ -269,13 +269,14 @@ sf::st_write(waterbodies, out_wb, delete_dsn = TRUE, quiet = TRUE)
 message("Saved: ", basename(out_classified), ", ", basename(out_streams), ", ", basename(out_wb))
 
 # --- Copy to QGIS project for field/team use ---
-qgis_dir <- "/Users/airvine/Projects/gis/restoration_wedzin_kwa"
-if (dir.exists(qgis_dir)) {
-  file.copy(out_classified, file.path(qgis_dir, "fresh_streams_classified.gpkg"),
+# path_gis from index.Rmd YAML params
+params <- rmarkdown::yaml_front_matter(here::here("index.Rmd"))$params
+if (dir.exists(params$path_gis)) {
+  file.copy(out_classified, file.path(params$path_gis, "fresh_streams_classified.gpkg"),
             overwrite = TRUE)
-  file.copy(out_wb, file.path(qgis_dir, "fresh_waterbodies_co3.gpkg"),
+  file.copy(out_wb, file.path(params$path_gis, "fresh_waterbodies_co3.gpkg"),
             overwrite = TRUE)
-  message("Copied to QGIS project: ", qgis_dir)
+  message("Copied to QGIS project: ", params$path_gis)
 }
 
 # --- Leave working tables for QA (uncomment to clean up) ---

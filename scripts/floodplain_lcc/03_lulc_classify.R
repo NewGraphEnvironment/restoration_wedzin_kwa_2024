@@ -52,8 +52,8 @@ subbasins <- sf::st_read(
   file.path(out_dir, "subbasins.gpkg"), quiet = TRUE
 ) |> sf::st_transform(4326)
 
-fp_file <- file.path(out_dir, paste0("floodplain_", scenario_id, ".gpkg"))
-floodplain <- sf::st_read(fp_file, quiet = TRUE) |> sf::st_transform(4326)
+fp_file <- file.path(out_dir, "floodplain.gpkg")
+floodplain <- sf::st_read(fp_file, layer = scenario_id, quiet = TRUE) |> sf::st_transform(4326)
 
 # Use name_basin from break_points.csv (carried through via fresh::frs_watershed_split)
 
@@ -78,6 +78,34 @@ if (nrow(trans_all$summary) > 0) {
                      overwrite = TRUE, datatype = "INT4S")
 }
 message("Floodplain rasters saved to ", fp_dir)
+
+# --- Vectorize to floodplain_landcover.gpkg for QGIS ---
+out_lc_gpkg <- file.path(out_dir, "floodplain_landcover.gpkg")
+message("Vectorizing to ", basename(out_lc_gpkg), "...")
+
+for (yr in names(classified_all)) {
+  lyr <- paste0("classified_", scenario_id, "_", yr)
+  polys <- terra::as.polygons(classified_all[[yr]]) |> sf::st_as_sf()
+  sf::st_write(polys, out_lc_gpkg, layer = lyr, append = file.exists(out_lc_gpkg),
+               delete_layer = TRUE, quiet = TRUE)
+  message("  Layer: ", lyr)
+}
+
+if (nrow(trans_all$summary) > 0) {
+  lyr <- paste0("transition_", scenario_id, "_2017_2023")
+  polys <- terra::as.polygons(trans_all$raster) |> sf::st_as_sf()
+  sf::st_write(polys, out_lc_gpkg, layer = lyr, append = TRUE,
+               delete_layer = TRUE, quiet = TRUE)
+  message("  Layer: ", lyr)
+}
+
+# Copy to QGIS project
+params <- rmarkdown::yaml_front_matter(here::here("index.Rmd"))$params
+if (dir.exists(params$path_gis)) {
+  file.copy(out_lc_gpkg, file.path(params$path_gis, "floodplain_landcover.gpkg"),
+            overwrite = TRUE)
+  message("Copied to QGIS project: ", params$path_gis)
+}
 
 # --- Pass 2: Per-sub-basin summaries (for tables/plots) ---
 message("\n=== Per-sub-basin summaries ===")

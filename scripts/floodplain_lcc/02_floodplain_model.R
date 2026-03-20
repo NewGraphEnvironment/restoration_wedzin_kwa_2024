@@ -78,9 +78,10 @@ message("Loading waterbodies from ", basename(wb_path))
 waterbodies <- sf::st_read(wb_path, quiet = TRUE) |> sf::st_zm(drop = TRUE)
 message("  ", nrow(waterbodies), " features")
 
-qgis_dir <- "/Users/airvine/Projects/gis/restoration_wedzin_kwa/"
-path_dem <- file.path(qgis_dir, "dem_neexdzii.tif")
-path_slope <- file.path(qgis_dir, "slope_neexdzii.tif")
+# External paths from index.Rmd YAML params
+params <- rmarkdown::yaml_front_matter(here::here("index.Rmd"))$params
+path_dem <- file.path(params$path_gis, "dem_neexdzii.tif")
+path_slope <- file.path(params$path_gis, "slope_neexdzii.tif")
 
 # --- DEM/slope ---
 # one time clip and transfer of the dem products to shared gis project. DEM is from bcdata_py processed by bcfishpass
@@ -127,6 +128,10 @@ if (!is.na(arg) && arg == "all") {
 
 message("Scenarios to run: ", paste(run_scenarios$scenario_id, collapse = ", "))
 
+# --- Multi-layer gpkg for all scenarios ---
+out_gpkg <- file.path(out_dir, "floodplain.gpkg")
+if (file.exists(out_gpkg)) file.remove(out_gpkg)
+
 # --- Loop scenarios ---
 for (i in seq_len(nrow(run_scenarios))) {
   sc <- run_scenarios[i, ]
@@ -162,11 +167,15 @@ for (i in seq_len(nrow(run_scenarios))) {
 
   # --- Write outputs ---
   out_raster <- file.path(out_dir, paste0("floodplain_", sc$scenario_id, ".tif"))
-  out_vector <- file.path(out_dir, paste0("floodplain_", sc$scenario_id, ".gpkg"))
-
   terra::writeRaster(valleys, out_raster, overwrite = TRUE)
-  sf::st_write(valleys_poly, out_vector, delete_dsn = TRUE, quiet = TRUE)
-  message("  Saved: ", basename(out_raster), ", ", basename(out_vector))
+  sf::st_write(valleys_poly, out_gpkg, layer = sc$scenario_id, append = TRUE, quiet = TRUE)
+  message("  Saved: ", basename(out_raster), " + layer ", sc$scenario_id, " in ", basename(out_gpkg))
+}
+
+# --- Copy to QGIS project ---
+if (dir.exists(params$path_gis)) {
+  file.copy(out_gpkg, file.path(params$path_gis, "floodplain.gpkg"), overwrite = TRUE)
+  message("Copied floodplain.gpkg to QGIS project: ", params$path_gis)
 }
 
 message("\nDone. Floodplain AOI(s) ready for drift pipeline (03_lulc_classify.R).")
