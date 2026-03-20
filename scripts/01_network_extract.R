@@ -184,11 +184,12 @@ conn |>
   }
 
   # Keep the project default as the canonical co_spawning column
-  message("Setting co_spawning = ", spawn_labels[which(spawn_mins == co_fresh$spawn_gradient_min)])
+  default_label <- spawn_labels[which(spawn_mins == co_fresh$spawn_gradient_min)]
+  message("Setting co_spawning = ", default_label)
+  DBI::dbExecute(conn,
+    "ALTER TABLE working.neexdzii ADD COLUMN IF NOT EXISTS co_spawning BOOLEAN")
   DBI::dbExecute(conn, sprintf(
-    "ALTER TABLE working.neexdzii ADD COLUMN IF NOT EXISTS co_spawning BOOLEAN;
-     UPDATE working.neexdzii SET co_spawning = %s",
-    spawn_labels[which(spawn_mins == co_fresh$spawn_gradient_min)]))
+    "UPDATE working.neexdzii SET co_spawning = %s", default_label))
 }
 
 # --- Step 6: Pull streams and waterbodies ---
