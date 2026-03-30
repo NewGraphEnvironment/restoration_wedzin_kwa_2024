@@ -1,4 +1,11 @@
 
+# restoration_wedzin_kwa_2024 DRAFT 0.2.7 (2026-03-30)
+
+- clarify that gate examples in recommendations are preliminary candidates, not approved sites
+- add package links (fresh, flooded, drift) to methods land cover section
+- reorder methods to match pipeline flow (network → floodplain → classification)
+- define Impact Observatory land cover imagery (was IO LULC acronym)
+
 # restoration_wedzin_kwa_2024 DRAFT 0.2.6 (2026-03-19)
 
 - recalibrate floodplain model: flood_factor reduced from 6 to 4, mapping functional floodplain rather than valley bottom extent ([#138](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/138))

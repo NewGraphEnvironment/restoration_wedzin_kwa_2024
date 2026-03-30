@@ -111,7 +111,7 @@ Before we prioritize which projects to do, we must also consider whether cumulat
 
 ### Applying the Gates: Project Types That Pass {-}
 
-The gates are practical. Here are examples of project types that would pass all three gates in sub-basins where the data supports action:
+The gates are practical. To illustrate how they would be applied, the following are examples of project types and locations where the available data suggests all three gates could be met. These are preliminary candidates — site-level restoration designs with detailed mapping are in development to support governance review and decision-making.
 
 **Riparian fencing and vegetation recovery in Cesford-Ailport** — This sub-basin has the largest modelled floodplain below Bulkley Falls (1,060 ha) and the highest coho spawning length (60.8 km). Existing restoration investments provide baseline monitoring sites. The diagnostic picture is clear from land cover change analysis showing 19.9% agriculture expansion into the floodplain (G1 passes). Active vegetation removal is documented and ongoing (G2 — address pressure and restore simultaneously). With 648 ha of private floodplain and 564 ha of Crown land, there are multiple potential partners on both tenure types, and prior landowner engagement provides a foundation for access (G3). This sub-basin demonstrates how protection and restoration can work together — fencing cattle out of riparian areas on private land while restoring native vegetation on adjacent Crown parcels. Each site becomes a shared learning environment where landowners, practitioners, and Wet'suwet'en knowledge holders work side by side — building understanding of riparian function, cultural significance, and land stewardship across disciplinary boundaries.
 
