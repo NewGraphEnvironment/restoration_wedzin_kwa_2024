@@ -172,7 +172,8 @@ for (i in seq_len(nrow(run_scenarios))) {
 # --- Copy to QGIS project ---
 if (dir.exists(params$path_gis)) {
   file.copy(out_gpkg, file.path(params$path_gis, "floodplain.gpkg"), overwrite = TRUE)
-  message("Copied floodplain.gpkg to QGIS project: ", params$path_gis)
+  file.copy(sb_path, file.path(params$path_gis, "subbasins.gpkg"), overwrite = TRUE)
+  message("Copied floodplain.gpkg + subbasins.gpkg to QGIS project: ", params$path_gis)
 }
 
 message("\nDone. Floodplain AOI(s) ready for drift pipeline (03_lulc_classify.R).")

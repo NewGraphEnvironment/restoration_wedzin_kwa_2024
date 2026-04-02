@@ -81,8 +81,10 @@ message("Floodplain rasters saved to ", fp_dir)
 
 # --- Vectorize to floodplain_landcover.gpkg for QGIS ---
 out_lc_gpkg <- file.path(out_dir, "floodplain_landcover.gpkg")
+if (file.exists(out_lc_gpkg)) file.remove(out_lc_gpkg)
 message("Vectorizing to ", basename(out_lc_gpkg), "...")
 
+# Classified land cover per year (dissolved by class)
 for (yr in names(classified_all)) {
   lyr <- paste0("classified_", scenario_id, "_", yr)
   polys <- terra::as.polygons(classified_all[[yr]]) |> sf::st_as_sf()
@@ -91,12 +93,17 @@ for (yr in names(classified_all)) {
   message("  Layer: ", lyr)
 }
 
+# Transition patches — exploded with area + sub-basin attribution
 if (nrow(trans_all$summary) > 0) {
   lyr <- paste0("transition_", scenario_id, "_2017_2023")
-  polys <- terra::as.polygons(trans_all$raster) |> sf::st_as_sf()
-  sf::st_write(polys, out_lc_gpkg, layer = lyr, append = TRUE,
+  trans_polys <- dft_transition_vectors(
+    trans_all$raster,
+    zones = subbasins,
+    zone_col = "name_basin"
+  )
+  sf::st_write(trans_polys, out_lc_gpkg, layer = lyr, append = TRUE,
                delete_layer = TRUE, quiet = TRUE)
-  message("  Layer: ", lyr)
+  message("  Layer: ", lyr, " (", nrow(trans_polys), " patches)")
 }
 
 # Copy to QGIS project
