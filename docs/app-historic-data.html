@@ -84,7 +84,7 @@
 <script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
 <link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
 <script src="libs/leaflet-binding-2.2.3/leaflet.js"></script>
-<script src="libs/leaflet-providers-2.0.0/leaflet-providers_2.0.0.js"></script>
+<script src="libs/leaflet-providers-3.0.0/leaflet-providers.js"></script>
 <script src="libs/leaflet-providers-plugin-2.2.3/leaflet-providers-plugin.js"></script>
 <link href="libs/lfx-fullscreen-1.0.2/lfx-fullscreen-prod.css" rel="stylesheet" />
 <script src="libs/lfx-fullscreen-1.0.2/lfx-fullscreen-prod.js"></script>
@@ -118,7 +118,6 @@ document.addEventListener('DOMContentLoaded', toggle_R);
 
 
 <style type="text/css">
-html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -372,7 +371,7 @@ div.csl-indent {
 <li class="chapter" data-level="" data-path="app-historic-data.html"><a href="app-historic-data.html"><i class="fa fa-check"></i><strong>Appendix - Historic Data Products</strong></a>
 <ul>
 <li class="chapter" data-level="" data-path="app-historic-data.html"><a href="app-historic-data.html#price2014upperbulkley---extracted-waypoints"><i class="fa fa-check"></i><span class="citation">Price (2014)</span> - Extracted Waypoints</a></li>
-<li class="chapter" data-level="" data-path="app-historic-data.html"><a href="app-historic-data.html#mackay_etal1998midbulkleydetailed---extracted-prescriptions-and-riparian-polygons"><i class="fa fa-check"></i><span class="citation">MacKay et al. (1998)</span> - Extracted Prescriptions and Riparian Polygons</a></li>
+<li class="chapter" data-level="" data-path="app-historic-data.html"><a href="app-historic-data.html#mackay_etal1998midbulkleydetailed---extracted-prescriptions-and-riparian-polygons"><i class="fa fa-check"></i><span class="citation">MacKay, Johnston, and Jessop (1998)</span> - Extracted Prescriptions and Riparian Polygons</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="attachment-1---riparian-prescription-example.html"><a href="attachment-1---riparian-prescription-example.html"><i class="fa fa-check"></i><strong>Attachment 1 - Riparian Prescription Example</strong></a></li>
 <li class="chapter" data-level="" data-path="session-info.html"><a href="session-info.html"><i class="fa fa-check"></i>Session Info</a></li>
@@ -4572,8 +4571,8 @@ Railway
 <p><br></p>
 </div>
 <div id="mackay_etal1998midbulkleydetailed---extracted-prescriptions-and-riparian-polygons" class="section level2 unnumbered hasAnchor">
-<h2><span class="citation">MacKay et al. (1998)</span> - Extracted Prescriptions and Riparian Polygons<a href="app-historic-data.html#mackay_etal1998midbulkleydetailed---extracted-prescriptions-and-riparian-polygons" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Restoration prescriptions and riparian polygon data from <span class="citation">MacKay et al. (1998)</span> were extracted and spatialized through two complementary workflows:</p>
+<h2><span class="citation">MacKay, Johnston, and Jessop (1998)</span> - Extracted Prescriptions and Riparian Polygons<a href="app-historic-data.html#mackay_etal1998midbulkleydetailed---extracted-prescriptions-and-riparian-polygons" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Restoration prescriptions and riparian polygon data from <span class="citation">MacKay, Johnston, and Jessop (1998)</span> were extracted and spatialized through two complementary workflows:</p>
 <p><strong>Prescription Text Extraction:</strong> Complex regex patterns were used to parse unstructured PDF text, extracting 18 fields per prescription including location, UTM coordinates, impact descriptions, goals, and proposed works. Manual correction was required to fix coordinate errors in the original document. Results are available in <a href="https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/inputs_extracted/ncfdc_1998_prescriptions.csv">ncfdc_1998_prescriptions.csv</a> and as the <code>ncfdc_1998_prescriptions_raw</code> layer in <code>sites_restoration.gpkg</code>.</p>
 <p><strong>Riparian Prescription Spatialization:</strong> Appendix maps from the original report were georeferenced in QGIS to identify reach break locations. Prescriptions in the original report used chainage (distance upstream from reach breaks) rather than coordinates. Using <code>fwapgr</code> (a wrapper for <code>fwapg</code>), reach breaks were indexed to the BC Freshwater Atlas to obtain downstream route measures, which were then combined with prescription chainage values to geolocate each riparian polygon along the stream network. Results are stored as the <code>ncfdc_1998_riparian_raw</code> layer in <code>sites_restoration.gpkg</code>.</p>
 <div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="app-historic-data.html#cb120-1" tabindex="-1"></a>ncfdc_1998_71a <span class="sc">%&gt;%</span></span>

@@ -4,11 +4,11 @@ This report presents a governance and prioritization framework for restoration o
 
 <br>
 
-**Governance and prioritization.** The prioritization framework proposes a four-tier governance structure — Stewardship Council, Technical Working Group, Implementation Partnerships, and Community Roundtable — that places Wet'suwet'en direction at the centre of restoration decision-making. Three diagnostic gates filter candidate sites before investment: certainty of diagnosis, whether active degradation is ongoing, and access and willingness to act. Scoring principles were developed from community workshops where participants ranked restoration parameters. Workshop groups converged on the same four priorities — Cultural Significance, Probability of Success, Watershed Function, and Proximity to High-Value Fish Habitat — though the relative weighting differed across groups. These perspectives are built into the weighting system. The framework acknowledges that habitat restoration alone cannot deliver salmon recovery. Skeena chinook and coho face sustained declines driven by fishing pressure — both marine and in-river — that exceeds what these populations can sustain. Reducing harvest is the necessary precondition; without it, restored habitat produces fish that are removed before they can spawn. Rebuilding habitat capacity now ensures the watershed can support recovery when harvest rates are brought in line with current productivity.
+**Governance and prioritization.** The prioritization framework proposes a four-tier governance structure — Stewardship Council, Technical Working Group, Implementation Partnerships, and Community Roundtable — that places Wet'suwet'en direction at the centre of restoration decision-making. Three diagnostic gates filter candidate sites before investment: certainty of diagnosis, whether active degradation is ongoing, and access and willingness to act. Scoring principles were developed from community workshops where participants ranked restoration parameters. Workshop groups converged on the same four priorities — Cultural Significance, Probability of Success, Watershed Function, and Proximity to High-Value Fish Habitat — though the relative weighting differed across groups. These perspectives are built into the weighting system. The framework acknowledges that habitat restoration alone cannot deliver salmon recovery. Neexdzii Kwa chinook collapsed under historical in-river overharvest and have remained well below escapement targets since the local fishing ban in 1998. At the Skeena aggregate scale — through which these fish migrate — ocean and in-river harvest continues to exceed sustainable rates [@price_etal2026rebuildinggiis]. Restoring watershed-scale freshwater habitat is the lever available locally; it prepares the watershed to support rebuilding as harvest and productivity pressures are addressed.
 
 <br>
 
-**Sub-basin delineation.** The watershed was divided into 14 sub-basins to enable prioritization and facilitate communication of issues and opportunities within each area. Natural break points — Bulkley Falls and Buck Falls — define the primary divisions due to their significance as barriers to salmon access. Within these regions, sub-basins were delineated based on groupings of habitat and landscape characteristics at comparable scales, using FWA-referenced spatial hydrology tools via [`fresh`](https://www.newgraphenvironment.com/fresh) and the interactive [`breaks`](https://www.newgraphenvironment.com/breaks) sub-basin delineation tool. Each sub-basin integrates fish habitat modelling, land ownership, reserve lands, cultural sites, and land cover change into a single characterization that supports comparison and investment targeting.
+**Sub-basin delineation.** The watershed was divided into 14 sub-basins to enable prioritization and facilitate communication of issues and opportunities within each area. Natural break points — Bulkley Falls and Buck Falls — define the primary divisions due to their significance as barriers to salmon access. Within these regions, sub-basins were delineated based on groupings of habitat and landscape characteristics at comparable scales, using FWA-referenced spatial hydrology tools via [`fresh`](https://www.newgraphenvironment.com/fresh). Each sub-basin integrates fish habitat modelling, land ownership, reserve lands, cultural sites, and land cover change into a single characterization that supports comparison and investment targeting.
 
 <br>
 
@@ -16,7 +16,7 @@ This report presents a governance and prioritization framework for restoration o
 
 <br>
 
-**Historic aerial photographs.** Nearly 10,000 provincial aerial photographs (1963–2019) have been downloaded and georeferenced using [`fly`](https://www.newgraphenvironment.com/fly).  This collection  represents the entire provincial dataset where photograph footprints land within the Neexdzi Kwah watershed.  It is served as a [queryable spatial catalog](https://www.newgraphenvironment.com/stac_airphoto_bc/) — available programmatically and from within GIS systems such as QGIS. The interactive [`diggs`](https://github.com/NewGraphEnvironment/diggs) application allows users to select photos based on centroid and estimated footprint overlap with custom areas of interest (ex. modelled floodplain extents). This 50-year visual record allows direct comparison of historic and current conditions at any location in the watershed — building understanding of how
+**Historic aerial photographs.** Nearly 10,000 provincial aerial photographs (1963–2019) have been downloaded and georeferenced using [`fly`](https://www.newgraphenvironment.com/fly).  This collection  represents the entire provincial dataset where photograph footprints land within the Neexdzi Kwah watershed.  It is served as a [queryable spatial catalog](https://www.newgraphenvironment.com/stac_airphoto_bc/) — available programmatically and from within GIS systems such as QGIS. This 50-year visual record allows direct comparison of historic and current conditions at any location in the watershed — building understanding of how
   the landscape has changed over time and grounding restoration targets in documented prior condition.
 
 <br>
@@ -36,14 +36,12 @@ This report presents a governance and prioritization framework for restoration o
 
 <br>
 
-**Tools as deliverables.** The spatial analysis tools developed for this work are open-source R packages designed to work at any scale and in any watershed in the province:
+**Open-source software and data products.** The spatial analysis packages and catalogs developed through this and related work are open-source and designed to work at any scale and in any watershed in the province:
 
 - Stream network spatial hydrology — [`fresh`](https://www.newgraphenvironment.com/fresh)
-- Interactive sub-basin delineation — [`breaks`](https://www.newgraphenvironment.com/breaks)
 - Floodplain delineation — [`flooded`](https://www.newgraphenvironment.com/flooded)
 - Land cover change detection — [`drift`](https://www.newgraphenvironment.com/drift)
 - Airphoto footprint estimation and optimal coverage selection — [`fly`](https://www.newgraphenvironment.com/fly)
-- Interactive airphoto explorer — [`diggs`](https://github.com/NewGraphEnvironment/diggs)
 - Provincial LiDAR digital elevation models (DEMs) — [`stac_dem_bc`](https://www.newgraphenvironment.com/stac_dem_bc)
 - UAV imagery catalog — [`stac_uav_bc`](https://github.com/NewGraphEnvironment/stac_uav_bc)
 - Historic airphoto catalog — [`stac_airphoto_bc`](https://www.newgraphenvironment.com/stac_airphoto_bc/)
