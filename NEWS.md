@@ -1,4 +1,14 @@
 
+# restoration_wedzin_kwa_2024 DRAFT 0.2.8 (2026-04-20)
+
+- correct chinook exploitation scoping in background: Wedzin Kwa (Morice) vs Neexdzii Kwa treated as distinct populations, with Neexdzii Kwa modern ER modelled low (~6%) and historical in-river harvest identified as the dominant driver of decline
+- drop unverified coho claim and reframe fisheries-pressure framing in executive summary to reflect Neexdzii Kwa-specific story (local chinook fishing ban since 1998)
+- add coho 1997 crisis context ("perilous" upper Bulkley; earliest-ever North Coast gillnet closure) and clarify that Neexdzii Kwa coho are grouped within the Middle Skeena coho CU rather than assessed as a distinct population
+- trim "Implications for Restoration" paragraph; remove editorial "one of the few interventions" framing
+- add 5 Skeena coho references to Zotero group library (DFO Coho Response Team 1998, Walters et al. 2008 ISRP, Korman & English 2013 benchmark, English 2013 time-series, Porter et al. 2014 habitat cards)
+- build local ragnar lit-search store (`data/rag/coho_refs.duckdb`, 8 PDFs, 2,647 chunks) used to verify all new fisheries claims against source PDFs before drafting
+- remove `breaks` and `diggs` shiny apps from executive summary (inline mentions and tools list); re-label "Tools as deliverables" to "Open-source software and data products" — apps pulled pending hosting/maintenance funding, packages and STAC catalogs retained
+
 # restoration_wedzin_kwa_2024 DRAFT 0.2.7 (2026-03-30)
 
 - clarify that gate examples in recommendations are preliminary candidates, not approved sites
