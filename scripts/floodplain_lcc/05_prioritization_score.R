@@ -71,28 +71,50 @@ fp_areas <- subbasins |>
   sf::st_drop_geometry() |>
   dplyr::select(name_basin, description, fisheries_value, falls_downstream, area_km2, floodplain_area_ha)
 
-# --- LULC change from drift summary ---
+# --- LULC change ---
+# Per-class 2017/2023 areas (composition snapshot) come from lulc_summary.rds.
+# Net tree_loss_ha and ag_change_ha derive from the sieved transition vector
+# (patches >= 1 ha) so they match the headline figures in the report.
+# 0400-results.Rmd and 2043-Appendix-lulc.Rmd also recompute these values
+# inline against the same source; values written here should agree.
 lulc <- readRDS(file.path(lulc_dir, "lulc_summary.rds"))
+ag_classes <- c("Crops", "Rangeland", "Bare Ground")
 
-tree_change <- lulc |>
+# Class-area snapshot (kept for context columns in area_scores.csv)
+trees_snapshot <- lulc |>
   dplyr::filter(class_name == "Trees", year %in% c(2017, 2023)) |>
   dplyr::select(name_basin, year, area) |>
-  tidyr::pivot_wider(names_from = year, values_from = area, names_prefix = "trees_ha_") |>
-  dplyr::mutate(
-    tree_loss_ha = trees_ha_2023 - trees_ha_2017,
-    tree_loss_pct = round(tree_loss_ha / trees_ha_2017 * 100, 1)
-  )
+  tidyr::pivot_wider(names_from = year, values_from = area, names_prefix = "trees_ha_")
 
-ag_classes <- c("Crops", "Rangeland", "Bare Ground")
-ag_change <- lulc |>
+ag_snapshot <- lulc |>
   dplyr::filter(class_name %in% ag_classes, year %in% c(2017, 2023)) |>
   dplyr::group_by(name_basin, year) |>
   dplyr::summarise(ag_area = sum(area), .groups = "drop") |>
-  tidyr::pivot_wider(names_from = year, values_from = ag_area, names_prefix = "ag_ha_") |>
-  dplyr::mutate(
-    ag_change_ha = ag_ha_2023 - ag_ha_2017,
-    ag_change_pct = round(ag_change_ha / ag_ha_2017 * 100, 1)
+  tidyr::pivot_wider(names_from = year, values_from = ag_area, names_prefix = "ag_ha_")
+
+# Sieved change-patch totals per sub-basin (matches the gpkg layer in QGIS).
+trans_v <- sf::st_read(
+  file.path(lulc_dir, "floodplain_landcover.gpkg"),
+  layer = "transition_co_ff04_2017_2023", quiet = TRUE
+) |> sf::st_drop_geometry()
+
+sieved_delta <- trans_v |>
+  dplyr::group_by(name_basin) |>
+  dplyr::summarise(
+    tree_loss_ha = sum(area_ha[to_class   == "Trees"]) -
+                   sum(area_ha[from_class == "Trees"]),
+    ag_change_ha = sum(area_ha[to_class   %in% ag_classes]) -
+                   sum(area_ha[from_class %in% ag_classes]),
+    .groups = "drop"
   )
+
+tree_change <- trees_snapshot |>
+  dplyr::left_join(sieved_delta |> dplyr::select(name_basin, tree_loss_ha), by = "name_basin") |>
+  dplyr::mutate(tree_loss_pct = round(tree_loss_ha / trees_ha_2017 * 100, 1))
+
+ag_change <- ag_snapshot |>
+  dplyr::left_join(sieved_delta |> dplyr::select(name_basin, ag_change_ha), by = "name_basin") |>
+  dplyr::mutate(ag_change_pct = round(ag_change_ha / ag_ha_2017 * 100, 1))
 
 # --- Fish habitat from DB (coho + chinook) ---
 blk <- 360873822
