@@ -1,4 +1,12 @@
 
+# restoration_wedzin_kwa_2024 DRAFT 0.2.9 (2026-05-13)
+
+- add patch-size sieve to LULC change detection: transition patches smaller than 1 ha are dropped to suppress class-boundary noise from sub-pixel registration drift; 0.5 ha (BC VRI minimum mapping unit) and 1 ha thresholds were compared in QGIS during report preparation and 1 ha selected as the better noise/signal tradeoff ([#142](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/142))
+- switch all tree-loss and agriculture-change numbers (executive summary, results, LULC appendix sub-basin table, prioritization table) to derive from the sieved transition vector so figures are consistent across the report — headline floodplain tree loss revised from ~760 ha (unsieved class-area delta) to ~647 ha
+- make `dft_rast_transition()` call in `scripts/floodplain_lcc/03_lulc_classify.R` bidirectional (no `from_class` filter) so the same transition raster drives Trees-loss, Trees-gain, ag-change, and other-class metrics from a single source
+- recompute patch `area_ha` from geometry after sub-basin intersection in `03_lulc_classify.R` and `inspect_sieve_thresholds.R` so summing rows gives correct per-sub-basin totals (drift's column is pre-intersection)
+- gate the auto-copy of `floodplain_landcover.gpkg` to the QGIS project behind a `copy_to_qgis` flag (default FALSE) so a fresh pipeline run never silently overwrites the live QGIS data; printed `cp` command lets the user promote after inspection
+
 # restoration_wedzin_kwa_2024 DRAFT 0.2.8 (2026-04-20)
 
 - correct chinook exploitation scoping in background: Wedzin Kwa (Morice) vs Neexdzii Kwa treated as distinct populations, with Neexdzii Kwa modern ER modelled low (~6%) and historical in-river harvest identified as the dominant driver of decline

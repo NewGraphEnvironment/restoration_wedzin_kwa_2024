@@ -52,17 +52,20 @@ classified <- list(
   "2023" = terra::rast(file.path(fp_dir, "classified_2023.tif"))
 )
 
-# Load transition raster, filter summary to agriculture classes only
+# Load transition raster (bidirectional, sieved at >= 1.0 ha patches).
+# Filter the display summary to Trees -> agriculture transitions only —
+# this keeps the layer toggles focused on tree-cover loss to agriculture.
 ag_classes <- c("Crops", "Rangeland", "Bare Ground")
 trans_rast <- terra::rast(file.path(fp_dir, "transition.tif"))
 trans_cats <- terra::cats(trans_rast)[[1]]
+parts <- strsplit(trans_cats$transition, " -> ", fixed = TRUE)
 trans_summary <- tibble::tibble(
   id = trans_cats$id,
   transition = trans_cats$transition,
-  from_class = "Trees",
-  to_class = sub("Trees -> ", "", trans_cats$transition)
+  from_class = vapply(parts, `[`, character(1), 1),
+  to_class   = vapply(parts, `[`, character(1), 2)
 ) |>
-  dplyr::filter(to_class %in% ag_classes)
+  dplyr::filter(from_class == "Trees", to_class %in% ag_classes)
 
 transition <- list(raster = trans_rast, summary = trans_summary)
 
@@ -353,32 +356,49 @@ lulc_grouped |>
 
 ## Sub-Basin Ranking
 
-Tree loss and agriculture gain do not sum to zero because other IO LULC classes (Built Area, Water, Flooded Vegetation) also gain or lose area between years. The `other_ha` column captures this residual — positive values indicate net area flowing into non-tree, non-agriculture classes (e.g., Built Area expansion, water level changes). Classification noise at 10 m pixel boundaries and differences in Sentinel-2 overpass timing between years also contribute.
+Tree loss and agriculture gain do not sum to zero because other IO LULC classes (Built Area, Water, Flooded Vegetation) also gain or lose area between years. The `other_ha` column captures this residual — positive values indicate net area flowing into non-tree, non-agriculture classes (e.g., Built Area expansion, water level changes, channel migration). Values below derive from the sieved transition vector (change patches ≥1 ha, see [Methods](#time-series-analysis)) so they match the headline figures reported in Results.
 
 ```{r lulc-summary-table}
-# One-row-per-sub-basin summary with key metrics
+# Sub-basin ranking derives from the sieved transition vector (patches >= 1.0 ha)
+# so this table matches the headline tree-loss figures in Results and the
+# executive summary. lulc_grouped_delta (class-area delta) is still used for
+# composition charts above.
+trans_v_app <- sf::st_read(
+  file.path(lulc_dir, "floodplain_landcover.gpkg"),
+  layer = "transition_co_ff04_2017_2023", quiet = TRUE
+) |> sf::st_drop_geometry()
+
 fp_areas <- lulc_all |>
   filter(year == 2017) |>
   group_by(name_basin) |>
   summarize(fp_ha = round(sum(area), 1), .groups = "drop")
 
-summary_tab <- lulc_grouped_delta |>
-  select(name_basin, group, delta_pct, delta_ha) |>
-  pivot_wider(names_from = group, values_from = c(delta_pct, delta_ha)) |>
+sieved_delta_app <- trans_v_app |>
+  group_by(name_basin) |>
+  summarize(
+    tree_loss_ha = sum(area_ha[to_class   == "Trees"]) -
+                   sum(area_ha[from_class == "Trees"]),
+    ag_gain_ha   = sum(area_ha[to_class   %in% ag_classes]) -
+                   sum(area_ha[from_class %in% ag_classes]),
+    .groups = "drop"
+  )
+
+summary_tab <- sieved_delta_app |>
   left_join(fp_areas, by = "name_basin") |>
   mutate(
-    tree_loss_pct = round(delta_pct_Trees, 1),
-    tree_loss_ha = round(delta_ha_Trees, 1),
-    ag_gain_pct = round(delta_pct_Agriculture, 1),
-    ag_gain_ha = round(delta_ha_Agriculture, 1),
-    other_ha = round(-tree_loss_ha - ag_gain_ha, 1)
+    tree_loss_pct = round(tree_loss_ha / fp_ha * 100, 1),
+    ag_gain_pct   = round(ag_gain_ha   / fp_ha * 100, 1),
+    tree_loss_ha  = round(tree_loss_ha, 1),
+    ag_gain_ha    = round(ag_gain_ha,   1),
+    other_ha      = round(-tree_loss_ha - ag_gain_ha, 1)
   ) |>
-  select(name_basin, fp_ha, tree_loss_pct, tree_loss_ha, ag_gain_pct, ag_gain_ha, other_ha) |>
+  select(name_basin, fp_ha, tree_loss_pct, tree_loss_ha,
+         ag_gain_pct, ag_gain_ha, other_ha) |>
   arrange(tree_loss_ha)
 ```
 
 ```{r tab-lulc-summary-cap, results="asis", eval=gitbook_on}
-my_caption <- "Tree cover loss and agriculture gain within modelled floodplain by sub-basin (2017-2023). Negative values = loss. Agriculture = Crops + Rangeland + Bare Ground. other_ha = residual area change attributed to remaining classes (Built Area, Water, Flooded Vegetation, etc.)."
+my_caption <- "Tree cover loss and agriculture gain within modelled floodplain by sub-basin (2017-2023), from transition patches >= 1 ha. Negative values = loss. Agriculture = Crops + Rangeland + Bare Ground. other_ha = residual area change attributed to remaining classes (Built Area, Water, Flooded Vegetation, etc.)."
 
 my_tab_caption()
 ```
@@ -390,7 +410,7 @@ summary_tab |>
 
 ```{r tab-lulc-summary-static, eval=identical(gitbook_on, FALSE)}
 knitr::kable(summary_tab, digits = 1,
-  caption = "Tree cover loss and agriculture gain within modelled floodplain by sub-basin (2017-2023). other_ha = residual attributed to remaining classes.")
+  caption = "Tree cover loss and agriculture gain within modelled floodplain by sub-basin (2017-2023), from transition patches >= 1 ha. other_ha = residual attributed to remaining classes.")
 ```
 
 ```{r plot-lulc-ranking-ha, fig.cap="Change in tree cover and agriculture area (ha) within modelled floodplain by sub-basin, 2017-2023. Agriculture = Crops + Rangeland + Bare Ground.", fig.width=10, fig.height=6}

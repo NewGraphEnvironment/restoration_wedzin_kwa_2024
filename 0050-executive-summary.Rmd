@@ -1,5 +1,34 @@
 # Executive Summary {-}
 
+```{r exec-summary-numbers, include=FALSE}
+# Derive headline tree-loss figures from the sieved transition vector
+# (patches >= 1 ha). Same source as Results and the LULC appendix so all
+# tree-loss numbers in the report stay consistent.
+trans_v_exec <- sf::st_read(
+  here::here("data", "lulc", "floodplain_landcover.gpkg"),
+  layer = "transition_co_ff04_2017_2023", quiet = TRUE
+) |> sf::st_drop_geometry()
+
+sb_exec <- trans_v_exec |>
+  dplyr::group_by(name_basin) |>
+  dplyr::summarize(
+    net_loss_ha = sum(area_ha[from_class == "Trees"]) -
+                  sum(area_ha[to_class   == "Trees"]),
+    .groups = "drop"
+  )
+
+area_scores_exec <- readr::read_csv(
+  here::here("data", "prioritization", "area_scores.csv"),
+  show_col_types = FALSE
+) |> dplyr::select(name_basin, floodplain_area_ha)
+
+sb_exec <- dplyr::left_join(sb_exec, area_scores_exec, by = "name_basin") |>
+  dplyr::mutate(net_loss_pct = net_loss_ha / floodplain_area_ha * 100)
+
+total_loss_exec <- round(sum(sb_exec$net_loss_ha), 0)
+max_loss_pct_exec <- round(max(sb_exec$net_loss_pct), 0)
+```
+
 This report presents a governance and prioritization framework for restoration of the Neexdzii Kwah (Upper Bulkley River) watershed, grounded in Wet'suwet'en stewardship values and supported by an integrated suite of open-source spatial analysis tools. The framework is not a static plan — it is a living system designed to evolve as understanding deepens and new data becomes available.
 
 <br>
@@ -12,7 +41,7 @@ This report presents a governance and prioritization framework for restoration o
 
 <br>
 
-**Floodplain modelling and land cover change.** The functional floodplain — where the river does geomorphic work including sediment storage, nutrient exchange, riparian recruitment, and large woody debris delivery — was modelled using the Valley Confinement Algorithm implemented in [`flooded`](https://www.newgraphenvironment.com/flooded). Within the modelled floodplain, 10 m resolution satellite imagery shows approximately 760 ha of tree cover lost across the watershed over the six-year period from 2017 to 2023 — the window for which classified land cover data is available. Tree loss rates vary by sub-basin, from less than 1% to roughly 10% of floodplain area, with what the analysis classifies as agricultural land expanding into cleared areas in most cases. The floodplain extent was modelled conservatively — scoped to coho-accessible streams of 3rd order and larger, with lakes and wetlands included only where they connect to the fish-accessible network.
+**Floodplain modelling and land cover change.** The functional floodplain — where the river does geomorphic work including sediment storage, nutrient exchange, riparian recruitment, and large woody debris delivery — was modelled using the Valley Confinement Algorithm implemented in [`flooded`](https://www.newgraphenvironment.com/flooded). Within the modelled floodplain, 10 m resolution satellite imagery shows approximately `r total_loss_exec` ha of tree cover lost across the watershed between 2017 and 2023 — counting change patches of at least 1 ha to suppress class-boundary noise from sub-pixel registration drift. Tree loss rates vary by sub-basin, from less than 1% to approximately `r max_loss_pct_exec`% of floodplain area, with what the analysis classifies as agricultural land expanding into cleared areas in most cases. The floodplain extent was modelled conservatively — scoped to coho-accessible streams of 3rd order and larger, with lakes and wetlands included only where they connect to the fish-accessible network.
 
 <br>
 

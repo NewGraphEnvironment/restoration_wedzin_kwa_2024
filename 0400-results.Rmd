@@ -62,56 +62,38 @@ A collection of 9,741 georeferenced provincial aerial photograph thumbnails (196
 ### Land Cover Change
 
 ```{r lulc-results-summary}
-lulc_all <- readRDS(here::here("data", "lulc", "lulc_summary.rds"))
+# All tree-loss numbers derive from the sieved transition vector
+# (patches >= 1.0 ha, written by scripts/floodplain_lcc/03_lulc_classify.R).
+# Patch areas are post-intersection slices, so summing rows gives correct totals.
 ag_classes <- c("Crops", "Rangeland", "Bare Ground")
+trans_v <- sf::st_read(
+  here::here("data", "lulc", "floodplain_landcover.gpkg"),
+  layer = "transition_co_ff04_2017_2023", quiet = TRUE
+) |> sf::st_drop_geometry()
 
-lulc_grouped <- lulc_all |>
-  dplyr::mutate(
-    group = dplyr::case_when(
-      class_name == "Trees" ~ "Trees",
-      class_name %in% ag_classes ~ "Agriculture",
-      TRUE ~ NA_character_
-    )
+lulc_tree_delta <- trans_v |>
+  dplyr::group_by(name_basin) |>
+  dplyr::summarize(
+    tree_loss_ha = sum(area_ha[from_class == "Trees"]),
+    tree_gain_ha = sum(area_ha[to_class   == "Trees"]),
+    delta_ha     = tree_gain_ha - tree_loss_ha,
+    .groups = "drop"
   ) |>
-  dplyr::filter(!is.na(group)) |>
-  dplyr::group_by(name_basin, year, group) |>
-  dplyr::summarize(area = sum(area), .groups = "drop")
-
-lulc_tree_delta <- lulc_grouped |>
-  dplyr::filter(year %in% c("2017", "2023"), group == "Trees") |>
-  tidyr::pivot_wider(names_from = year, values_from = area) |>
-  dplyr::mutate(delta_ha = `2023` - `2017`) |>
   dplyr::arrange(delta_ha)
 
 total_tree_loss <- round(abs(sum(lulc_tree_delta$delta_ha)), 0)
 top3 <- head(lulc_tree_delta, 3)
 
-# Gross pixel-level transitions from whole-floodplain rasters
-# Use scenario-specific raster dir, fall back to legacy
-fp_dir <- here::here("data", "lulc", "rasters", "co_ff04")
-if (!dir.exists(fp_dir)) fp_dir <- here::here("data", "lulc", "rasters", "floodplain")
-
-# Trees -> ag: from the saved transition raster (already filtered to from_class=Trees)
-trans_freq <- terra::freq(terra::rast(file.path(fp_dir, "transition.tif")))
-trans_freq$area_ha <- trans_freq$count * 100 / 1e4
-# freq$value is the transition label for factor rasters
-gross_trees_to_ag <- trans_freq |>
-  dplyr::filter(value %in% c("Trees -> Rangeland", "Trees -> Crops", "Trees -> Bare Ground")) |>
+gross_trees_to_ag <- trans_v |>
+  dplyr::filter(from_class == "Trees", to_class %in% ag_classes) |>
   dplyr::pull(area_ha) |> sum() |> round(0)
-
-# Ag -> trees: need full bidirectional transition
-classified_check <- list(
-  "2017" = terra::rast(file.path(fp_dir, "classified_2017.tif")),
-  "2023" = terra::rast(file.path(fp_dir, "classified_2023.tif"))
-)
-full_trans <- drift::dft_rast_transition(classified_check, from = "2017", to = "2023")
-reverse_to_trees <- full_trans$summary |>
+reverse_to_trees <- trans_v |>
   dplyr::filter(from_class %in% ag_classes, to_class == "Trees") |>
-  dplyr::pull(area) |> sum() |> round(0)
+  dplyr::pull(area_ha) |> sum() |> round(0)
 net_trees_ag <- gross_trees_to_ag - reverse_to_trees
 ```
 
-Land cover classification within the modelled floodplain (see [Methods](#time-series-analysis)) shows a consistent pattern of tree cover loss and agriculture expansion between 2017 and 2023. Pixel-level transition analysis identified `r gross_trees_to_ag` ha of floodplain tree cover that converted to agriculture classes (Crops + Rangeland + Bare Ground), while `r reverse_to_trees` ha shifted from agriculture back to trees — a net loss of approximately `r net_trees_ag` ha. The total net tree cover decline across all classes was `r total_tree_loss` ha. The greatest losses occurred in `r top3$name_basin[1]` (`r round(abs(top3$delta_ha[1]), 0)` ha), `r top3$name_basin[2]` (`r round(abs(top3$delta_ha[2]), 0)` ha), and `r top3$name_basin[3]` (`r round(abs(top3$delta_ha[3]), 0)` ha). An interactive map of classified land cover with transition overlays, along with detailed sub-basin summaries, is presented in [Appendix - LULC](#app-lulc).
+Land cover classification within the modelled floodplain (see [Methods](#time-series-analysis)) shows a consistent pattern of tree cover loss and agriculture expansion between 2017 and 2023. After filtering transition patches smaller than 1 ha to suppress class-boundary noise, `r gross_trees_to_ag` ha of floodplain tree cover converted to agriculture classes (Crops + Rangeland + Bare Ground), while `r reverse_to_trees` ha shifted from agriculture back to trees — a net loss of approximately `r net_trees_ag` ha. The total net tree cover decline across all classes was `r total_tree_loss` ha. The greatest losses occurred in `r top3$name_basin[1]` (`r round(abs(top3$delta_ha[1]), 0)` ha), `r top3$name_basin[2]` (`r round(abs(top3$delta_ha[2]), 0)` ha), and `r top3$name_basin[3]` (`r round(abs(top3$delta_ha[3]), 0)` ha). An interactive map of classified land cover with transition overlays, along with detailed sub-basin summaries, is presented in [Appendix - LULC](#app-lulc).
 
 Not all detected tree loss represents agricultural conversion — some transitions reflect timber harvest within the floodplain, where recent cutblocks are classified as rangeland or bare ground at 10 m resolution. Even where harvested areas regenerate or are replanted, young closed-canopy forests do not provide the same watershed function as mature riparian stands — they contribute less large woody debris, offer less structural diversity for fish habitat, and have different hydrological characteristics. Other pixel-level transitions reflect channel migration, seasonal differences in vegetation health due to drought, or classification noise — particularly along actively shifting reaches and at field-forest edges. Despite these sources of uncertainty, the overall trajectory of floodplain tree cover loss is consistent across sub-basins and time steps, and the magnitude of change is well above what classification error alone would produce. These trends highlight where protection of remaining mature floodplain forest, engagement with landowners, and restoration of degraded reaches may be most effective.
 
@@ -183,11 +165,26 @@ Trend statistics, spatial anomaly maps, and time series plots are presented in [
 ### Sub-Basin Prioritization
 
 ```{r subbasin-summary-prep}
-# area_scores loaded in tab-subbasin-desc chunk below — load here for inline text
+# Override tree_loss_ha and ag_change_ha from sieved transition (1.0 ha patch min)
+# so the priority table matches the headline figures. area_scores.csv carries
+# the older class-area-delta versions; 05_prioritization_score.R needs to be
+# re-run to refresh those columns on disk (skipped here to avoid DB roundtrip).
+sieved_delta <- trans_v |>
+  dplyr::group_by(name_basin) |>
+  dplyr::summarize(
+    tree_loss_ha = sum(area_ha[to_class   == "Trees"]) -
+                   sum(area_ha[from_class == "Trees"]),
+    ag_change_ha = sum(area_ha[to_class   %in% ag_classes]) -
+                   sum(area_ha[from_class %in% ag_classes]),
+    .groups = "drop"
+  )
+
 as <- readr::read_csv(
   here::here("data", "prioritization", "area_scores.csv"),
   show_col_types = FALSE
 ) |>
+  dplyr::select(-tree_loss_ha, -tree_loss_pct, -ag_change_ha, -ag_change_pct) |>
+  dplyr::left_join(sieved_delta, by = "name_basin") |>
   dplyr::mutate(
     tree_loss_fp_pct = round(tree_loss_ha / floodplain_area_ha * 100, 1),
     ag_change_fp_pct = round(ag_change_ha / floodplain_area_ha * 100, 1)
