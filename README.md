@@ -53,7 +53,6 @@ This report is the most ambitious integration target for the New Graph Environme
 | [`cd`](https://github.com/NewGraphEnvironment/cd) | Climate-departure analysis for the climate appendix (ERA5-Land via STAC). |
 | [`fly`](https://github.com/NewGraphEnvironment/fly) | Historic-airphoto selection for the long-baseline change-detection context. |
 | [`cred`](https://github.com/NewGraphEnvironment/cred) | Post-draft citation verification across the report's references. |
-| [`rfp`](https://github.com/NewGraphEnvironment/rfp) | Project-data wrangling and Mergin Maps sync for field collaboration. |
 | [`gq`](https://github.com/NewGraphEnvironment/gq) | Cartographic style registry across the report's maps, the recommendations app, and the QGIS project. |
 | [`ngr`](https://github.com/NewGraphEnvironment/ngr), [`fpr`](https://github.com/NewGraphEnvironment/fpr) | Reporting + fish-passage utilities used across the chunks. |
 
