@@ -1,6 +1,6 @@
 # Neexdzii Kwah Restoration Planning — 2024
 
-> Living restoration plan for the Neexdzii Kwah (Upper Bulkley River) watershed in the Skeena basin, prepared with Wet'suwet'en knowledge and stewardship for the Wet'suwet'en Treaty Office Society (WTOS) on behalf of SERN BC.
+> Living restoration plan for the Neexdzii Kwah (Upper Bulkley River) watershed in the Skeena basin, prepared with Wet'suwet'en knowledge and stewardship for the Wet'suwet'en Treaty Office Society (WTOS) on behalf of the Society for Ecosystem Restoration in Northern BC (SERN).
 
 **Read the report:** <https://newgraphenvironment.com/restoration_wedzin_kwa_2024>
 &middot; **Source:** [`NewGraphEnvironment/restoration_wedzin_kwa_2024`](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024)
@@ -11,15 +11,6 @@
 A reproducible, web-first restoration-planning report integrating ecological science, Indigenous stewardship knowledge, and quantitative spatial analysis to identify, prioritize, and sequence restoration interventions across the Neexdzii Kwah watershed. The report is iterated as new data, monitoring results, and partner input land — version-controlled, open-source, and rebuildable end-to-end from raw data.
 
 The report is structured as a [bookdown](https://bookdown.org/) gitbook (HTML-first, with PDF + EPUB outputs). Interactive maps, sortable tables, citation tooltips, and embedded climate / hydrology figures are first-class — the report is meant to be *used* by managers and stewardship staff, not just printed.
-
-## Sections
-
-- **Executive Summary** ([`0050-executive-summary.Rmd`](0050-executive-summary.Rmd)) — recommendations + headline findings, also available as standalone PDF.
-- **Background** ([`0200-background.Rmd`](0200-background.Rmd)) — Wet'suwet'en context, ecological setting, prior work.
-- **Methods** ([`0300-methods.Rmd`](0300-methods.Rmd)) — open-source reporting workflow + per-analysis methods.
-- **Results** ([`0400-results.Rmd`](0400-results.Rmd)) — site-by-site findings, sub-basin prioritization, monitoring outputs.
-- **Recommendations** ([`0500-recomendations.Rmd`](0500-recomendations.Rmd)) — companion to the interactive [recommendations app](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024_recomendations).
-- **Appendices** — effectiveness monitoring 2024, UAV imagery, LULC change detection, climate anomaly, fish species, sites priority, historic data; plus a riparian-prescription attachment.
 
 ## Companion artefacts
 
@@ -52,7 +43,6 @@ This report is the most ambitious integration target for the New Graph Environme
 | [`drift`](https://github.com/NewGraphEnvironment/drift) | LULC change detection in floodplains (the v0.2.9 sieve-threshold work landed here first). |
 | [`cd`](https://github.com/NewGraphEnvironment/cd) | Climate-departure analysis for the climate appendix (ERA5-Land via STAC). |
 | [`fly`](https://github.com/NewGraphEnvironment/fly) | Historic-airphoto selection for the long-baseline change-detection context. |
-| [`cred`](https://github.com/NewGraphEnvironment/cred) | Post-draft citation verification across the report's references. |
 | [`gq`](https://github.com/NewGraphEnvironment/gq) | Cartographic style registry across the report's maps, the recommendations app, and the QGIS project. |
 | [`ngr`](https://github.com/NewGraphEnvironment/ngr), [`fpr`](https://github.com/NewGraphEnvironment/fpr) | Reporting + fish-passage utilities used across the chunks. |
 
@@ -64,4 +54,4 @@ Version tracking uses the [`fledge`](https://fledge.cynkra.com/) package. Commit
 
 ## License
 
-MIT (see [`LICENSE`](LICENSE)). Indigenous traditional knowledge incorporated into the report is shared with the consent of the Wet'suwet'en Treaty Office Society and remains the cultural and intellectual property of the Wet'suwet'en Nation; sharing or republishing those contributions requires WTOS consent.
+MIT (see [`LICENSE`](LICENSE)).
