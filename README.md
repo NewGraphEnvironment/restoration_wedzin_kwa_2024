@@ -50,7 +50,7 @@ Each piece is independently usable; this report exercises them together against 
 
 ## Versioning
 
-Version tracking uses the [`fledge`](https://fledge.cynkra.com/) package. Commit messages starting with `-` or `*` get pulled into [`NEWS.md`](NEWS.md) by `fledge::finalize_version()`. The changelog is reachable from the report's Methods chapter under "Open Source Reporting."
+Version tracking is manual. The `Version:` field in `DESCRIPTION` is bumped and a matching dated entry added to [`NEWS.md`](NEWS.md) for each content change. The report title block reads the current version via `desc::desc_get_version()`. The changelog is reachable from the report's Methods chapter under "Open Source Reporting."
 
 ## License
 

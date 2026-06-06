@@ -31,6 +31,18 @@ break_points.csv  ──→  fwa_extract_flood.R  ──→  subbasins.gpkg (nam
 |--------|--------|---------|
 | `lulc_classify_zones.R` | Sketch | Zone-stratified LULC within nested flood zones (bankfull → rearing → functional → migration) |
 
+## Build & Versioning
+
+`scripts/run.R` is the build entry point. A single run renders **both** the bookdown gitbook (`docs/`) and the standalone executive summary PDF (`docs/executive_summary.pdf`) — the exec summary is rebuilt at the same time as the main report. Always build via `run.R` (not `bookdown::render_book()` directly) so `staticimports` is loaded first.
+
+Versioning is **manual** (no fledge). For each content change:
+
+1. Bump `Version:` in `DESCRIPTION` — the report title block reads it via `desc::desc_get_version()`.
+2. Add a matching dated section to `NEWS.md`.
+3. Run `scripts/run.R` for a full build so the rendered outputs carry the new version.
+
+Patch digit increments during `0.2.x` development (e.g. `0.2.9` → `0.2.10`).
+
 ## Other Scripts
 
 See `scripts/gis/`, `scripts/api_skt.R`, `scripts/fwa_query.R`, etc. for data ingestion and GIS processing outside the main pipeline.
