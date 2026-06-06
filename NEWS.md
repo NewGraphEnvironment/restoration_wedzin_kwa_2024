@@ -1,4 +1,12 @@
 
+# restoration_wedzin_kwa_2024 DRAFT 0.2.10 (2026-06-06)
+
+- correct Wet'suwet'en law spelling to "Anuk Nu'at'en" throughout (was "Ink"/"Inuk Nu'at'en" in executive summary, introduction, and recommendations)
+- streamline LULC appendix: drop the redundant all-class composition bar chart and the Trees-vs-Agriculture line plot, both of which re-told the sub-basin tree-loss/agriculture-gain story already carried by the summary table, ranking chart, and wide composition table
+- fix LULC sub-basin ranking chart to derive from the sieved transition vector so it matches the adjacent summary table and the headline figures in Results (previously used the unsieved class-area delta and could disagree)
+- remove dead code and consolidate duplicated helpers in the LULC appendix
+- correct stale `fledge` versioning references in `CLAUDE.md` and `README.md` to document the actual manual workflow (bump `DESCRIPTION`, add NEWS entry, full build)
+
 # restoration_wedzin_kwa_2024 DRAFT 0.2.9 (2026-05-13)
 
 - add patch-size sieve to LULC change detection: transition patches smaller than 1 ha are dropped to suppress class-boundary noise from sub-pixel registration drift; 0.5 ha (BC VRI minimum mapping unit) and 1 ha thresholds were compared in QGIS during report preparation and 1 ha selected as the better noise/signal tradeoff ([#142](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/142))
