@@ -42,3 +42,6 @@ fig/map_study-area-interactive_files/
 Restoration_Neexdzii_Kwah_2024_cache/
 Restoration_Neexdzii_Kwah_2024_files/
 Restoration_Neexdzii_Kwah_2024.Rmd
+
+# Local-only internal project config (SRED refs, tracking issue numbers)
+.claude/project-config.local.md

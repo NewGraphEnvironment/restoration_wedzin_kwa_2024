@@ -23,7 +23,7 @@ Restoration planning report for the Neexdzii Kwah (Upper Bulkley River) watershe
 
 **Build:** `scripts/run.R` orchestrates builds (bookdown gitbook). Must use `run.R` — not direct `bookdown::render_book()` — because it calls `staticimports::import()` and `source('scripts/staticimports.R')` first. Without this, `my_tab_caption()` and `my_dt_table()` are undefined.
 
-**Build Artifacts:** The `docs/` directory contains rendered HTML output. Commits to `docs/` should use simple messages (e.g., "rebuild book v0.1.3") and are NOT linked to issues or SRED tracking - they are just build outputs.
+**Build Artifacts:** The `docs/` directory contains rendered HTML output. Commits to `docs/` should use simple messages (e.g., "rebuild book v0.1.3") and are NOT linked to issues - they are just build outputs.
 
 **Versioning:** Uses `fledge` package for version management. Commit messages starting with `-` or `*` are pulled into NEWS.md by `fledge::finalize_version()`. NEWS.md is linked from the Open Source Reporting section in methods (changelog appendix removed in v0.1.3).
 
@@ -32,24 +32,24 @@ Restoration planning report for the Neexdzii Kwah (Upper Bulkley River) watershe
 ### Recommendations Shiny App
 | Repo | Location |
 |------|----------|
-| `restoration_wedzin_kwa_2024_recomendations` | `/Users/airvine/Projects/repo/restoration_wedzin_kwa_2024_recomendations` |
+| `restoration_wedzin_kwa_2024_recomendations` | `~/Projects/repo/restoration_wedzin_kwa_2024_recomendations` |
 
-Interactive shiny app linked from main report containing recommendations as a user-sortable table. Uses `xciter` package (SRED item) for generating citations within HTML objects. **Note:** Updates to recommendations require coordination between main report and this app.
+Interactive shiny app linked from main report containing recommendations as a user-sortable table. Uses `xciter` package for generating citations within HTML objects. **Note:** Updates to recommendations require coordination between main report and this app.
 
 ### Climate Analysis
 | Repo | Location | Purpose |
 |------|----------|---------|
-| `bc_climate_anomaly` (fork, newgraph branch) | `/Users/airvine/Projects/repo/bc_climate_anomaly` | Climate perspective before/during study period; illustrates climate pattern differences within Neexdzi Kwah watershed |
+| `bc_climate_anomaly` (fork, newgraph branch) | `~/Projects/repo/bc_climate_anomaly` | Climate perspective before/during study period; illustrates climate pattern differences within Neexdzi Kwah watershed |
 
 Fork of `bcgov/bc_climate_anomaly` with modifications on `newgraph` branch.
 
 ### Related Blog Posts (new_graphiti)
 | Post | Location | Purpose |
 |------|----------|---------|
-| `2024-06-19-precipitation` | `/Users/airvine/Projects/repo/new_graphiti/posts/2024-06-19-precipitation` | 3D interactive precipitation patterns; demonstrates reproducible workflow |
-| `2024-06-30-land-cover` | `/Users/airvine/Projects/repo/new_graphiti/posts/2024-06-30-land-cover` | Proof of concept for baseline land cover classification; reference for future large-scale change detection |
-| `2024-11-15-bcdata-ortho-historic` | `/Users/airvine/Projects/repo/new_graphiti/posts/2024-11-15-bcdata-ortho-historic` | Historic orthophoto processing workflow |
-| `2026-01-08-stac-ortho-mosaics` | `/Users/airvine/Projects/repo/new_graphiti/posts/2026-01-08-stac-ortho-mosaics` | Time series analysis example (Maxam Creek / Bulkley Lake) |
+| `2024-06-19-precipitation` | `~/Projects/repo/new_graphiti/posts/2024-06-19-precipitation` | 3D interactive precipitation patterns; demonstrates reproducible workflow |
+| `2024-06-30-land-cover` | `~/Projects/repo/new_graphiti/posts/2024-06-30-land-cover` | Proof of concept for baseline land cover classification; reference for future large-scale change detection |
+| `2024-11-15-bcdata-ortho-historic` | `~/Projects/repo/new_graphiti/posts/2024-11-15-bcdata-ortho-historic` | Historic orthophoto processing workflow |
+| `2026-01-08-stac-ortho-mosaics` | `~/Projects/repo/new_graphiti/posts/2026-01-08-stac-ortho-mosaics` | Time series analysis example (Maxam Creek / Bulkley Lake) |
 
 ## Repository Ecosystem
 
@@ -108,29 +108,16 @@ Primary GIS project for field data collection and collaborative mapping:
 
 | GIS Project | Location |
 |-------------|----------|
-| `restoration_wedzin_kwa` | `/Users/airvine/Projects/gis/restoration_wedzin_kwa` |
+| `restoration_wedzin_kwa` | `~/Projects/gis/restoration_wedzin_kwa` |
 
 **Workflow:** Mergin Maps for mobile/desktop sync, QGIS for analysis, scripts in `scripts/gis/` for processing.
-
-## SRED Tracking Framework
-
-R&D activities tracked in `sred-2025-2026` repository.
-
-**Project Code:** 2024-069-ow-wedzin-kwa-restoration
-
-**Iterations:**
-- **Iteration 1:** Dynamic GIS-RMarkdown Synchronization - core reporting infrastructure
-- **Iteration 4:** Field-to-Cloud Data Workflows - data ingestion and processing
-
-**Pattern:**
-1. Use planning-with-files for complex tasks
-2. Add SRED tracking section to planning files when R&D work occurs
-3. Create/link issues in `sred-2025-2026`
-4. Cross-reference commits with: `Relates to NewGraphEnvironment/sred-2025-2026#<issue>`
 
 ## Slash Command Configuration
 
 Project-specific values for global slash commands (in `~/.claude/commands/`).
+Internal-only values (SRED references, tracking issue numbers) live in the
+gitignored `.claude/project-config.local.md` — read that file when running
+`/commit-sred`, `/mergin-sync`, or `/push-pr`.
 
 ### Repository
 | Key | Value |
@@ -138,17 +125,10 @@ Project-specific values for global slash commands (in `~/.claude/commands/`).
 | Repo | `NewGraphEnvironment/restoration_wedzin_kwa_2024` |
 | Co-Author | `Claude Opus 4.6 <noreply@anthropic.com>` |
 
-### SRED Tracking (`/commit-sred`, `/push-pr`)
-| Key | Value |
-|-----|-------|
-| SRED Repo | `NewGraphEnvironment/sred-2025-2026` |
-| SRED Issue | `#4` |
-
 ### Mergin Sync (`/mergin-sync`)
 | Key | Value |
 |-----|-------|
-| GIS Project Path | `/Users/airvine/Projects/gis/restoration_wedzin_kwa` |
-| Tracking Issue | `#41` |
+| GIS Project Path | `~/Projects/gis/restoration_wedzin_kwa` |
 | Conda Environment | `dff2` |
 
 ### Build (`/push-pr`)
@@ -225,7 +205,6 @@ CSV controls in `data/lulc/`: `flood_scenarios.csv` (`run=TRUE` rows executed), 
 - Validate cross-references and citations
 - Streamline GIS ↔ reporting integration (gq basemap extraction: [gq#13](https://github.com/NewGraphEnvironment/gq/issues/13))
 - Form data backup synchronization
-- Document R&D activities for SRED tracking
 - Package citations: append `knitr::write_bib()` output to `references.bib` after rbbt writes it ([soul#27](https://github.com/NewGraphEnvironment/soul/issues/27), not yet implemented)
 - LULC: Agriculture superclass = Crops + Rangeland + Bare Ground (10m IO LULC can't distinguish reliably)
 
@@ -755,7 +734,7 @@ Add new checks here when a bug class is discovered — they compound over time.
 - Symptom when wrong: task notifications report "exit 0 / completed" while remote work was actually skipped or errored.
 
 ### Paths
-- Hardcoded absolute paths (`/Users/airvine/...`) break for other users
+- Hardcoded absolute paths (`/Users/<user>/...`) break for other users
 - Use `REPO_ROOT="$(cd "$(dirname "$0")/<relative>" && pwd)"`
 - After moving scripts, verify `../` depth still resolves correctly
 - Usage comments should match actual script location
