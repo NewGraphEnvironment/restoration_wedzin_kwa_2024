@@ -48,4 +48,21 @@ gate copy-to-GIS under `update_gis`, regenerate + compare.
 
 ## Decisions
 
-_(log execution-time decisions here, e.g. streams via 01 vs synced project, comparison results)_
+- **DB: local fwapg, no tunnel.** `01`/`02` need a fwapg PostgreSQL DB, not the remote shared DB.
+  A healthy local fwapg Docker container (`fresh-db`, postgis:17) is already running on
+  `localhost:5432`. The tunnel is not needed for this work.
+- **Connect via standard libpq env vars.** Rejected a `frs_db_conn(source="share"/"local")` arg —
+  it bakes our internal deployment vocabulary into a general package. Instead the pipeline will
+  connect with `DBI::dbConnect(RPostgres::Postgres())`, which reads the standard
+  `PGHOST`/`PGPORT`/`PGDATABASE`/`PGUSER`/`PGPASSWORD` env vars (set in `.Renviron` to the local
+  fwapg DB). Credential-free in code, fully standard.
+- **fresh generalization is separate.** `frs_db_conn()` hardcodes `PG_*_SHARE`; generalizing it
+  to standard libpq env vars is filed as [fresh#213](https://github.com/NewGraphEnvironment/fresh/issues/213),
+  non-blocking for #147.
+- **fresh Docker = wrapper, fwapg = engine.** `fresh/docker/` is based on fwapg's Dockerfile and
+  runs fwapg's own `create.sh`/`load.sh` (needs a local `fwapg` clone). READMEs credit fwapg as
+  the source of the FWA data/functions and point at fresh as the convenience setup.
+- **Mergin sync demoted.** With the national DEM, `path_gis` supplies no build input; Mergin sync
+  is only the optional `update_gis=TRUE` write-back, not a build dependency.
+
+_(log regeneration / comparison results below as execution proceeds)_

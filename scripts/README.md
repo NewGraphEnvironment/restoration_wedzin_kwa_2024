@@ -2,6 +2,18 @@
 
 Pipeline for sub-basin delineation, floodplain modelling, land cover classification, and prioritization scoring.
 
+## Prerequisite — fwapg database
+
+The full pipeline (`01`–`03`) needs a PostgreSQL/PostGIS database with the BC Freshwater Atlas
+loaded by [fwapg](https://github.com/smnorris/fwapg) — fwapg supplies the FWA tables, schemas,
+and SQL functions the stream-network extraction depends on (the real engine here). The easiest
+local setup is the Docker orchestration in [`fresh`](https://github.com/NewGraphEnvironment/fresh)
+(`fresh/docker/`), which runs fwapg's own loader in containers (it expects a local `fwapg` clone
+alongside `fresh`). Point the standard Postgres env vars (`PGHOST`, `PGPORT`, `PGDATABASE`,
+`PGUSER`, `PGPASSWORD`) at the running DB and the pipeline connects to it.
+
+The DEM comes from the national MRDEM-30 via `flooded::fl_dem_aoi()` (no local DEM needed).
+
 ## Pipeline Order
 
 | Step | Script | What it does |

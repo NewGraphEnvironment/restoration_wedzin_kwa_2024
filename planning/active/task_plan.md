@@ -12,14 +12,17 @@ and confirming the numbers don't diverge materially from `main`.
 
 ---
 
-## Phase 1: Sync GIS project locally via Mergin
-- [ ] 1.1 Pull `path_gis` (`~/Projects/gis/restoration_wedzin_kwa`) via Mergin so field inputs + existing (bcfishpass-DEM) outputs are present locally
+## Phase 1: Build prerequisites + DB connection (local fwapg)
+- [x] 1.1 Document fwapg DB prerequisite + fresh Docker path in `scripts/README.md` + `scripts/floodplain_lcc/README.md` (credit fwapg as the engine, fresh as the wrapper)
+- [x] 1.2 File `fresh` issue to generalize `frs_db_conn()` off `PG_*_SHARE` → standard libpq env vars ([NewGraphEnvironment/fresh#213](https://github.com/NewGraphEnvironment/fresh/issues/213)) — separate, non-blocking
+- [ ] 1.3 Point pipeline DB connection at the local fwapg DB via standard libpq env vars: replace `frs_db_conn()` in `01`/`02`/`05` with `DBI::dbConnect(RPostgres::Postgres())` (credential-free; reads `PGHOST`/`PGPORT`/`PGDATABASE`/`PGUSER`/`PGPASSWORD`). No tunnel.
+- [ ] 1.4 (Optional, write-back only) sync GIS project via Mergin — only needed for `update_gis=TRUE` copy-back, not for the build
 
 ## Phase 2: Switch DEM source to national MRDEM-30
 - [ ] 2.1 In `scripts/floodplain_lcc/02_floodplain_model.R` (~L79-107) replace `path_dem`/`path_slope` reads + crop with `dem <- flooded::fl_dem_aoi(aoi, buffer = 2000)` (AOI from subbasins/streams extent)
 - [ ] 2.2 Pass `slope = NULL` to `fl_valley_confine()` (derive slope from DEM); drop the separate slope raster
 - [ ] 2.3 Keep `flood_scenarios.csv` (`run=TRUE`) unchanged so only the DEM input changes (clean A/B)
-- [ ] 2.4 Ensure streams/waterbodies inputs exist (`fresh_streams_co3.gpkg`, `fresh_waterbodies_co3.gpkg`): re-run `01_network_extract.R` (needs DB SSH tunnel) or source from synced GIS project — record choice in findings.md
+- [ ] 2.4 Ensure streams/waterbodies inputs exist (`fresh_streams_co3.gpkg`, `fresh_waterbodies_co3.gpkg`): re-run `01_network_extract.R` against the local fwapg DB — record any deviation in findings.md
 
 ## Phase 3: Unify copy-to-GIS switch under `update_gis`
 - [ ] 3.1 In `01`, `02`, `03` replace `dir.exists(path_gis)`-only gate and script-local `copy_to_qgis` (03:50) with `isTRUE(params$update_gis) && dir.exists(params$path_gis)`

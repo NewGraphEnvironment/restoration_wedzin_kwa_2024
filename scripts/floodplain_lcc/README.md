@@ -12,7 +12,7 @@ Modelled floodplain delineation and satellite-derived land cover change analysis
 | `04_lulc_zones.R` | drift | Zone-stratified LULC (nested flood zones) |
 | `05_prioritization_score.R` | — | Score sub-basins from all above |
 
-Scripts 01 and 02 require an SSH tunnel to the database. Scripts 03–05 are disk-only.
+Scripts `01`–`02` need the fwapg database — see [Prerequisite — fwapg database](../README.md#prerequisite--fwapg-database) (a local fwapg DB works; no SSH tunnel required). The DEM comes from the national MRDEM-30 via `flooded::fl_dem_aoi()`.
 
 ## CSV Controls
 
