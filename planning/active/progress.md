@@ -9,4 +9,6 @@
 - Branch already carries: LULC appendix streamline, fledge-doc fix, version bump to 0.2.10
 - Decided DB approach: local fwapg via standard libpq env vars (no tunnel, no `source` arg); filed [fresh#213](https://github.com/NewGraphEnvironment/fresh/issues/213) to generalize `frs_db_conn()` (non-blocking)
 - Documented fwapg DB prerequisite in `scripts/README.md` + `scripts/floodplain_lcc/README.md` (credit fwapg, point at fresh Docker)
-- Next: 1.3 — repoint pipeline DB connection (`01`/`02`/`05`) to local fwapg via `DBI::dbConnect(RPostgres::Postgres())`, then Phase 2 DEM swap
+- Added standard libpq vars (`PGHOST`/`PGPORT`/`PGDATABASE`/`PGUSER`/`PGPASSWORD`) to `~/.Renviron` → local `fwapg`; bare `DBI::dbConnect(RPostgres::Postgres())` verified (db `fwapg`, FWA schemas present)
+- Implemented portability code (Phases 1.3, 2, 3): DB repoint in `01`/`02`/`05`, DEM swap to `flooded::fl_dem_aoi()` (MRDEM-30) + `slope=NULL`, GIS-copy gated on `update_gis`; stale tunnel/bcfishpass header notes corrected; all scripts parse
+- Next: run `01` (build stream network against local fwapg), then `02`/`03` to regenerate, then Phase 5 compare vs main

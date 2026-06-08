@@ -44,10 +44,10 @@ years <- c(2017, 2020, 2023)
 # downstream tree-loss numbers computed from transition.tif.
 patch_min_m2 <- 10000
 
-# Gate the auto-copy into the QGIS project. Default FALSE so a fresh pipeline run
-# never silently overwrites the live QGIS data. Flip to TRUE after inspecting the
-# outputs in data/lulc/ and confirming they look right.
-copy_to_qgis <- FALSE
+# Gate the auto-copy into the QGIS project on the report's update_gis param
+# (default FALSE) so a fresh pipeline run never silently overwrites the live QGIS
+# data. Set update_gis: TRUE in index.Rmd after inspecting the outputs in data/lulc/.
+copy_to_qgis <- isTRUE(rmarkdown::yaml_front_matter(here::here("index.Rmd"))$params$update_gis)
 
 # --- Select scenario ---
 # Override at command line: Rscript scripts/lulc_classify.R co_ff04

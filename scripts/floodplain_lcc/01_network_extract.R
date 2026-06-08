@@ -18,7 +18,7 @@
 # fwa_extract_flood.R reads the saved GeoPackage for each scenario.
 #
 # Requires:
-#   - SSH tunnel to db_newgraph
+#   - fwapg database (local fwapg via standard libpq env vars; see scripts/README.md)
 #   - fresh >= 0.4.0
 #
 # Fixes #139
@@ -31,7 +31,10 @@ library(sf)
 
 sf_use_s2(FALSE)
 
-conn <- frs_db_conn()
+# Connect to the fwapg DB via standard libpq env vars (PGHOST/PGPORT/PGDATABASE/
+# PGUSER/PGPASSWORD). Point them at a local fwapg (fresh/docker) for portable
+# builds -- see scripts/README.md "Prerequisite -- fwapg database".
+conn <- DBI::dbConnect(RPostgres::Postgres())
 
 # --- Study area ---
 # Toggle test_mode to run on a small area first (McKilligan to Bulkley Falls)
@@ -267,9 +270,9 @@ sf::st_write(streams, out_gpkg, layer = "streams_co3", append = TRUE, quiet = TR
 sf::st_write(waterbodies, out_gpkg, layer = "waterbodies_co3", append = TRUE, quiet = TRUE)
 message("Saved: ", basename(out_gpkg), " (3 layers)")
 
-# --- Copy to QGIS project for field/team use ---
+# --- Copy to QGIS project for field/team use (gated on update_gis) ---
 params <- rmarkdown::yaml_front_matter(here::here("index.Rmd"))$params
-if (dir.exists(params$path_gis)) {
+if (isTRUE(params$update_gis) && dir.exists(params$path_gis)) {
   file.copy(out_gpkg, file.path(params$path_gis, "aquatic_network.gpkg"),
             overwrite = TRUE)
   message("Copied to QGIS project: ", params$path_gis)
