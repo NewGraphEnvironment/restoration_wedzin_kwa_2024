@@ -181,7 +181,7 @@ See `scripts/floodplain_lcc/README.md` for full documentation.
 | `scripts/floodplain_lcc/04_lulc_zones.R` | drift | Zone-stratified LULC (future) |
 | `scripts/floodplain_lcc/05_prioritization_score.R` | — | Sub-basin scoring |
 
-CSV controls in `data/lulc/`: `flood_scenarios.csv` (`run=TRUE` rows executed), `parameters_fresh.csv`, `parameters_habitat_thresholds.csv`, `break_points.csv`. External paths from `index.Rmd` YAML `params$path_gis`.
+CSV controls in `data/lulc/`: `flood_scenarios.csv` (`run=TRUE` rows executed) and `break_points.csv`. Habitat/fresh parameter CSVs (`parameters_habitat_thresholds.csv`, `parameters_fresh.csv`) are read from the `fresh` package (`system.file("extdata", ..., package = "fresh")`, vendored from bcfishpass `example_newgraph`) — not project-local. DEM is fetched from the national MRDEM-30 via `flooded::fl_dem_aoi()`; the pipeline connects to a local fwapg DB via standard libpq env vars.
 
 ### Other Scripts
 

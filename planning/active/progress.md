@@ -11,4 +11,5 @@
 - Documented fwapg DB prerequisite in `scripts/README.md` + `scripts/floodplain_lcc/README.md` (credit fwapg, point at fresh Docker)
 - Added standard libpq vars (`PGHOST`/`PGPORT`/`PGDATABASE`/`PGUSER`/`PGPASSWORD`) to `~/.Renviron` → local `fwapg`; bare `DBI::dbConnect(RPostgres::Postgres())` verified (db `fwapg`, FWA schemas present)
 - Implemented portability code (Phases 1.3, 2, 3): DB repoint in `01`/`02`/`05`, DEM swap to `flooded::fl_dem_aoi()` (MRDEM-30) + `slope=NULL`, GIS-copy gated on `update_gis`; stale tunnel/bcfishpass header notes corrected; all scripts parse
-- Next: run `01` (build stream network against local fwapg), then `02`/`03` to regenerate, then Phase 5 compare vs main
+- Hit missing parameter CSVs (gitignored, M4-only). Traced provenance: bcfishpass `example_newgraph` → vendored in `fresh/inst/extdata` → hand-copied to `data/lulc` (the hand-bomb). Repointed `01` to read them from `fresh` via `system.file(..., package="fresh")` — no M4 dependency, no need to add them to `link`. Updated issue #147 (edited body) + CLAUDE.md CSV-controls note.
+- Next: re-run `01` (now reads params from fresh), then `02`/`03` regenerate, then Phase 5 compare vs main

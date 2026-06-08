@@ -52,12 +52,14 @@ if (test_mode) {
 # --- Parameters ---
 # Project-local CSVs — edit these to tweak thresholds for this study area.
 # Habitat thresholds (gradient, channel width, MAD per species)
-params_all <- frs_params(csv = here::here("data", "lulc",
-  "parameters_habitat_thresholds.csv"))
+params_all <- frs_params(csv = system.file("extdata",
+  "parameters_habitat_thresholds.csv", package = "fresh"))
 params_co <- params_all$CO
 
-# Access gradient + spawn gradient min
-params_fresh <- read.csv(here::here("data", "lulc", "parameters_fresh.csv"))
+# Access gradient + spawn gradient min.
+# Parameter CSVs come from the fresh package (vendored from bcfishpass
+# example_newgraph) -- not hand-copied project files -- so the build is reproducible.
+params_fresh <- read.csv(system.file("extdata", "parameters_fresh.csv", package = "fresh"))
 co_fresh <- params_fresh[params_fresh$species_code == "CO", ]
 
 # Minimum stream order for flood modelling

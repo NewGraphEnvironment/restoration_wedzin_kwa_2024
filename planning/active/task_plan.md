@@ -16,6 +16,7 @@ and confirming the numbers don't diverge materially from `main`.
 - [x] 1.1 Document fwapg DB prerequisite + fresh Docker path in `scripts/README.md` + `scripts/floodplain_lcc/README.md` (credit fwapg as the engine, fresh as the wrapper)
 - [x] 1.2 File `fresh` issue to generalize `frs_db_conn()` off `PG_*_SHARE` → standard libpq env vars ([NewGraphEnvironment/fresh#213](https://github.com/NewGraphEnvironment/fresh/issues/213)) — separate, non-blocking
 - [x] 1.3 Point pipeline DB connection at the local fwapg DB via standard libpq env vars: replace `frs_db_conn()` in `01`/`02`/`05` with `DBI::dbConnect(RPostgres::Postgres())` (credential-free; reads `PGHOST`/`PGPORT`/`PGDATABASE`/`PGUSER`/`PGPASSWORD`). No tunnel. Added libpq vars to `~/.Renviron`; bare connect verified against local fwapg.
+- [x] 1.5 Read parameter CSVs (`parameters_habitat_thresholds.csv`, `parameters_fresh.csv`) from the `fresh` package (`system.file(..., package="fresh")`) instead of hand-copied gitignored project files — `fresh` vendors them from bcfishpass `example_newgraph`. Unblocks M1 (no M4 file needed). Issue #147 updated.
 - [ ] 1.4 (Optional, write-back only) sync GIS project via Mergin — only needed for `update_gis=TRUE` copy-back, not for the build
 
 ## Phase 2: Switch DEM source to national MRDEM-30
