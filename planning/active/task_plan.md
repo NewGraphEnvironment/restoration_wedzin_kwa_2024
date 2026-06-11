@@ -28,6 +28,14 @@ and confirming the numbers don't diverge materially from `main`.
 ## Phase 3: Unify copy-to-GIS switch under `update_gis`
 - [x] 3.1 In `01`, `02`, `03` replaced `dir.exists(path_gis)`-only gate and script-local `copy_to_qgis` (03:50) with `isTRUE(params$update_gis) && dir.exists(params$path_gis)`
 
+## Phase 3.5: Modernize 01 to link ([#148](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/148))
+- [x] 3.5.1 Inspected `link` internals — persist schema via `cfg$pipeline$schema`; access in `streams_access.access_co` (0=blocked,1=modelled,2=obs-confirmed); per RUNBOOK
+- [x] 3.5.2 Rewrote `01` to `link`: `lnk_config("bcfishpass")` → full pipeline for `aoi="BULK"` into dedicated schema `neexdzii`, `dams=TRUE`, `mapping_code=FALSE`. Persist verified routed to `neexdzii` — shared `fresh.*` BULK rows untouched (42861). Needs link >= 0.43.0 (#218: access without mapping_code).
+- [x] 3.5.3 Subset Neexdzii reach via `fresh::frs_watershed_at_measure(blk, drm_confluence)` + spatial filter
+- [x] 3.5.4 Export: `aquatic_network.gpkg` `streams_co3` (access_co IN (1,2), order≥3, +`upstream_area_ha`/`map_upstream` joined from fwapg) + `waterbodies_co3` (1915 + 215)
+- [x] 3.5.5 Validated: `02` reads the gpkg and runs with national DEM → `floodplain.gpkg` (co_ff02/04/06). Also required `flooded` >= 0.3.1 (`fl_dem_aoi`).
+- [ ] 3.5.6 Document reproducible DB build in `scripts/README.md` (don't rebuild); pin `link`+`fresh`+`flooded` in `renv.lock`
+
 ## Phase 4: Regenerate LULC layers from national DEM
 - [ ] 4.1 Run `02_floodplain_model.R` (national DEM) → new `floodplain.gpkg`
 - [ ] 4.2 Run `03_lulc_classify.R` (drift STAC) → new `floodplain_landcover.gpkg`, `rasters/co_ff04/`, `lulc_summary.rds`
