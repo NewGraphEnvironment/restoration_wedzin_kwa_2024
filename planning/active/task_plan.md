@@ -17,7 +17,7 @@ and confirming the numbers don't diverge materially from `main`.
 - [x] 1.2 File `fresh` issue to generalize `frs_db_conn()` off `PG_*_SHARE` → standard libpq env vars ([NewGraphEnvironment/fresh#213](https://github.com/NewGraphEnvironment/fresh/issues/213)) — separate, non-blocking
 - [x] 1.3 Point pipeline DB connection at the local fwapg DB via standard libpq env vars: replace `frs_db_conn()` in `01`/`02`/`05` with `DBI::dbConnect(RPostgres::Postgres())` (credential-free; reads `PGHOST`/`PGPORT`/`PGDATABASE`/`PGUSER`/`PGPASSWORD`). No tunnel. Added libpq vars to `~/.Renviron`; bare connect verified against local fwapg.
 - [x] 1.5 Read parameter CSVs (`parameters_habitat_thresholds.csv`, `parameters_fresh.csv`) from the `fresh` package (`system.file(..., package="fresh")`) instead of hand-copied gitignored project files — `fresh` vendors them from bcfishpass `example_newgraph`. Unblocks M1 (no M4 file needed). Issue #147 updated.
-- [ ] 1.4 (Optional, write-back only) sync GIS project via Mergin — only needed for `update_gis=TRUE` copy-back, not for the build
+- [x] 1.4 Documented public-safe Mergin sync: `scripts/gis/mergin_sync.R` (mergin CLI via `system2` + `MERGIN_*` env vars, no `rfp`) — pull/push/status for `newgraph/restoration_wedzin_kwa` at `path_gis`. Documented in `scripts/README.md`. Pull also retrieves the old (main) outputs for the network comparison.
 
 ## Phase 2: Switch DEM source to national MRDEM-30
 - [x] 2.1 In `scripts/floodplain_lcc/02_floodplain_model.R` replace `path_dem`/`path_slope` reads + crop (and the obsolete hardcoded bcfishpass clip block) with `dem <- flooded::fl_dem_aoi(streams, buffer = buf, target_crs = sf::st_crs(streams))`

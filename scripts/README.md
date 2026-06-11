@@ -55,6 +55,25 @@ Versioning is **manual** (no fledge). For each content change:
 
 Patch digit increments during `0.2.x` development (e.g. `0.2.9` → `0.2.10`).
 
+## Collaborative GIS sync (Mergin)
+
+The shared GIS project `newgraph/restoration_wedzin_kwa` on [Mergin Maps](https://merginmaps.com/)
+is the project's single collaborative spatial environment. `scripts/gis/mergin_sync.R`
+drives the `mergin` CLI (via `system2()`, auth from `MERGIN_USERNAME`/`MERGIN_PASSWORD`
+env vars — no private package dependency) to:
+
+```bash
+Rscript scripts/gis/mergin_sync.R status   # pending local/server changes
+Rscript scripts/gis/mergin_sync.R pull     # download (first time) / pull updates into path_gis
+Rscript scripts/gis/mergin_sync.R push     # upload local changes
+```
+
+The round-trip: **pull** the project to `path_gis` (`index.Rmd` YAML) → run the pipeline
+with `update_gis = TRUE` so `01`–`03` burn their outputs (`aquatic_network.gpkg`,
+`floodplain.gpkg`, `floodplain_landcover.gpkg`, `subbasins.gpkg`) into the project →
+**push** so the team gets the updated layers on desktop QGIS and in the field. Install the
+CLI once with `pip install mergin-client`.
+
 ## Other Scripts
 
 See `scripts/gis/`, `scripts/api_skt.R`, `scripts/fwa_query.R`, etc. for data ingestion and GIS processing outside the main pipeline.
