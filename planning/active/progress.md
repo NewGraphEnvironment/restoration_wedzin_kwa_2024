@@ -15,4 +15,7 @@
 - Rewrote `01` onto `link` 0.43.0 (config-driven, `aoi="BULK"` → dedicated `neexdzii` schema; persist verified not clobbering `fresh.*`). Other agent landed link#218 (access without mapping_code); confirmed via docs. access_co IN (1,2) = accessible (1 modelled, 2 obs-confirmed).
 - Export: `aquatic_network.gpkg` streams_co3 (1915, accessible order≥3, upstream_area_ha+map_upstream joined from fwapg) + waterbodies_co3 (215).
 - Ran `02` (national MRDEM-30) on the link network → `floodplain.gpkg` (co_ff02/04/06). Required `flooded` 0.3.1 (`fl_dem_aoi`).
-- Next: commit `01` rewrite, then `03` (drift LULC) → compare vs main; then renv pin + DB-build docs
+- Committed `01` link rewrite (aa251d0); ran full chain (02 national DEM, 03 drift LULC) → regenerated floodplain + landcover (bcfishpass config).
+- Deep investigation of old-gpkg vs link network difference (2026-06-12..14): RESOLVED. Network identical (deterministic fwa_upstream, confirmed against db_newgraph tunnel); the ~56 km accessibility difference is `fresh::frs_break_find`'s gradient algorithm change (#87 island-based, adapted from bcfishpass) — old `01` used #56-era, link uses current/bcfishpass-accurate. No `frs` update needed. See findings.md.
+- Switched `01` to `lnk_config("default")` (subsurface OFF, NewGraph methodology) + added `DROP SCHEMA` before run (config-switch persist fix). Default network: 1936 segs / 678.2 km.
+- Next: re-run `02`→`03` on default-config network, numeric comparison vs main, version/NEWS + appendix methods note, renv pin.

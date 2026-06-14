@@ -65,4 +65,36 @@ gate copy-to-GIS under `update_gis`, regenerate + compare.
 - **Mergin sync demoted.** With the national DEM, `path_gis` supplies no build input; Mergin sync
   is only the optional `update_gis=TRUE` write-back, not a build dependency.
 
+## Network / accessibility investigation (2026-06-12..14) — RESOLVED
+
+Investigated why the link-derived coho network differed from the old (main) gpkg.
+Conclusion: the network *grab* is identical; the difference is the **`fresh::frs_break_find`
+gradient algorithm changing** between old `01` and now.
+
+- **Network is identical across databases.** `frs_network` reaches upstream purely via
+  `whse_basemapping.fwa_upstream(wscode_ltree, localcode_ltree)` (deterministic FWA topology).
+  Pulled from the `db_newgraph` tunnel (the DB old `01` used) AND local fwapg: both give
+  **4158.7 km all-order / 919.3 km order≥3**, identical to the old gpkg. Differing segment
+  *counts* (old 24,114 vs raw 8,876) are just segmentation (old `01` broke at barriers+habitat).
+  So `linear_feature_id`/segment-count comparisons were invalid the whole time.
+- **The only real difference is CO accessibility:** old accessible 733.9 km vs link 678.2 km
+  (~56 km), on the identical 919 km backbone. Both are clean subsets (no over-grab).
+- **Root cause = `frs_break_find` gradient method changed.** Old `01` used the #56-era version;
+  link uses current. fresh #87 ("Island-based gradient breaks: entry only, min 100m sustained,
+  **adapted from bcfishpass `gradient_barriers_load.sql`**"), #118, #128 rewrote gradient
+  detection to reproduce bcfishpass. So current `frs_break_find` is the bcfishpass-accurate one
+  (~99% parity); old `01`'s 734 km used the superseded gradient method. NOT a DB, config,
+  subsurface, anthropogenic, or new-table difference.
+- **link uses `fresh::frs_break_find` for gradient** (`lnk_pipeline_prepare.R:347`) — same
+  function old `01` called; no `frs` update needed (already #87+). Old gpkg is simply stale.
+- **Config:** switched `01` from `lnk_config("bcfishpass")` to `lnk_config("default")` — the
+  NewGraph methodology bundle leaves `subsurfaceflow` OFF (bcfishpass opts it in for parity).
+  Subsurface accounted for only ~5 km of the gap anyway.
+- **link gotcha fixed in `01`:** `lnk_persist_init` only creates persist tables when absent, so
+  switching configs (different species set, e.g. `rb`) on an existing schema fails the persist
+  INSERT. `01` now `DROP SCHEMA neexdzii CASCADE` before the run.
+- **Decision:** use the link default-config network (current `frs`, bcfishpass-accurate). The
+  new floodplain tree-loss is *larger* than main despite the *smaller* network → driven by the
+  DEM (30 m MRDEM-30 vs 25 m), not accessibility.
+
 _(log regeneration / comparison results below as execution proceeds)_

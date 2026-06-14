@@ -43,18 +43,20 @@ aoi_wsg <- "BULK"       # watershed group containing Neexdzii
 schema  <- "neexdzii"   # dedicated schema -- do NOT clobber shared fresh.*
 
 # --- Run the link habitat pipeline for the BULK watershed group ---
-# Default bcfishpass config; persist into the dedicated `neexdzii` schema by
-# overriding cfg$pipeline$schema (so the shared province-wide fresh.* tables are
-# untouched). dams = TRUE is the documented default (conn_tunnel = conn loads the
-# LOCAL cabd.dams, link#137, no real tunnel).
+# Use the `default` config (NewGraph methodology), NOT `bcfishpass`. They differ
+# in the natural-barrier set: bcfishpass opts in `subsurfaceflow` for parity,
+# whereas the default bundle leaves it OFF (config.yaml: "NewGraph methodology
+# decision"). Default => natural access barriers = gradient + falls only, which
+# matches the historical 01 accessibility definition. Persist into the dedicated
+# `neexdzii` schema by overriding cfg$pipeline$schema (shared fresh.* untouched).
 #
-# mapping_code = FALSE: we don't need the bcfp mapping-code token strings. As of
-# link#218 (v0.43.0) `streams_access` (with access_co) is built regardless of this
-# flag -- access is foundational. access_co is NATURAL-barrier accessibility (falls
-# + gradient; dams/anthropogenic excluded from access since link#200) = potential-
-# habitat reachability, exactly old 01's "accessible" definition.
+# dams = TRUE is the documented default (conn_tunnel = conn loads the LOCAL
+# cabd.dams, link#137, no real tunnel). mapping_code = FALSE: we don't need the
+# token strings; as of link#218 (v0.43.0) `streams_access` (access_co) is built
+# regardless. access_co is NATURAL-barrier accessibility (dams/anthropogenic are
+# excluded from access since link#200) = potential-habitat reachability.
 message("Loading link config + overrides...")
-cfg <- lnk_config("bcfishpass")
+cfg <- lnk_config("default")
 cfg$pipeline$schema <- schema
 loaded <- lnk_load_overrides(cfg)
 
@@ -62,6 +64,12 @@ loaded <- lnk_load_overrides(cfg)
 # of orphaning the backend.
 DBI::dbExecute(conn, "SET statement_timeout = '1800000'")  # 30 min
 DBI::dbExecute(conn, "SET lock_timeout = '60000'")          # 60 s
+
+# Start the dedicated persist schema fresh. lnk_persist_init only creates tables
+# when absent (force_recreate = FALSE), so a leftover schema from a prior run with
+# a different config/species set mismatches the persist INSERT (e.g. a missing
+# has_barriers_rb_dnstr column). Dropping guarantees columns match the config.
+DBI::dbExecute(conn, sprintf("DROP SCHEMA IF EXISTS %s CASCADE", schema))
 
 message("Running link pipeline for WSG ", aoi_wsg, " into schema ", schema, " ...")
 lnk_pipeline_run(conn, aoi = aoi_wsg, cfg = cfg, loaded = loaded,
