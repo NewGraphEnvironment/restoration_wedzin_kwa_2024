@@ -41,13 +41,14 @@ and confirming the numbers don't diverge materially from `main`.
 - [ ] 4.2 Run `03_lulc_classify.R` (drift STAC) → new `floodplain_landcover.gpkg`, `rasters/co_ff04/`, `lulc_summary.rds`
 
 ## Phase 5: Sanity check vs main + rebuild
-- [ ] 5.1 Extract baseline numbers from committed `docs/2043-Appendix-lulc.html` (bcfishpass DEM)
-- [ ] 5.2 Rebuild appendix (`scripts/preview.R` or `run.R`); compare per-sub-basin tree loss / ag gain + total floodplain tree loss
-- [ ] 5.3 Flag any sub-basin with substantial shift; investigate floodplain-extent delta before accepting
+- [x] 5.1 Authoritative served baseline confirmed via Mergin sync: `floodplain_landcover.gpkg` → `transition_co_ff04_2017_2023` = **−646.7 ha** tree loss (stored==geometry; matches ~647 headline). New build = **−746 ha**.
+- [x] 5.2 Compared: +15% (≈+100 ha) total transition area AND tree loss; both sieved identically (1ha raster sieve + geometry recompute, verified). Clip behaviour verified correct (st_intersection, 0.00 ha Y-vs-Z, 9.9 ha trimmed outside study area).
+- [x] 5.3 Divergence understood + accepted: DEM-dominated (30m MRDEM-30 vs 25m bcfishpass); network-vintage minor. Decision (2026-06-25): accept + document, no flood_factor retune. Network-difference root cause investigation closed (see findings.md reconciliation).
 
 ## Phase 6: Finalize
-- [ ] 6.1 NEWS.md line for the DEM-source change; confirm version (0.2.10)
-- [ ] 6.2 Full build via `scripts/run.R` (gitbook + exec summary PDF)
+- [x] 6.1 NEWS.md `0.2.11` entry (portable build + DEM source + headline ~647→~746); `DESCRIPTION` bumped to 0.2.11
+- [x] 6.1b Update report methods to match what we did: `0300-methods.Rmd` (network via `link`, national 30 m MRDEM-30) + `2043-Appendix-lulc.Rmd` (30 m DEM / MRDEM-30, coho-accessible)
+- [ ] 6.2 Full build via `scripts/run.R` (gitbook + exec summary PDF) — propagates numbers ~647→~746
 - [ ] 6.3 Commit, push, `gh pr merge`; watch post-merge CI
 
 ---

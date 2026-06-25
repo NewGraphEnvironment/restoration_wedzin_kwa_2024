@@ -1,4 +1,14 @@
 
+# restoration_wedzin_kwa_2024 DRAFT 0.2.11 (2026-06-25)
+
+- make the floodplain LULC pipeline fully reproducible/portable so the report builds on any machine ([#147](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/147), [#148](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/148)):
+  - source the DEM from the national MRDEM-30 via `flooded::fl_dem_aoi()` instead of a hand-placed 25 m bcfishpass `habitat_lateral` DEM
+  - build the stream network with `link` (default config) against a local `fwapg` database via standard libpq env vars, replacing the `fresh`-over-SSH-tunnel extraction
+  - read pipeline parameter CSVs from the `fresh` package rather than hand-copied project files
+  - gate the copy-to-GIS step behind `update_gis`; add a public-safe Mergin sync (`scripts/gis/mergin_sync.R`, `mergin` CLI) replacing private package calls
+- headline floodplain tree loss revised from ~647 ha to ~746 ha. The change is driven primarily by DEM resolution: the 30 m MRDEM-30 yields a ~15% wider modelled floodplain at flood_factor 4 than the prior 25 m DEM. The network was independently recomputed with `link` (validated to reproduce bcfishpass accessibility within ~2%); its contribution to the shift is minor and secondary to the DEM
+- update methods (land cover classification) and LULC appendix to describe the national 30 m MRDEM-30 DEM and the `link` network extraction
+
 # restoration_wedzin_kwa_2024 DRAFT 0.2.10 (2026-06-06)
 
 - correct Wet'suwet'en law spelling to "Anuk Nu'at'en" throughout (was "Ink"/"Inuk Nu'at'en" in executive summary, introduction, and recommendations)

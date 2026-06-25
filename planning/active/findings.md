@@ -97,4 +97,64 @@ gradient algorithm changing** between old `01` and now.
   new floodplain tree-loss is *larger* than main despite the *smaller* network → driven by the
   DEM (30 m MRDEM-30 vs 25 m), not accessibility.
 
-_(log regeneration / comparison results below as execution proceeds)_
+## Authoritative baseline confirmed (2026-06-15) — Mergin sync
+
+Pulled the served `floodplain_landcover.gpkg` from Mergin (`newgraph/restoration_wedzin_kwa`,
+`scripts/gis/mergin_sync.R pull` → `~/Projects/gis/restoration_wedzin_kwa`). Computed tree
+loss from `transition_co_ff04_2017_2023` (the sieved ≥1 ha transition vector):
+
+- **Tree loss = −646.7 ha** (stored `area_ha` AND geometry-recompute AGREE; total transition
+  area 1354.4 ha; Trees lost 806.3 ha, gained 159.5 ha). **Matches the served ~647 ha headline
+  exactly.**
+- **The Mergin file is current, NOT stale.** In this authoritative file stored `area_ha` ==
+  geometry area, so its transition polygons are already post-clip/correct. The earlier
+  −1108/−1029 figure was a misread of a different/stale artifact (total area 14,068 ha — ~10×
+  the correct 1354 ha — i.e. an unsieved or pre-intersection layer), not the served file.
+- **Real baseline gap:** served/main = −646.7 ha (old fresh network 734 km, bcfishpass 25 m
+  DEM) vs new reproducible build = −746 ha (link default network 678 km, MRDEM-30 30 m DEM).
+  New build runs ~+100 ha / ~+15% hotter despite a *smaller* accessible network → driven by
+  the **DEM** (30 m vs 25 m; `flood_factor=4` was tuned for 25 m), not accessibility. This is
+  the documented divergence to carry into the appendix methods note.
+
+## Network-difference reconciliation — SUPERSEDES the 2026-06-12..14 conclusion (2026-06-25)
+
+The earlier "RESOLVED" section below pinned the served-vs-link accessibility delta on a
+`frs_break_find` gradient-algorithm change (#87 island-based). **That attribution is retracted
+as over-confident** — we could not (and need not) verify a single root cause. Git + NEWS
+archaeology gives the actual, documented history:
+
+- **Served floodplain provenance (the `co_ff04`, ~647 ha build):** modelled **March 2026**.
+  NEWS v0.2.6 (2026-03-19, #138): "build stream network with `fresh` classification pipeline
+  instead of bcfishpass views" + "flood_factor reduced from 6 to 4". The last main `01`
+  (`1c2e3e9`) connects via `frs_db_conn()` (**bcfp tunnel**), builds the network with
+  `fresh::frs_network` from FWA base, computes access with `fresh::frs_break_find`
+  (gradient @ 15% + `bcfishpass.falls_vw` falls), exports `accessible IS TRUE & stream_order
+  >= 3`. → User's memory ("pulled from bcfp tunnel via fresh") is correct; it also used
+  `frs_break_find` on that tunnel data, so "tunnel pull" and "frs_break_find" are not mutually
+  exclusive. (The original #115 pure `bcfishpass.streams_co_vw` pull at order≥4 / ff=6 was a
+  *predecessor*, replaced before the served report.)
+- **New build:** `link` default config (June 2026), `fresh::frs_break_find` under the hood,
+  against **local fwapg** + national **MRDEM-30 (30 m)** DEM, ff=4, order≥3.
+- **Why we stop here:** the link agent confirmed link's access model reproduces bcfishpass
+  within ~2% (CO 97.90%, issue #200) — but that parity work is **recent, well after the served
+  floodplain was modelled**. So the served network used an earlier `fresh` vintage; the small
+  (~56 km / <8%) accessibility delta reflects `fresh`'s evolution between March and June, not a
+  cleanly isolable single cause. Not worth chasing.
+- **Headline driver:** the ~647 → ~746 ha tree-loss shift is **DEM-dominated** (30 m MRDEM-30
+  vs 25 m bcfishpass habitat_lateral → wider floodplain at ff=4); accessibility/network-vintage
+  is a minor secondary contributor.
+- **Decision (user, 2026-06-25):** accept + document the methodology change in NEWS; do not
+  retune flood_factor, do not chase the network delta further. The new pipeline is the
+  reproducible/portable one going forward.
+
+## Sub-basin coverage gap — EXPECTED, no action (2026-06-16)
+
+Checked the 346.6 ha of floodplain (`co_ff04`) falling outside the sub-basin union. It is NOT
+a distributed rim or silent error: it is 3 discrete chunks at the analysis-reach extremities —
+267 ha (77%) at the downstream confluence end (past the `Bulkley Confluence-McKilligan`
+boundary cut), 59 + 20 ha at the upstream/headwater end, plus 2 × 0.2 ha true slivers. The
+DEM-derived floodplain simply overshoots the topology-derived sub-basin boundary cuts at the
+two ends of the reach. `dft_transition_vectors()` correctly trims this out-of-reporting-frame
+area via its zonal intersection. User confirmed: **expected behaviour, all good — no drift
+issue.** Does not affect the −647 vs −746 comparison (same sub-basins/trim in both builds).
+Map: /tmp/gap_map.png.
