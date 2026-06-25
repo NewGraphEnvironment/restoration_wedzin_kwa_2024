@@ -68,9 +68,14 @@ if (action == "pull") {
     # Existing local copy -> fetch server changes
     run_mergin(c("pull"), wd = local_dir)
   } else {
-    # First time -> download the whole project into local_dir
+    # First time -> download the whole project into local_dir. Run the CLI from
+    # local_dir's parent (NOT the report repo) so mergin's client-log.txt/.cache
+    # land outside version control. `download` takes local_dir as an absolute
+    # path arg, so cwd only governs where the stray log is written.
     message("No local copy at ", local_dir, " -- downloading project (large, one-time)...")
-    run_mergin(c("download", mergin_project, local_dir))
+    parent_dir <- dirname(local_dir)
+    dir.create(parent_dir, recursive = TRUE, showWarnings = FALSE)
+    run_mergin(c("download", mergin_project, local_dir), wd = parent_dir)
   }
   message("Pull complete: ", local_dir)
 

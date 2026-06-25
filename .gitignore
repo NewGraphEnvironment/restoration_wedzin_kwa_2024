@@ -6,6 +6,9 @@ _book
 _bookdown_files
 rsconnect
 
+# mergin CLI log/cache (dropped into cwd when mergin runs from the repo root)
+.mergin/
+
 
 */~$*
 
