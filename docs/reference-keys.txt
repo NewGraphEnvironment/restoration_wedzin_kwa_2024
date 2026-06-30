@@ -210,9 +210,7 @@ fig:photo-bulkley-wilson-03-07
 fig:photo-bulkley-wilson-03-08
 tab:tab-uav-imagery-app-cap
 fig:map-lulc-transitions
-fig:plot-lulc-change
 fig:plot-lulc-ag-stacked
-fig:plot-lulc-trees-ag
 tab:tab-lulc-summary-cap
 fig:plot-lulc-ranking-ha
 tab:tab-lulc-wide-cap
@@ -288,8 +286,6 @@ collaborative-data-management-1
 historic-data-products
 recommendations
 modelled-floodplain
-land-cover-by-sub-basin
 agriculture-definition
-trees-vs-agriculture
 sub-basin-ranking
 land-cover-composition
