@@ -30,8 +30,9 @@ data/inputs_extracted/fwa_network_trace.rds
 # Cached spatial layers (regenerate via scripts/data_map-study-area.R)
 data/spatial/
 
-# LULC rasters and floodplain outputs (regenerate via scripts/lulc_*.R)
-data/lulc/
+# LULC outputs are committed so the report builds without re-running the pipeline.
+# Only the auto-generated raster statistics sidecars are ignored (spurious churn).
+data/lulc/**/*.aux.xml
 
 # Large time series images (regeneratable)
 fig/time_series/*.png
