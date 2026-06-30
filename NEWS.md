@@ -1,5 +1,5 @@
 
-# restoration_wedzin_kwa_2024 DRAFT 0.2.11 (2026-06-25)
+# restoration_wedzin_kwa_2024 DRAFT 0.2.11 (2026-06-30)
 
 - make the floodplain LULC pipeline fully reproducible/portable so the report builds on any machine ([#147](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/147), [#148](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/148)):
   - source the DEM from the national MRDEM-30 via `flooded::fl_dem_aoi()` instead of a hand-placed 25 m bcfishpass `habitat_lateral` DEM
@@ -8,6 +8,7 @@
   - gate the copy-to-GIS step behind `update_gis`; add a public-safe Mergin sync (`scripts/gis/mergin_sync.R`, `mergin` CLI) replacing private package calls
 - headline floodplain tree loss revised from ~647 ha to ~746 ha. The change is driven primarily by DEM resolution: the 30 m MRDEM-30 yields a ~15% wider modelled floodplain at flood_factor 4 than the prior 25 m DEM. The network was independently recomputed with `link` (validated to reproduce bcfishpass accessibility within ~2%); its contribution to the shift is minor and secondary to the DEM
 - update methods (land cover classification) and LULC appendix to describe the national 30 m MRDEM-30 DEM and the `link` network extraction
+- make the report itself build from scratch: complete and de-duplicate `scripts/packages.R` (add missing packages incl. `drift`/`link`/`ngr`/`fwapgr`/`xciter`/`staticimports`/`terra`/`tmap`/`stars`/`maptiles`/`janitor`/`chk`/`here`; move `ggdark` to GitHub source after its CRAN archival; add a CRAN-mirror guard so a bare `Rscript` can install via `pak`; drop unused `leafem`/`fly`/`readwritesqlite` and the duplicate CRAN `fishbc`), and default `update_bib: FALSE` so the build needs no running Zotero (the `references.bib` is shipped)
 
 # restoration_wedzin_kwa_2024 DRAFT 0.2.10 (2026-06-06)
 
