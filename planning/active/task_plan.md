@@ -1,113 +1,63 @@
-# Task Plan: Multi-Scenario Floodplain Modelling Pipeline
+# Task Plan: Reproducible report build — national DEM + Mergin-synced GIS (#147)
 
-**Goal:** Run flooded VCA at multiple flood_factor scenarios to map nested floodplain zones, run drift LULC change detection within each zone stratified by sub-basin (25m DEM), and produce site-specific template restoration design maps at 1m LiDAR (2-3 pilot sites).
+**Goal:** Make the report rebuildable on any machine by sourcing the DEM from the national
+MRDEM-30 (`flooded::fl_dem_aoi`) instead of the local bcfishpass DEM, syncing the GIS project
+via Mergin, gating the copy-to-GIS step under `update_gis`, then regenerating the LULC layers
+and confirming the numbers don't diverge materially from `main`.
 
 **Status:** `in_progress`
-**Created:** 2026-03-17
-**Issue:** [#123](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/123)
-**Branch:** `123-floodplain-refinement`
-**SRED:** Relates to NewGraphEnvironment/sred-2025-2026#4
+**Created:** 2026-06-08
+**Issue:** [#147](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/147)
+**Branch:** `lulc-appendix-streamline` (continues here — also carries appendix streamline + version bump)
 
 ---
 
-## Phase 1: Literature Review & Scenario Lock
-**Status:** `complete`
-**Upstream:** Research here feeds [flooded#28](https://github.com/NewGraphEnvironment/flooded/issues/28) — VCA parameter documentation + default scenarios will live in flooded
+## Phase 1: Build prerequisites + DB connection (local fwapg)
+- [x] 1.1 Document fwapg DB prerequisite + fresh Docker path in `scripts/README.md` + `scripts/floodplain_lcc/README.md` (credit fwapg as the engine, fresh as the wrapper)
+- [x] 1.2 File `fresh` issue to generalize `frs_db_conn()` off `PG_*_SHARE` → standard libpq env vars ([NewGraphEnvironment/fresh#213](https://github.com/NewGraphEnvironment/fresh/issues/213)) — separate, non-blocking
+- [x] 1.3 Point pipeline DB connection at the local fwapg DB via standard libpq env vars: replace `frs_db_conn()` in `01`/`02`/`05` with `DBI::dbConnect(RPostgres::Postgres())` (credential-free; reads `PGHOST`/`PGPORT`/`PGDATABASE`/`PGUSER`/`PGPASSWORD`). No tunnel. Added libpq vars to `~/.Renviron`; bare connect verified against local fwapg.
+- [x] 1.5 Read parameter CSVs (`parameters_habitat_thresholds.csv`, `parameters_fresh.csv`) from the `fresh` package (`system.file(..., package="fresh")`) instead of hand-copied gitignored project files — `fresh` vendors them from bcfishpass `example_newgraph`. Unblocks M1 (no M4 file needed). Issue #147 updated.
+- [x] 1.4 Documented public-safe Mergin sync: `scripts/gis/mergin_sync.R` (mergin CLI via `system2` + `MERGIN_*` env vars, no `rfp`) — pull/push/status for `newgraph/restoration_wedzin_kwa` at `path_gis`. Documented in `scripts/README.md`. Pull also retrieves the old (main) outputs for the network comparison.
 
-- [x] 1.1 Semantic search Zotero for each scenario's ecological basis
-- [x] 1.2 Build BBT citation keys per scenario via `/zotero-lookup`
-- [x] 1.3 Document rationale in findings.md — cover ALL VCA params (flood_factor, slope_threshold, max_width, cost_threshold, size_threshold, hole_threshold, precip), not just flood_factor
-- [x] 1.4 Add columns to `data/lulc/flood_scenarios.csv`: `ecological_process`, `citations`
-- [x] 1.5 Note: flood_factor-to-process mapping is interpretive framework, not calibrated thresholds
+## Phase 2: Switch DEM source to national MRDEM-30
+- [x] 2.1 In `scripts/floodplain_lcc/02_floodplain_model.R` replace `path_dem`/`path_slope` reads + crop (and the obsolete hardcoded bcfishpass clip block) with `dem <- flooded::fl_dem_aoi(streams, buffer = buf, target_crs = sf::st_crs(streams))`
+- [x] 2.2 Pass `slope = NULL` to `fl_valley_confine()` (derive slope from DEM); dropped the separate slope raster
+- [x] 2.3 Kept `flood_scenarios.csv` (`run=TRUE`) unchanged so only the DEM input changes (clean A/B)
+- [ ] 2.4 Ensure streams/waterbodies inputs exist (`fresh_streams_co3.gpkg`, `fresh_waterbodies_co3.gpkg`): re-run `01_network_extract.R` against the local fwapg DB — record any deviation in findings.md
 
----
+## Phase 3: Unify copy-to-GIS switch under `update_gis`
+- [x] 3.1 In `01`, `02`, `03` replaced `dir.exists(path_gis)`-only gate and script-local `copy_to_qgis` (03:50) with `isTRUE(params$update_gis) && dir.exists(params$path_gis)`
 
-## Phase 2: Add `dft_rast_zonal()` to drift
-**Status:** `pending`
-**Repo:** `/Users/airvine/Projects/repo/drift`
+## Phase 3.5: Modernize 01 to link ([#148](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/148))
+- [x] 3.5.1 Inspected `link` internals — persist schema via `cfg$pipeline$schema`; access in `streams_access.access_co` (0=blocked,1=modelled,2=obs-confirmed); per RUNBOOK
+- [x] 3.5.2 Rewrote `01` to `link`: `lnk_config("bcfishpass")` → full pipeline for `aoi="BULK"` into dedicated schema `neexdzii`, `dams=TRUE`, `mapping_code=FALSE`. Persist verified routed to `neexdzii` — shared `fresh.*` BULK rows untouched (42861). Needs link >= 0.43.0 (#218: access without mapping_code).
+- [x] 3.5.3 Subset Neexdzii reach via `fresh::frs_watershed_at_measure(blk, drm_confluence)` + spatial filter
+- [x] 3.5.4 Export: `aquatic_network.gpkg` `streams_co3` (access_co IN (1,2), order≥3, +`upstream_area_ha`/`map_upstream` joined from fwapg) + `waterbodies_co3` (1915 + 215)
+- [x] 3.5.5 Validated: `02` reads the gpkg and runs with national DEM → `floodplain.gpkg` (co_ff02/04/06). Also required `flooded` >= 0.3.1 (`fl_dem_aoi`).
+- [ ] 3.5.6 Document reproducible DB build in `scripts/README.md` (don't rebuild); pin `link`+`fresh`+`flooded` in `renv.lock`
 
-- [ ] 2.1 File issue in drift
-- [ ] 2.2 Create `R/dft_rast_zonal.R`
-- [ ] 2.3 Create `tests/testthat/test-dft_rast_zonal.R`
-- [ ] 2.4 Roxygen docs with runnable example
-- [ ] 2.5 Export in NAMESPACE, `devtools::document()`
-- [ ] 2.6 Add/extend vignette showing zonal workflow on small AOI
-- [ ] 2.7 `devtools::test()` + `lintr::lint_package()`
-- [ ] 2.8 Commit with `Fixes #N`, bump version
+## Phase 4: Regenerate LULC layers from national DEM
+- [ ] 4.1 Run `02_floodplain_model.R` (national DEM) → new `floodplain.gpkg`
+- [ ] 4.2 Run `03_lulc_classify.R` (drift STAC) → new `floodplain_landcover.gpkg`, `rasters/co_ff04/`, `lulc_summary.rds`
 
-**Function signature:**
-```r
-dft_rast_zonal(x, zones, zone_col = "zone_id", source = "io-lulc", unit = "ha")
-# Returns tibble: zone_id | year | code | class_name | color | n_cells | area | pct
-```
+## Phase 5: Sanity check vs main + rebuild
+- [x] 5.1 Authoritative served baseline confirmed via Mergin sync: `floodplain_landcover.gpkg` → `transition_co_ff04_2017_2023` = **−646.7 ha** tree loss (stored==geometry; matches ~647 headline). New build = **−746 ha**.
+- [x] 5.2 Compared: +15% (≈+100 ha) total transition area AND tree loss; both sieved identically (1ha raster sieve + geometry recompute, verified). Clip behaviour verified correct (st_intersection, 0.00 ha Y-vs-Z, 9.9 ha trimmed outside study area).
+- [x] 5.3 Divergence understood + accepted: DEM-dominated (30m MRDEM-30 vs 25m bcfishpass); network-vintage minor. Decision (2026-06-25): accept + document, no flood_factor retune. Network-difference root cause investigation closed (see findings.md reconciliation).
 
----
-
-## Phase 3: Test VCA Pipeline on 1 Sub-Basin (25m DEM)
-**Status:** `pending`
-**Requires:** SSH tunnel + bcfishpass DEM
-
-- [ ] 3.1 Check out branch `123-floodplain-refinement`
-- [ ] 3.2 Pick 1 test sub-basin with known floodplain features
-- [ ] 3.3 Run `fwa_extract_flood.R` for all 6 scenarios on that sub-basin
-- [ ] 3.4 Inspect: polygon areas increase monotonically with flood_factor?
-- [ ] 3.5 Run zone-stratified LULC on that sub-basin using `dft_rast_zonal()`
-- [ ] 3.6 Review results — does zone stratification reveal different patterns?
-- [ ] 3.7 **Decision point:** proceed to scale up
+## Phase 6: Finalize
+- [x] 6.1 NEWS.md `0.2.11` entry (portable build + DEM source + headline ~647→~746); `DESCRIPTION` bumped to 0.2.11
+- [x] 6.1b Update report methods to match what we did: `0300-methods.Rmd` (network via `link`, national 30 m MRDEM-30) + `2043-Appendix-lulc.Rmd` (30 m DEM / MRDEM-30, coho-accessible)
+- [x] 6.2 Full build via `scripts/run.R` (gitbook + exec summary PDF) — SUCCEEDS from scratch after packages.R fix; numbers propagated ~647→**746 ha** (net trees->ag 661)
+- [x] 6.1c Reproducible from clean checkout: complete `packages.R` (+ ggdark→GH, CRAN-mirror guard, update_bib FALSE) and commit `data/lulc` outputs (22 MB) so no fwapg/DEM/STAC/Zotero needed to build
+- [x] 6.3 Committed, pushed; **PR [#150](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/pull/150)** open (Relates to NewGraphEnvironment/sred#15). Next: review + `gh pr merge` + watch post-merge CI
 
 ---
 
-## Phase 4: Scale Up — Watershed (25m)
-**Status:** `pending`
+## Validation
 
-- [ ] 4.1 Run `fwa_extract_flood.R all` (all 6 scenarios, full watershed)
-- [ ] 4.2 Decide zone boundaries (likely ff02, ff04, ff06, ff12)
-- [ ] 4.3 Add `zone_id`, `zone_boundary` columns to `flood_scenarios.csv`
-- [ ] 4.4 Update `lulc_classify_zones.R`: CSV-driven zones, use `dft_rast_zonal()`
-- [ ] 4.5 Run `lulc_classify_zones.R` (14 sub-basins × 4 zones × 3 years)
-- [ ] 4.6 Validate: zone areas sum ≈ total floodplain per sub-basin
-- [ ] 4.7 Commit outputs
-
----
-
-## Phase 5: Site-Specific Template Maps (1m LiDAR)
-**Status:** `pending`
-**Purpose:** High-resolution restoration design maps for 2-3 pilot sites (200-1000m of stream)
-
-- [ ] 5.1 Select 2-3 sites from `data/gis/sites_prioritized.geojson` (varied valley types)
-- [ ] 5.2 Query stac_dem_bc API — confirm 1m LiDAR coverage at each site
-- [ ] 5.3 For each site: snap → extract reach → fetch 1m DEM → run VCA per flood_factor
-- [ ] 5.4 Produce template restoration design maps showing nested zones
-- [ ] 5.5 Compare 1m vs 25m results at same sites — document resolution effects
-- [ ] 5.6 Script naming TBD (consult)
-
----
-
-## Phase 6: Report Integration
-**Status:** `pending`
-
-- [ ] 6.1 Update `2043-Appendix-lulc.Rmd`: zone-stratified summary table + plot
-- [ ] 6.2 Update methods (0300): nested scenario approach, CSV-generated scenario table
-- [ ] 6.3 Add site-level 1m results as figures/maps
-- [ ] 6.4 Add exploitation caveat to recommendations preamble
-- [ ] 6.5 Rebuild report, version bump, NEWS.md
-
----
-
-## Errors Encountered
-| Error | Attempt | Resolution |
-|-------|---------|------------|
-| (none yet) | | |
-
----
-
-## Key Technical Notes
-
-- **VCA bankfull regression:** `h_bf = 0.054 × A^0.170 × P^0.215`
-- **Precip critical:** Without `map_upstream`, flood depth underestimated ~4x on Bulkley
-- **Stream network:** `streams_co_vw` scoped to coho potential habitat
-- **DB tunnel:** localhost:63333 → bcfishpass/fwapg
-- **25m DEM:** `/Users/airvine/Projects/repo/bcfishpass/model/habitat_lateral/data/temp/BULK/dem.tif`
-- **1m DEM:** stac_dem_bc STAC catalog (query API for coverage)
-- **flood_scenarios.csv:** 6 scenarios (co_ff01-co_ff12), all use min_order=3, anchor_order=1
-- **Annular rings:** rearing = ff04 - ff02, functional = ff06 - ff04, migration = ff12 - ff06
+- [ ] LULC numbers consistent with main (or divergence understood + documented)
+- [ ] `/code-check` clean on each commit
+- [ ] Report builds with no rendering errors
+- [ ] PWF checkboxes match landed work
+- [ ] `/planning-archive` on completion

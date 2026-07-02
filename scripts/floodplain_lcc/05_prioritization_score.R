@@ -33,8 +33,8 @@ library(fresh)
 
 sf_use_s2(FALSE)
 
-# --- DB connection (fresh conn-first API) ---
-conn <- frs_db_conn()
+# --- DB connection (fwapg via standard libpq env vars; local fwapg for portable builds) ---
+conn <- DBI::dbConnect(RPostgres::Postgres())
 
 # --- Paths ---
 out_dir <- here::here("data", "prioritization")

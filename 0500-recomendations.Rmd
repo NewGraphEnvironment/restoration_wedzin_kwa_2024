@@ -4,7 +4,7 @@ activities and resource extraction as well as by the development of linear corri
 extraction roads, and utility infrastructure.  Furthermore the area
 has also been impacted by the legacy of colonization. Recovery efforts must go beyond technical interventions and include a 
 commitment to learning from the vast body of knowledge held by the Wetsuwet'en people. This includes understanding cultural 
-practices, oral tradition (Kungax), Wet'suwet'en Law (Ink Nu'at'en), place names, family connections, house groups (Yihk), 
+practices, oral tradition (Kungax), Wet'suwet'en Law (Anuk Nu'at'en), place names, family connections, house groups (Yihk), 
 poles (Ts'an), the feast system (Bahlats), etc [@harris2011Yinkadinii]. There is extensive literature documenting these 
 histories, including `r ngr::ngr_str_link_url(url_base = "https://open.library.ubc.ca/collections/delgamuukw", anchor_text = "records from the Delgamuukw & Gisday Wa land claims")`  and within the book "Niwhts’ide’ni Hibi’it’ën: The Ways Of Our Ancestors. Witsuwit’en History & Culture 
 Throughout The Millennia" available through  `r ngr::ngr_str_link_url(url_base = "https://www.sd54.bc.ca/contact-us/", anchor_text = "School District #54")`
@@ -44,7 +44,7 @@ The United Nations Decade on Ecosystem Restoration (2021–2030) reinforces thes
 
 Effective restoration requires not just identifying what to do, but establishing who decides. We propose a four-tier governance model anchored in Wet'suwet'en governance:
 
-1. **Watershed Stewardship Council (Decision Authority)** — Wet'suwet'en hereditary leadership and technical advisors. Sets restoration priorities, approves projects, and holds accountability. Grounded in Wet'suwet'en law (Ink Nu'at'en) and land stewardship responsibilities.
+1. **Watershed Stewardship Council (Decision Authority)** — Wet'suwet'en hereditary leadership and technical advisors. Sets restoration priorities, approves projects, and holds accountability. Grounded in Wet'suwet'en law (Anuk Nu'at'en) and land stewardship responsibilities.
 
 2. **Technical Working Group (Science & Planning)** — Biologists, hydrologists, GIS analysts, and restoration practitioners. Develops project designs, monitors outcomes, and adapts approaches. Translates community priorities into implementable plans.
 

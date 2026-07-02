@@ -20,6 +20,9 @@ library(tidyr)
 
 sf::sf_use_s2(FALSE)
 
+# Agriculture superclass (10 m IO LULC can't reliably separate these phases)
+ag_classes <- c("Crops", "Rangeland", "Bare Ground")
+
 lulc_dir <- here::here("data", "lulc")
 
 # Pre-computed by scripts/lulc_classify.R
@@ -38,7 +41,9 @@ floodplain <- sf::st_read(fp_file, layer = "co_ff04", quiet = TRUE) |> sf::st_tr
 
 ## Modelled Floodplain
 
-Land cover change is assessed within the modelled floodplain — the area delineated by the Valley Confinement Algorithm [VCA; @nagel_etal2014LandscapeScale, `flooded` package] for coho rearing/spawning habitat on streams of 3rd order and greater, with lakes and wetlands included. The VCA uses a bankfull depth regression [@hall_etal2007Predictingriver] scaled by `flood_factor = 4` to approximate the functional floodplain — the area regularly influenced by high flows that sustains riparian vegetation, off-channel habitat, and large wood recruitment processes critical to salmon. The flood factor of 4 was selected as a conservative estimate between the empirically validated historical floodplain extent [flood factor = 3 on 10 m DEM; @hall_etal2007Predictingriver] and the recommended range of 5-7 for valley bottom delineation [@nagel_etal2014LandscapeScale], accounting for the coarser vertical resolution of the 25 m DEM used here. The modelled floodplain covers `r round(as.numeric(sf::st_area(sf::st_union(floodplain))) / 1e6, 1)` km² along the Neexdzii Kwa (Bulkley River) and tributaries. All percentages and areas reported below refer to land cover within this modelled floodplain, not the full watershed.
+Land cover change is assessed within the modelled floodplain — the area delineated by the Valley Confinement Algorithm [VCA; @nagel_etal2014LandscapeScale, `flooded` package] for coho-accessible streams of 3rd order and greater, with lakes and wetlands included. The VCA uses a bankfull depth regression [@hall_etal2007Predictingriver] scaled by `flood_factor = 4` to approximate the functional floodplain — the area regularly influenced by high flows that sustains riparian vegetation, off-channel habitat, and large wood recruitment processes critical to salmon. The flood factor of 4 was selected as a conservative estimate between the empirically validated historical floodplain extent [flood factor = 3 on 10 m DEM; @hall_etal2007Predictingriver] and the recommended range of 5-7 for valley bottom delineation [@nagel_etal2014LandscapeScale], accounting for the coarser vertical resolution of the 30 m DEM used here (the national MRDEM-30). The modelled floodplain covers `r round(as.numeric(sf::st_area(sf::st_union(floodplain))) / 1e6, 1)` km² along the Neexdzii Kwa (Bulkley River) and tributaries. All percentages and areas reported below refer to land cover within this modelled floodplain, not the full watershed.
+
+IO Land Use Land Cover (10 m, Sentinel-2) is classified for 2017, 2020, and 2023 using the `drift` pipeline; each sub-basin's modelled floodplain is analyzed independently.
 
 ```{r map-lulc-transitions, eval=gitbook_on, fig.cap="Land cover classification within the modelled floodplain (IO LULC 10 m). Use radio buttons to toggle between 2017, 2020, and 2023 classified layers. Transition overlays show where Trees converted to other classes between 2017 and 2023. Sub-basin boundaries are shown as a toggleable overlay.", out.height="800px"}
 # Use scenario-specific raster dir, fall back to legacy
@@ -55,7 +60,6 @@ classified <- list(
 # Load transition raster (bidirectional, sieved at >= 1.0 ha patches).
 # Filter the display summary to Trees -> agriculture transitions only —
 # this keeps the layer toggles focused on tree-cover loss to agriculture.
-ag_classes <- c("Crops", "Rangeland", "Bare Ground")
 trans_rast <- terra::rast(file.path(fp_dir, "transition.tif"))
 trans_cats <- terra::cats(trans_rast)[[1]]
 parts <- strsplit(trans_cats$transition, " -> ", fixed = TRUE)
@@ -257,63 +261,6 @@ tmap::tm_shape(basemap_stars, bbox = bbox) +
   )
 ```
 
-## Land Cover by Sub-Basin
-
-IO Land Use Land Cover (10 m, Sentinel-2) is classified for 2017, 2020, and 2023 using the `drift` pipeline. Each sub-basin's modelled floodplain is analyzed independently.
-
-```{r lulc-prep}
-ag_classes <- c("Crops", "Rangeland", "Bare Ground")
-
-# Compute change from 2017 to 2023 for each class and sub-basin (pct and area)
-lulc_delta <- lulc_all |>
-  filter(year %in% c(2017, 2023)) |>
-  select(name_basin, year, class_name, pct, area) |>
-  pivot_wider(names_from = year, values_from = c(pct, area), names_sep = "_") |>
-  mutate(delta_pct = pct_2023 - pct_2017,
-         delta_ha = area_2023 - area_2017) |>
-  arrange(name_basin, class_name)
-
-# Grouped agriculture delta
-lulc_grouped <- lulc_all |>
-  mutate(
-    group = case_when(
-      class_name == "Trees" ~ "Trees",
-      class_name %in% ag_classes ~ "Agriculture",
-      TRUE ~ NA_character_
-    )
-  ) |>
-  filter(!is.na(group)) |>
-  group_by(name_basin, year, group) |>
-  summarize(pct = sum(pct), area = sum(area), .groups = "drop")
-
-lulc_grouped_delta <- lulc_grouped |>
-  filter(year %in% c(2017, 2023)) |>
-  pivot_wider(names_from = year, values_from = c(pct, area), names_sep = "_") |>
-  mutate(delta_pct = pct_2023 - pct_2017,
-         delta_ha = area_2023 - area_2017)
-```
-
-```{r plot-lulc-change, fig.cap="Land cover composition of modelled floodplain by sub-basin (IO LULC 10 m, 2017-2023).", fig.width=12, fig.height=8}
-major <- lulc_all |>
-  group_by(class_name) |>
-  summarize(max_pct = max(pct), .groups = "drop") |>
-  filter(max_pct >= 5) |>
-  pull(class_name)
-
-lulc_all |>
-  filter(class_name %in% major) |>
-  mutate(year = factor(year)) |>
-  ggplot(aes(x = year, y = pct, fill = class_name)) +
-  geom_col(position = "dodge") +
-  facet_wrap(~name_basin, scales = "free_y") +
-  scale_fill_brewer(palette = "Set2", name = "Land Cover") +
-  theme_minimal() +
-  labs(
-    y = "% of Modelled Floodplain",
-    x = NULL
-  )
-```
-
 ## Agriculture Definition
 
 For this analysis, "Agriculture" groups three IO LULC classes that can represent different phases of the same land use at 10 m resolution: **Rangeland** (fallow, grazed pasture), **Crops** (actively growing), and **Bare Ground** (tilled or harvested). A single field can be classified differently depending on the satellite overpass date relative to the growing season.
@@ -337,32 +284,14 @@ lulc_all |>
   )
 ```
 
-## Trees vs Agriculture
-
-```{r plot-lulc-trees-ag, fig.cap="Trees and Agriculture (Crops + Rangeland + Bare Ground) as percentage of modelled floodplain by sub-basin, 2017-2023.", fig.width=12, fig.height=6}
-lulc_grouped |>
-  mutate(year = factor(year)) |>
-  ggplot(aes(x = year, y = pct, color = group, group = group)) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 3) +
-  facet_wrap(~name_basin, nrow = 2) +
-  scale_color_manual(values = c("Trees" = "#006400", "Agriculture" = "#c0392b"), name = NULL) +
-  theme_minimal() +
-  labs(
-    y = "% of Modelled Floodplain",
-    x = NULL
-  )
-```
-
 ## Sub-Basin Ranking
 
 Tree loss and agriculture gain do not sum to zero because other IO LULC classes (Built Area, Water, Flooded Vegetation) also gain or lose area between years. The `other_ha` column captures this residual — positive values indicate net area flowing into non-tree, non-agriculture classes (e.g., Built Area expansion, water level changes, channel migration). Values below derive from the sieved transition vector (change patches ≥1 ha, see [Methods](#time-series-analysis)) so they match the headline figures reported in Results.
 
 ```{r lulc-summary-table}
 # Sub-basin ranking derives from the sieved transition vector (patches >= 1.0 ha)
-# so this table matches the headline tree-loss figures in Results and the
-# executive summary. lulc_grouped_delta (class-area delta) is still used for
-# composition charts above.
+# so this table -- and the ranking chart below, which reads from summary_tab --
+# match the headline tree-loss figures in Results and the executive summary.
 trans_v_app <- sf::st_read(
   file.path(lulc_dir, "floodplain_landcover.gpkg"),
   layer = "transition_co_ff04_2017_2023", quiet = TRUE
@@ -413,11 +342,9 @@ knitr::kable(summary_tab, digits = 1,
   caption = "Tree cover loss and agriculture gain within modelled floodplain by sub-basin (2017-2023), from transition patches >= 1 ha. other_ha = residual attributed to remaining classes.")
 ```
 
-```{r plot-lulc-ranking-ha, fig.cap="Change in tree cover and agriculture area (ha) within modelled floodplain by sub-basin, 2017-2023. Agriculture = Crops + Rangeland + Bare Ground.", fig.width=10, fig.height=6}
-ranking_ha <- lulc_grouped_delta |>
-  select(name_basin, group, delta_ha) |>
-  pivot_wider(names_from = group, values_from = delta_ha) |>
-  mutate(net_shift = Agriculture - Trees) |>
+```{r plot-lulc-ranking-ha, fig.cap="Change in tree cover and agriculture area (ha) within modelled floodplain by sub-basin, 2017-2023, from transition patches >= 1 ha. Agriculture = Crops + Rangeland + Bare Ground.", fig.width=10, fig.height=6}
+ranking_ha <- summary_tab |>
+  select(name_basin, Trees = tree_loss_ha, Agriculture = ag_gain_ha) |>
   arrange(Trees)
 
 ranking_ha |>
@@ -437,6 +364,16 @@ ranking_ha |>
 
 ## Land Cover Composition
 
+The full land cover composition by class, sub-basin, and year is given below.
+
+```{r lulc-wide-prep}
+wide <- lulc_all |>
+  left_join(fp_areas, by = "name_basin") |>
+  select(name_basin, fp_ha, year, class_name, pct) |>
+  pivot_wider(names_from = year, values_from = pct) |>
+  arrange(name_basin, class_name)
+```
+
 ```{r tab-lulc-wide-cap, results="asis", eval=gitbook_on}
 my_caption <- "Land cover composition (% of modelled floodplain) by sub-basin and year. fp_ha = total modelled floodplain area."
 
@@ -444,23 +381,11 @@ my_tab_caption()
 ```
 
 ```{r tab-lulc-wide, eval=gitbook_on}
-wide <- lulc_all |>
-  left_join(fp_areas, by = "name_basin") |>
-  select(name_basin, fp_ha, year, class_name, pct) |>
-  pivot_wider(names_from = year, values_from = pct) |>
-  arrange(name_basin, class_name)
-
 wide |>
   my_dt_table(cols_freeze_left = 3, page_length = 25)
 ```
 
 ```{r tab-lulc-wide-static, eval=identical(gitbook_on, FALSE)}
-wide <- lulc_all |>
-  left_join(fp_areas, by = "name_basin") |>
-  select(name_basin, fp_ha, year, class_name, pct) |>
-  pivot_wider(names_from = year, values_from = pct) |>
-  arrange(name_basin, class_name)
-
 knitr::kable(wide, digits = 1,
   caption = "Land cover composition (% of modelled floodplain) by sub-basin and year. fp_ha = total modelled floodplain area.")
 ```

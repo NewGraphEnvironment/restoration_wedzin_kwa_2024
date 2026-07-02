@@ -19,9 +19,10 @@
 #   Rscript scripts/02_floodplain_model.R all        # runs ALL scenarios (ignores run column)
 #
 # Requires:
-#   - SSH tunnel for sub-basin generation (frs_watershed_split)
-#   - DEM/slope from bcfishpass habitat_lateral model
+#   - fwapg database for sub-basin generation (frs_watershed_split) — local fwapg
+#     via standard libpq env vars; see scripts/README.md
 #   - Output from 01_network_extract.R
+#   - Network access — DEM fetched from national MRDEM-30 via flooded::fl_dem_aoi()
 #
 # Outputs:
 #   data/lulc/subbasins.gpkg                  (sub-basin polygons)
@@ -43,7 +44,8 @@ out_dir <- here::here("data", "lulc")
 buf <- 2000
 
 # --- DB connection (needed for sub-basin generation only) ---
-conn <- fresh::frs_db_conn()
+# fwapg DB via standard libpq env vars (PGHOST/...); local fwapg for portable builds.
+conn <- DBI::dbConnect(RPostgres::Postgres())
 
 # --- Step 1: Generate sub-basins from break_points.csv ---
 message("=== Generating sub-basins ===")
@@ -77,35 +79,14 @@ message("  ", nrow(waterbodies), " features")
 
 # External paths from index.Rmd YAML params
 params <- rmarkdown::yaml_front_matter(here::here("index.Rmd"))$params
-path_dem <- file.path(params$path_gis, "dem_neexdzii.tif")
-path_slope <- file.path(params$path_gis, "slope_neexdzii.tif")
-
-# --- DEM/slope ---
-# one time clip and transfer of the dem products to shared gis project. DEM is from bcdata_py processed by bcfishpass
-# https://github.com/smnorris/bcfishpass/tree/main/model/03_habitat_lateral
-# set to run manually
-if(FALSE){
-  path_dem_og <- "/Users/airvine/Projects/repo/bcfishpass/model/habitat_lateral/data/temp/BULK/dem.tif"
-  path_slope_og <- "/Users/airvine/Projects/repo/bcfishpass/model/habitat_lateral/data/temp/BULK/slope.tif"
-  path_aoi <- "/Users/airvine/Projects/repo/restoration_wedzin_kwa_2024/data/gis/aoi.geojson"
-
-  aoi <- sf::st_read(path_aoi, quiet = TRUE) |> sf::st_transform(3005)
-  dem <- terra::rast(path_dem_og)
-  slope <- terra::rast(path_slope_og)
-
-  terra::writeRaster(terra::crop(dem, terra::vect(aoi), mask = TRUE), path_dem, overwrite = TRUE)
-  terra::writeRaster(terra::crop(slope, terra::vect(aoi), mask = TRUE), path_slope, overwrite = TRUE)
-}
-
-message("Loading DEM and slope...")
-dem_full <- terra::rast(path_dem)
-slope_full <- terra::rast(path_slope)
-
-# --- Crop DEM/slope to stream extent (shared across scenarios) ---
-stream_ext <- terra::ext(terra::vect(streams)) + buf
-dem <- terra::crop(dem_full, stream_ext)
-slope <- terra::crop(slope_full, stream_ext)
-message("  Cropped DEM: ", terra::ncol(dem), " x ", terra::nrow(dem), " pixels")
+# --- DEM from national MRDEM-30 (portable; no local DEM dependency) ---
+# flooded::fl_dem_aoi() fetches NRCan MRDEM-30 (30 m) via /vsicurl for the stream
+# network + buffer, reprojected to the streams CRS. Slope is derived from this DEM
+# inside fl_valley_confine() (slope = NULL below). Replaces the former bcfishpass
+# habitat_lateral DEM/slope that had to be hand-placed in the GIS project.
+message("Fetching national MRDEM-30 for stream network + ", buf, " m buffer...")
+dem <- flooded::fl_dem_aoi(streams, buffer = buf, target_crs = sf::st_crs(streams))
+message("  DEM: ", terra::ncol(dem), " x ", terra::nrow(dem), " pixels")
 
 # --- Rasterize precipitation (shared across scenarios) ---
 message("  Rasterizing precipitation...")
@@ -142,7 +123,7 @@ for (i in seq_len(nrow(run_scenarios))) {
   valleys <- fl_valley_confine(
     dem, streams,
     field = "upstream_area_ha",
-    slope = slope,
+    slope = NULL,   # derived from the national DEM inside fl_valley_confine()
     slope_threshold = sc$slope_threshold,
     max_width = sc$max_width,
     cost_threshold = sc$cost_threshold,
@@ -169,8 +150,8 @@ for (i in seq_len(nrow(run_scenarios))) {
   message("  Saved: ", basename(out_raster), " + layer ", sc$scenario_id, " in ", basename(out_gpkg))
 }
 
-# --- Copy to QGIS project ---
-if (dir.exists(params$path_gis)) {
+# --- Copy to QGIS project (gated on update_gis) ---
+if (isTRUE(params$update_gis) && dir.exists(params$path_gis)) {
   file.copy(out_gpkg, file.path(params$path_gis, "floodplain.gpkg"), overwrite = TRUE)
   file.copy(sb_path, file.path(params$path_gis, "subbasins.gpkg"), overwrite = TRUE)
   message("Copied floodplain.gpkg + subbasins.gpkg to QGIS project: ", params$path_gis)

@@ -21,11 +21,11 @@ Restoration planning report for the Neexdzii Kwah (Upper Bulkley River) watershe
 - Collaborative GIS data management via Mergin Maps
 - Heavy use of interactive elements (maps, tables) - not configured for PDF output
 
-**Build:** `scripts/run.R` orchestrates builds (bookdown gitbook). Must use `run.R` — not direct `bookdown::render_book()` — because it calls `staticimports::import()` and `source('scripts/staticimports.R')` first. Without this, `my_tab_caption()` and `my_dt_table()` are undefined.
+**Build:** `scripts/run.R` orchestrates builds. It renders the bookdown gitbook (`docs/`) **and** the standalone executive summary PDF (`docs/executive_summary.pdf`) in one run — the exec summary is rebuilt at the same time as the main report. Must use `run.R` — not direct `bookdown::render_book()` — because it calls `staticimports::import()` and `source('scripts/staticimports.R')` first. Without this, `my_tab_caption()` and `my_dt_table()` are undefined.
 
 **Build Artifacts:** The `docs/` directory contains rendered HTML output. Commits to `docs/` should use simple messages (e.g., "rebuild book v0.1.3") and are NOT linked to issues - they are just build outputs.
 
-**Versioning:** Uses `fledge` package for version management. Commit messages starting with `-` or `*` are pulled into NEWS.md by `fledge::finalize_version()`. NEWS.md is linked from the Open Source Reporting section in methods (changelog appendix removed in v0.1.3).
+**Versioning:** Manual — no fledge. For each content change: bump `Version:` in `DESCRIPTION` (the report title block reads it via `desc::desc_get_version()`), add a matching dated section to `NEWS.md` by hand, and run a full build (`scripts/run.R`) so the rendered gitbook and the standalone executive summary PDF carry the new version. Version cadence increments the patch digit during `0.2.x` development (e.g. `0.2.9` → `0.2.10`). NEWS.md is linked from the Open Source Reporting section in methods (changelog appendix removed in v0.1.3).
 
 ## Companion Repositories
 
@@ -181,7 +181,7 @@ See `scripts/floodplain_lcc/README.md` for full documentation.
 | `scripts/floodplain_lcc/04_lulc_zones.R` | drift | Zone-stratified LULC (future) |
 | `scripts/floodplain_lcc/05_prioritization_score.R` | — | Sub-basin scoring |
 
-CSV controls in `data/lulc/`: `flood_scenarios.csv` (`run=TRUE` rows executed), `parameters_fresh.csv`, `parameters_habitat_thresholds.csv`, `break_points.csv`. External paths from `index.Rmd` YAML `params$path_gis`.
+CSV controls in `data/lulc/`: `flood_scenarios.csv` (`run=TRUE` rows executed) and `break_points.csv`. Habitat/fresh parameter CSVs (`parameters_habitat_thresholds.csv`, `parameters_fresh.csv`) are read from the `fresh` package (`system.file("extdata", ..., package = "fresh")`, vendored from bcfishpass `example_newgraph`) — not project-local. DEM is fetched from the national MRDEM-30 via `flooded::fl_dem_aoi()`; the pipeline connects to a local fwapg DB via standard libpq env vars.
 
 ### Other Scripts
 

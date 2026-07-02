@@ -1,4 +1,23 @@
 
+# restoration_wedzin_kwa_2024 DRAFT 0.2.11 (2026-06-30)
+
+- make the floodplain LULC pipeline fully reproducible/portable so the report builds on any machine ([#147](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/147), [#148](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/148)):
+  - source the DEM from the national MRDEM-30 via `flooded::fl_dem_aoi()` instead of a hand-placed 25 m bcfishpass `habitat_lateral` DEM
+  - build the stream network with `link` (default config) against a local `fwapg` database via standard libpq env vars, replacing the `fresh`-over-SSH-tunnel extraction
+  - read pipeline parameter CSVs from the `fresh` package rather than hand-copied project files
+  - gate the copy-to-GIS step behind `update_gis`; add a public-safe Mergin sync (`scripts/gis/mergin_sync.R`, `mergin` CLI) replacing private package calls
+- headline floodplain tree loss revised from ~647 ha to ~746 ha. The change is driven primarily by DEM resolution: the 30 m MRDEM-30 yields a ~15% wider modelled floodplain at flood_factor 4 than the prior 25 m DEM. The network was independently recomputed with `link` (validated to reproduce bcfishpass accessibility within ~2%); its contribution to the shift is minor and secondary to the DEM
+- update methods (land cover classification) and LULC appendix to describe the national 30 m MRDEM-30 DEM and the `link` network extraction
+- make the report itself build from scratch: complete and de-duplicate `scripts/packages.R` (add missing packages incl. `drift`/`link`/`ngr`/`fwapgr`/`xciter`/`staticimports`/`terra`/`tmap`/`stars`/`maptiles`/`janitor`/`chk`/`here`; move `ggdark` to GitHub source after its CRAN archival; add a CRAN-mirror guard so a bare `Rscript` can install via `pak`; drop unused `leafem`/`fly`/`readwritesqlite` and the duplicate CRAN `fishbc`), and default `update_bib: FALSE` so the build needs no running Zotero (the `references.bib` is shipped)
+
+# restoration_wedzin_kwa_2024 DRAFT 0.2.10 (2026-06-06)
+
+- correct Wet'suwet'en law spelling to "Anuk Nu'at'en" throughout (was "Ink"/"Inuk Nu'at'en" in executive summary, introduction, and recommendations)
+- streamline LULC appendix: drop the redundant all-class composition bar chart and the Trees-vs-Agriculture line plot, both of which re-told the sub-basin tree-loss/agriculture-gain story already carried by the summary table, ranking chart, and wide composition table
+- fix LULC sub-basin ranking chart to derive from the sieved transition vector so it matches the adjacent summary table and the headline figures in Results (previously used the unsieved class-area delta and could disagree)
+- remove dead code and consolidate duplicated helpers in the LULC appendix
+- correct stale `fledge` versioning references in `CLAUDE.md` and `README.md` to document the actual manual workflow (bump `DESCRIPTION`, add NEWS entry, full build)
+
 # restoration_wedzin_kwa_2024 DRAFT 0.2.9 (2026-05-13)
 
 - add patch-size sieve to LULC change detection: transition patches smaller than 1 ha are dropped to suppress class-boundary noise from sub-pixel registration drift; 0.5 ha (BC VRI minimum mapping unit) and 1 ha thresholds were compared in QGIS during report preparation and 1 ha selected as the better noise/signal tradeoff ([#142](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/142))

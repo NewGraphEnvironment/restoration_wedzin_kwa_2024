@@ -2,6 +2,18 @@
 
 Pipeline for sub-basin delineation, floodplain modelling, land cover classification, and prioritization scoring.
 
+## Prerequisite — fwapg database
+
+The full pipeline (`01`–`03`) needs a PostgreSQL/PostGIS database with the BC Freshwater Atlas
+loaded by [fwapg](https://github.com/smnorris/fwapg) — fwapg supplies the FWA tables, schemas,
+and SQL functions the stream-network extraction depends on (the real engine here). The easiest
+local setup is the Docker orchestration in [`fresh`](https://github.com/NewGraphEnvironment/fresh)
+(`fresh/docker/`), which runs fwapg's own loader in containers (it expects a local `fwapg` clone
+alongside `fresh`). Point the standard Postgres env vars (`PGHOST`, `PGPORT`, `PGDATABASE`,
+`PGUSER`, `PGPASSWORD`) at the running DB and the pipeline connects to it.
+
+The DEM comes from the national MRDEM-30 via `flooded::fl_dem_aoi()` (no local DEM needed).
+
 ## Pipeline Order
 
 | Step | Script | What it does |
@@ -30,6 +42,37 @@ break_points.csv  ──→  fwa_extract_flood.R  ──→  subbasins.gpkg (nam
 | Script | Status | Purpose |
 |--------|--------|---------|
 | `lulc_classify_zones.R` | Sketch | Zone-stratified LULC within nested flood zones (bankfull → rearing → functional → migration) |
+
+## Build & Versioning
+
+`scripts/run.R` is the build entry point. A single run renders **both** the bookdown gitbook (`docs/`) and the standalone executive summary PDF (`docs/executive_summary.pdf`) — the exec summary is rebuilt at the same time as the main report. Always build via `run.R` (not `bookdown::render_book()` directly) so `staticimports` is loaded first.
+
+Versioning is **manual** (no fledge). For each content change:
+
+1. Bump `Version:` in `DESCRIPTION` — the report title block reads it via `desc::desc_get_version()`.
+2. Add a matching dated section to `NEWS.md`.
+3. Run `scripts/run.R` for a full build so the rendered outputs carry the new version.
+
+Patch digit increments during `0.2.x` development (e.g. `0.2.9` → `0.2.10`).
+
+## Collaborative GIS sync (Mergin)
+
+The shared GIS project `newgraph/restoration_wedzin_kwa` on [Mergin Maps](https://merginmaps.com/)
+is the project's single collaborative spatial environment. `scripts/gis/mergin_sync.R`
+drives the `mergin` CLI (via `system2()`, auth from `MERGIN_USERNAME`/`MERGIN_PASSWORD`
+env vars — no private package dependency) to:
+
+```bash
+Rscript scripts/gis/mergin_sync.R status   # pending local/server changes
+Rscript scripts/gis/mergin_sync.R pull     # download (first time) / pull updates into path_gis
+Rscript scripts/gis/mergin_sync.R push     # upload local changes
+```
+
+The round-trip: **pull** the project to `path_gis` (`index.Rmd` YAML) → run the pipeline
+with `update_gis = TRUE` so `01`–`03` burn their outputs (`aquatic_network.gpkg`,
+`floodplain.gpkg`, `floodplain_landcover.gpkg`, `subbasins.gpkg`) into the project →
+**push** so the team gets the updated layers on desktop QGIS and in the field. Install the
+CLI once with `pip install mergin-client`.
 
 ## Other Scripts
 
