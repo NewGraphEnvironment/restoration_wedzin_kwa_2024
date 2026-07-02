@@ -48,8 +48,9 @@ and confirming the numbers don't diverge materially from `main`.
 ## Phase 6: Finalize
 - [x] 6.1 NEWS.md `0.2.11` entry (portable build + DEM source + headline ~647→~746); `DESCRIPTION` bumped to 0.2.11
 - [x] 6.1b Update report methods to match what we did: `0300-methods.Rmd` (network via `link`, national 30 m MRDEM-30) + `2043-Appendix-lulc.Rmd` (30 m DEM / MRDEM-30, coho-accessible)
-- [ ] 6.2 Full build via `scripts/run.R` (gitbook + exec summary PDF) — propagates numbers ~647→~746
-- [ ] 6.3 Commit, push, `gh pr merge`; watch post-merge CI
+- [x] 6.2 Full build via `scripts/run.R` (gitbook + exec summary PDF) — SUCCEEDS from scratch after packages.R fix; numbers propagated ~647→**746 ha** (net trees->ag 661)
+- [x] 6.1c Reproducible from clean checkout: complete `packages.R` (+ ggdark→GH, CRAN-mirror guard, update_bib FALSE) and commit `data/lulc` outputs (22 MB) so no fwapg/DEM/STAC/Zotero needed to build
+- [x] 6.3 Committed, pushed; **PR [#150](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/pull/150)** open (Relates to NewGraphEnvironment/sred#15). Next: review + `gh pr merge` + watch post-merge CI
 
 ---
 
