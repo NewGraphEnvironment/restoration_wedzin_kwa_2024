@@ -15,7 +15,9 @@
 #
 # Requires:
 #   - fwapg database (local fwapg via standard libpq env vars; see scripts/README.md)
-#   - link >= 0.43.0 (streams_access produced regardless of mapping_code; link#218)
+#   - link >= 0.44.0 (access-segmentation over-credit fix -- streams break at every
+#     gradient+falls frontier, matching bcfishpass; link#223/#228. Prior 0.43.x
+#     over-credited reaches above gradient>15% barriers as coho-accessible.)
 #
 # Relates to #148
 #
