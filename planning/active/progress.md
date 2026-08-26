@@ -19,3 +19,9 @@
 - Phase 3 complete: gate examples retitled to "Worked Examples" with above/below-falls caveat
 - Phase 4 complete: PDF link added (gated to gitbook so it does not appear inside the PDF
   itself, which child-includes 0050), AI disclosure generalized off the pinned version
+- Phase 5 complete: bumped to 0.3.0 before rebuild, NEWS entry added, rebuilt via
+  scripts/run.R (exit 0), committed docs/ as "rebuild book v0.3.0"
+- Verified in rendered output: all six items present, mapping table renders, PDF link gated
+  out of the standalone PDF as intended, version reads 0.3.0
+- Build warning `citation smith_gaboury2016BUILTREPORT not found` is pre-existing (#151)
+- Next: /planning-archive, then PR

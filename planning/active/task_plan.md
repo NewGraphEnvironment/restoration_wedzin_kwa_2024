@@ -35,13 +35,13 @@ approach the work found inadequate — deferred to #156 with reasoning recorded.
 
 - [x] Bump DESCRIPTION 0.2.11 -> 0.3.0 BEFORE rebuild
 - [x] Add NEWS.md entry
-- [ ] Rebuild via `Rscript scripts/run.R`
-- [ ] Commit docs/ separately as "rebuild book v0.3.0"
+- [x] Rebuild via `Rscript scripts/run.R`
+- [x] Commit docs/ separately as "rebuild book v0.3.0"
 
 ## Validation
 
-- [ ] Report builds with no rendering errors
-- [ ] Cross-references resolve; appendix table renders with new subsection
-- [ ] No hardcoded stats introduced in prose
-- [ ] PWF checkboxes match landed work
+- [x] Report builds with no rendering errors
+- [x] Cross-references resolve; appendix table renders with new subsection
+- [x] No hardcoded stats introduced in prose
+- [x] PWF checkboxes match landed work
 - [ ] `/planning-archive` on completion
