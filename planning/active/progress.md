@@ -12,3 +12,5 @@
 - Created branch `155-reframe-prioritization-exercise` off main
 - Pushed two prior git-cleanup commits to main first so they stay out of this PR
 - Next: Phase 1
+- Phase 1 complete: executive summary reframed — sequencing corrected, "Why a framework
+  rather than a ranked list" paragraph added, gate examples referenced without site names

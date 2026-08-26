@@ -11,9 +11,9 @@ approach the work found inadequate — deferred to #156 with reasoning recorded.
 
 ## Phase 1: Executive summary reframe
 
-- [ ] Replace "These perspectives are built into the weighting system" — priorities and gates post-date the scoring run
-- [ ] Add "Why a framework rather than a ranked list" paragraph stating the finding
-- [ ] Point to worked gate examples without naming sites (two of three sit above Bulkley Falls)
+- [x] Replace "These perspectives are built into the weighting system" — priorities and gates post-date the scoring run
+- [x] Add "Why a framework rather than a ranked list" paragraph stating the finding
+- [x] Point to worked gate examples without naming sites (two of three sit above Bulkley Falls)
 
 ## Phase 2: Appendix accuracy
 
