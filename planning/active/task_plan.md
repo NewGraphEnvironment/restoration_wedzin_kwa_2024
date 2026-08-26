@@ -28,8 +28,8 @@ approach the work found inadequate — deferred to #156 with reasoning recorded.
 
 ## Phase 4: Rolled-in small items
 
-- [ ] Link executive summary PDF from gitbook chapter (matches fish passage / NRP pattern)
-- [ ] Generalize AI disclosure from pinned Claude version (index.Rmd, _executive_summary_pdf.Rmd)
+- [x] Link executive summary PDF from gitbook chapter (matches fish passage / NRP pattern)
+- [x] Generalize AI disclosure from pinned Claude version (index.Rmd, _executive_summary_pdf.Rmd)
 
 ## Phase 5: Release
 

@@ -1,5 +1,7 @@
 # Executive Summary {-}
 
+`r if(gitbook_on) knitr::asis_output("[📄 Executive Summary (PDF)](executive_summary.pdf)")`
+
 ```{r exec-summary-numbers, include=FALSE}
 # Derive headline tree-loss figures from the sieved transition vector
 # (patches >= 1 ha). Same source as Results and the LULC appendix so all

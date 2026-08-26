@@ -17,3 +17,5 @@
 - Phase 2 complete: appendix states the run predates the gates, corrects the "highest
   individual score" claim, and adds the priority-to-parameter mapping
 - Phase 3 complete: gate examples retitled to "Worked Examples" with above/below-falls caveat
+- Phase 4 complete: PDF link added (gated to gitbook so it does not appear inside the PDF
+  itself, which child-includes 0050), AI disclosure generalized off the pinned version
