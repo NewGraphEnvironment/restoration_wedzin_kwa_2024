@@ -39,7 +39,7 @@ This report presents a governance and prioritization framework for restoration o
 
 <br>
 
-**Site selection.** Past prescriptions and sites brought forward by the community were compiled and scored against GIS-derived parameters — an exercise retained in the appendix. It showed that ranking alone is insufficient here. The constraints that determine whether restoration succeeds — land ownership and legal access, willingness to participate, meaningful project size, and certainty of diagnosis — are largely absent from the scored layers, and no forum existed to resolve them. The gates and governance structure are the response. Where to begin — below Bulkley Falls where chinook still return, or upstream where historic use is documented but access is limited — requires Wet'suwet'en direction, not a scoring run.
+**Site selection.** Historic prescriptions were extracted from background reports and spatialized, combined with sites proposed through landowner engagement and local knowledge, and reviewed in the field. The resulting candidates were scored against GIS-derived parameters — an exercise retained in the appendix. It showed that ranking alone is insufficient here. The constraints that determine whether restoration succeeds — land ownership and legal access, willingness to participate, meaningful project size, and certainty of diagnosis — are largely absent from the scored layers, and no forum existed to resolve them. The gates and governance structure are the response. Where to begin — below Bulkley Falls where chinook still return, or upstream where historic use is documented but access is limited — requires Wet'suwet'en direction, not a scoring run.
 
 <br>
 
