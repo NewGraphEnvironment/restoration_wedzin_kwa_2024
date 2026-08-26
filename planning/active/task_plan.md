@@ -33,8 +33,8 @@ approach the work found inadequate — deferred to #156 with reasoning recorded.
 
 ## Phase 5: Release
 
-- [ ] Bump DESCRIPTION 0.2.11 -> 0.3.0 BEFORE rebuild
-- [ ] Add NEWS.md entry
+- [x] Bump DESCRIPTION 0.2.11 -> 0.3.0 BEFORE rebuild
+- [x] Add NEWS.md entry
 - [ ] Rebuild via `Rscript scripts/run.R`
 - [ ] Commit docs/ separately as "rebuild book v0.3.0"
 

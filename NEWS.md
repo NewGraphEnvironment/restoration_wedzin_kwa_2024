@@ -1,3 +1,26 @@
+# restoration_wedzin_kwa_2024 DRAFT 0.3.0 (2026-08-26)
+
+Reframes the site prioritization work as a superseded exercise rather than a shortlist, in
+response to external review of the executive summary ([#155](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/155)).
+
+- executive summary: the four workshop priorities and the diagnostic gates post-date the
+  proof-of-concept scoring run and are not reflected in it — previously asserted as "built into
+  the weighting system"
+- executive summary: new section stating the finding the work produced — compiling and scoring
+  past prescriptions showed list-and-rank to be insufficient, because the determining
+  constraints (land ownership and legal access, willingness to participate, meaningful project
+  size, certainty of diagnosis) are largely absent from the scored layers
+- executive summary: points to the worked gate examples without naming sites; two of the three
+  sit above Bulkley Falls where current salmon access is limited
+- appendix: corrects the claim that cultural significance receives the highest individual score
+  — land ownership carries the highest weight (10), and cultural significance is not scored at
+  all pending Wet'suwet'en direction ([#157](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/157))
+- appendix: new mapping of the four workshop priorities onto the scored parameters
+- recommendations: gate examples retitled from "Project Types That Pass" to "Worked Examples",
+  with an above/below-falls caveat ([#111](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/111))
+- link the standalone executive summary PDF from the gitbook chapter
+- AI disclosure no longer pins a specific Claude version
+
 
 # restoration_wedzin_kwa_2024 DRAFT 0.2.11 (2026-06-30)
 
