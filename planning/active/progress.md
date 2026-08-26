@@ -16,3 +16,4 @@
   rather than a ranked list" paragraph added, gate examples referenced without site names
 - Phase 2 complete: appendix states the run predates the gates, corrects the "highest
   individual score" claim, and adds the priority-to-parameter mapping
+- Phase 3 complete: gate examples retitled to "Worked Examples" with above/below-falls caveat

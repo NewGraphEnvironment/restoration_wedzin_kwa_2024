@@ -23,8 +23,8 @@ approach the work found inadequate — deferred to #156 with reasoning recorded.
 
 ## Phase 3: Recommendations caveat
 
-- [ ] Retitle "Applying the Gates: Project Types That Pass" -> "Worked Examples"
-- [ ] Add above/below-falls caveat, noting it is an open question for the Stewardship Council (Relates to #111)
+- [x] Retitle "Applying the Gates: Project Types That Pass" -> "Worked Examples"
+- [x] Add above/below-falls caveat, noting it is an open question for the Stewardship Council (Relates to #111)
 
 ## Phase 4: Rolled-in small items
 
