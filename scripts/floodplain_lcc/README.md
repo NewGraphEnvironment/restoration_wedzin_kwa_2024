@@ -16,18 +16,26 @@ Scripts `01`–`02` need the fwapg database — see [Prerequisite — fwapg data
 
 ## CSV Controls
 
-All in `data/lulc/`:
+Project-local, in `data/lulc/`:
 
 | File | Purpose |
 |------|---------|
 | `flood_scenarios.csv` | VCA parameters per scenario. `run=TRUE` rows are executed. |
+| `break_points.csv` | Sub-basin delineation points on FWA network |
+
+Read from the `fresh` package via `system.file("extdata", ..., package = "fresh")`
+(vendored from bcfishpass `example_newgraph`) — do not keep project-local copies:
+
+| File | Purpose |
+|------|---------|
 | `parameters_fresh.csv` | Access gradient, spawn gradient min per species |
 | `parameters_habitat_thresholds.csv` | Spawn/rear gradient, channel width, MAD thresholds |
-| `break_points.csv` | Sub-basin delineation points on FWA network |
 
 ## Outputs
 
-All outputs live in `data/lulc/` (gitignored — regenerate by running the pipeline).
+All outputs live in `data/lulc/` and are committed so the report builds without
+re-running the pipeline. Only auto-generated raster statistics sidecars
+(`*.aux.xml`) are gitignored.
 
 ### Naming Convention
 
