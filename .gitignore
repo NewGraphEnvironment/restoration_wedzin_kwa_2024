@@ -27,6 +27,9 @@ data/gis/skt
 data/gis/skt/esi_sows
 data/inputs_extracted/fwa_network_trace.rds
 
+# Local working spreadsheet, not a report input
+data/inputs_raw/process based restoration buckets idea Dec 2025 v2.xlsx
+
 # Cached spatial layers (regenerate via scripts/data_map-study-area.R)
 data/spatial/
 
