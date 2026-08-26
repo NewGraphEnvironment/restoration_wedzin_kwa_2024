@@ -17,9 +17,9 @@ approach the work found inadequate — deferred to #156 with reasoning recorded.
 
 ## Phase 2: Appendix accuracy
 
-- [ ] State that the ranking run predates the gates and governance structure
-- [ ] Correct the "highest individual score" claim (land ownership is 10, cultural significance 5)
-- [ ] Add "What the Exercise Covered" subsection mapping four workshop priorities onto scored parameters
+- [x] State that the ranking run predates the gates and governance structure
+- [x] Correct the "highest individual score" claim (land ownership is 10, cultural significance 5)
+- [x] Add "What the Exercise Covered" subsection mapping four workshop priorities onto scored parameters
 
 ## Phase 3: Recommendations caveat
 

@@ -5,7 +5,7 @@
 
 ## Parameter Ranking to Select Future Restoration Sites {-}
 
-Potential restoration sites are ranked using a weighted scoring system that combines ecological value, cultural significance, and practical considerations. Each site is evaluated against the parameters in Table \@ref(tab:tab-gis-params), with scores summed to produce a total ranking. Higher-weighted parameters reflect greater importance to restoration success — for example, sites of cultural significance to the Wet'suwet'en receive the highest individual score, while the presence of modelled habitat for a single species contributes a smaller increment. The system is designed to be iterative: as new data layers become available (e.g., additional indicators from the SSAF State of the Value assessment [@skeenasustainabilityassessmentforum2021Skeenasustainability]), they can be incorporated by adding rows to the [input spreadsheet](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/restoration_site_priority_parameters.csv) and assigning weights. Outputs from an initial proof of concept run are included within the shared GIS project and collated below.
+Potential restoration sites are ranked using a weighted scoring system that combines ecological value, cultural significance, and practical considerations. Each site is evaluated against the parameters in Table \@ref(tab:tab-gis-params), with scores summed to produce a total ranking. Higher-weighted parameters reflect greater importance to restoration success — for example, the presence of modelled habitat for a single species contributes a small increment, while land ownership carries the highest individual score (10) as a proxy for access and security of investment. Cultural significance is assigned a weighting of up to 5 but was not populated for this run — see below. The system is designed to be iterative: as new data layers become available (e.g., additional indicators from the SSAF State of the Value assessment [@skeenasustainabilityassessmentforum2021Skeenasustainability]), they can be incorporated by adding rows to the [input spreadsheet](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/blob/main/data/restoration_site_priority_parameters.csv) and assigning weights. Outputs from an initial proof of concept run are included within the shared GIS project and collated below. This ranking run predates the diagnostic gates and governance structure presented in [Recommendations](#recommendations). It is retained as a worked example of the scoring mechanics — not as a list of recommended sites.
 
 <br>
 
@@ -141,6 +141,33 @@ dplyr::bind_rows(tab_non_bp, tab_bp) |>
   fpr::fpr_kable(caption_text = "Active parameters used to rank potential restoration sites. Each site receives a score for each parameter based on Low, Moderate, or High classification. Scores are summed to produce a total site ranking. The system is extensible — additional parameters from the SSAF assessment or other sources can be added to the input spreadsheet.", scroll = FALSE)
 
 ```
+
+## What the Exercise Covered {-}
+
+The four priorities that emerged from community workshops map onto the scored parameters as
+follows.
+
+| Workshop priority | Represented by |
+|---|---|
+| Watershed Function | Modelled floodplain; Total watershed disturbance; Riparian disturbance |
+| Probability of Success | Land ownership (proxy for access) |
+| Proximity to High-Value Fish Habitat | Downstream of Bulkley Falls; Modelled fish habitat |
+| Cultural Significance | *Not scored* |
+
+Parameter weights were assigned before the workshops and were not derived from these
+priorities. The resulting emphasis across the four is incidental rather than designed —
+another reason the scored output is an exercise rather than a result.
+
+Cultural significance is a knowledge-holder input with no source data layer and was not
+populated for this run. Wet'suwet'en workshop participants ranked it decisively first — the
+single parameter the community weighted highest is the one the scoring cannot see.
+
+Three factors the gates treat as decisive are not represented at all: willingness to
+participate, whether a project is large enough to deliver meaningful benefit, and certainty of
+diagnosis. Land ownership stands in for access, but a Crown parcel is not the same as a willing
+partner.
+
+<br>
 
 ## Prioritized Sites {-}
 
