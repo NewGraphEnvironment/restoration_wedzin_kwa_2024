@@ -4,7 +4,7 @@
 
 **Read the report:** <https://newgraphenvironment.com/restoration_wedzin_kwa_2024>
 &middot; **Source:** [`NewGraphEnvironment/restoration_wedzin_kwa_2024`](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024)
-&middot; **Current draft:** v0.2.9 (see [`NEWS.md`](NEWS.md) for version history)
+&middot; **Current draft:** v0.3.0 (see [`NEWS.md`](NEWS.md) for version history)
 
 ## What this is
 

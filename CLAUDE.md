@@ -12,7 +12,7 @@ We are biologists and computer programmers that facilitate aquatic ecosystem res
 
 Restoration planning report for the Neexdzii Kwah (Upper Bulkley River) watershed, prepared for the Wet'suwet'en Treaty Office Society on behalf of SERN BC.
 
-**Current Version:** v0.1.6 DRAFT (see NEWS.md for version tracking)
+**Current Version:** v0.3.0 DRAFT (see NEWS.md for version tracking)
 
 **Key characteristics:**
 - Living document combining ecological science with Wet'suwet'en Indigenous stewardship
@@ -166,6 +166,7 @@ gitignored `.claude/project-config.local.md` — read that file when running
 | LULC sub-basins | `data/lulc/subbasins.gpkg` | Sub-basin geometries (EPSG:3005, `st_transform(4326)` on load) |
 | LULC floodplain AOI | `data/lulc/floodplain_neexdzii_co.gpkg` | Modelled floodplain extent for land cover analysis |
 | Spatial layer cache | `data/spatial/*.rds` | Cached streams, lakes, roads, railway for maps |
+| Seed collection | `data/seed_collection_data.xlsx` | Seed the North stored inventory (lot, species, coords, weight, purity) |
 
 ## Key Scripts
 
