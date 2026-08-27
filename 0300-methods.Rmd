@@ -22,6 +22,10 @@ At each site, field crews documented current riparian conditions, evidence of ca
 <!-- TODO: Add spring 2025 site visits - confirm data is organized and ready to include -->
 
 
+### Seed Collection
+
+Seed the North was engaged to carry out native seed collection within the Neexdzii Kwah watershed, to begin building local capacity for propagation in support of riparian and floodplain revegetation. Collection targeted native riparian and floodplain species, with locations selected in collaboration with project partners and informed by a Wet'suwet'en community engagement session. Collected seed was cleaned, weighed, and tested for purity and viability before storage. Records of species, collection date, location, biogeoclimatic subzone, and post-processing seed metrics were provided by the contractor.
+
 ### Aquatic Health Monitoring
 
 Benthic invertebrate sampling was conducted following the Canadian Aquatic Biomonitoring Network (CABIN) wadeable streams protocol [@environmentcanada2012Canadianaquatic]. Samples were collected using the traveling kick-net method with a 400 μm mesh net. At each site, a 3-minute timed sample was collected by traversing a zigzag pattern in an upstream direction within the erosional zone (riffle, rapid, or fast-flowing run habitat).

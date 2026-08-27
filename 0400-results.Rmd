@@ -49,6 +49,38 @@ Compared to previous sampling at the near-Houston reach in 2004 and 2018, the 20
 
 These results establish a baseline for benthic community condition across the Neexdzii Kwa mainstem. An expanded monitoring network with specific proposed site locations is presented in the [dedicated benthic report](http://www.newgraphenvironment.com/neexdzii_kwa_benthic_2025), along with approximately 50 years of compiled water quality data from 13 provincial monitoring stations.
 
+### Seed Collection
+
+Seed collection is a low-barrier stewardship activity that brings people onto the land. It builds understanding of what grows where — which species occupy which sites, when they set seed, and how that varies year to year — and develops the local capacity to collect, propagate, and plant that any sustained revegetation program depends on. Establishing that capacity is a meaningful outcome in its own right.
+
+Willow and cottonwood were collected in June 2025 in Houston, adjacent to the confluence of Buck Creek and the Bulkley River. This collection did not reach long-term storage under conditions that maintained viability. Confirming storage and handling protocols in advance of collection is a practical lesson carried forward. Soapberry and gooseberry followed in July, and highbush cranberry, red osier dogwood, birch, and mountain ash through September and October. Seed currently held in storage by Seed the North is summarized in Table \@ref(tab:tab-seed-cap); not all collections are represented in the stored inventory. Full details are documented in the [contractor's report](https://www.newgraphenvironment.com/restoration_wedzin_kwa_2024/2025-11-13%20Neexdzii%20Kwa%20final%20report%20from%20Seed%20the%20North.pdf).
+
+```{r tab-seed-cap, results="asis"}
+my_caption <- "Native seed held in storage by Seed the North following 2025 collections in the Neexdzii Kwah watershed. Seed count is estimated from cleaned weight and seeds per gram. Purity and cut test results are reported where testing was completed."
+my_tab_caption(tip_flag = FALSE)
+```
+
+```{r tab-seed}
+seed_raw <- readxl::read_excel("data/seed_collection_data.xlsx") |>
+  janitor::clean_names()
+
+seed_raw |>
+  dplyr::transmute(
+    `Lot ID`        = lot_id,
+    `Common Name`   = common_name,
+    Species         = paste(genus, species),
+    Collected       = format(as.Date(collection_date), "%Y-%m-%d"),
+    Location        = location,
+    `BEC`           = bec_zone,
+    `Weight (g)`    = round(weight_g, 1),
+    `Seeds (est.)`  = round(weight_g * seeds_per_gram, 0),
+    `Purity (%)`    = purity_percent,
+    `Cut Test`      = cut_test
+  ) |>
+  dplyr::arrange(Collected) |>
+  my_dt_table(page_length = 10, cols_freeze_left = 0)
+```
+
 ## Remote Sensing & Imagery
 
 ### Aerial Imagery

@@ -27,6 +27,9 @@ data/gis/skt
 data/gis/skt/esi_sows
 data/inputs_extracted/fwa_network_trace.rds
 
+# External review markup dropped in hold/ (hold/ itself holds tracked source)
+hold/*.pdf
+
 # Local working spreadsheet, not a report input
 data/inputs_raw/process based restoration buckets idea Dec 2025 v2.xlsx
 

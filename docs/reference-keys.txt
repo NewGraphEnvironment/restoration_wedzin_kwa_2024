@@ -9,6 +9,7 @@ fig:SEM-stages
 fig:SEM-hab-benifits
 fig:all-benefits
 fig:fig-map-study-area
+tab:tab-seed-cap
 tab:tab-subbasin-desc-cap
 tab:tab-area-priority-cap
 tab:tab-workshop-rankings
@@ -248,11 +249,13 @@ hatchery-legacy
 implications-for-restoration
 historic-restoration-context
 restoration-philosophy
+floodplain-and-riparian-function
 process-based-restoration
 stage-0
 methods
 field-assessments
 site-reviews
+seed-collection
 aquatic-health-monitoring
 remote-sensing-imagery
 historic-airphotos
@@ -274,6 +277,7 @@ open-source-reporting-framework
 results
 field-assessments-1
 aquatic-health-monitoring-1
+seed-collection-1
 remote-sensing-imagery-1
 aerial-imagery
 historic-aerial-photographs
