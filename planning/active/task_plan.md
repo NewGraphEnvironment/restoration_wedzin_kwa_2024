@@ -45,3 +45,13 @@ approach the work found inadequate — deferred to #156 with reasoning recorded.
 - [x] No hardcoded stats introduced in prose
 - [x] PWF checkboxes match landed work
 - [ ] `/planning-archive` on completion
+
+## Phase 6: Scope added during review (post-baseline)
+
+- [x] Background: "Floodplain and Riparian Function" section — central premise was unstated (#159)
+- [x] Executive summary: floodplain why-it-matters line; "Restoration site selection" retitle;
+      root-cause clause; broadened success/constraints; collaborative closer
+- [x] Recommendations: fix "Seven principles" (six were listed); add "Protection of what
+      remains" (#158) and "Connection to place"
+- [x] Seed collection: Methods, Results + inventory table, executive summary paragraph (#129)
+- [x] Regenerate references.bib for four new citations, then restore update_bib: FALSE

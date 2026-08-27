@@ -25,3 +25,10 @@
   out of the standalone PDF as intended, version reads 0.3.0
 - Build warning `citation smith_gaboury2016BUILTREPORT not found` is pre-existing (#151)
 - Next: /planning-archive, then PR
+- Scope expanded during review at user request: floodplain/riparian function (#159),
+  conservation principle (#158), connection-to-place principle, seed collection (#129)
+- Citations verified against Zotero PDFs via ragnar (data/rag/vca_refs.duckdb) rather than
+  assumed; citekeys read from zotero.sqlite rather than guessed
+- Found "Seven principles" listed only six since the original commit (21c385d) — now eight
+- Seed inventory (4 lots) does not cover all reported collections; text names what was
+  collected and the table shows what is stored, without speculating on the gap
