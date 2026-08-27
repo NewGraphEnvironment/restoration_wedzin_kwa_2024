@@ -1,3 +1,10 @@
+# restoration_wedzin_kwa_2024 DRAFT 0.3.2 (2026-08-27)
+
+- governance structure: note that the Community Roundtable tier already exists in the Upper
+  Bulkley Round Table, and name its membership accurately (Office of Wet'suwet'en, DFO,
+  provincial representatives, Morice Water Monitoring Trust, A Rocha). The framework read as
+  entirely hypothetical while the introduction described that tier as already operating.
+
 # restoration_wedzin_kwa_2024 DRAFT 0.3.1 (2026-08-27)
 
 - fix the gitbook download button, which pointed at two files the project does not produce

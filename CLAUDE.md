@@ -12,7 +12,7 @@ We are biologists and computer programmers that facilitate aquatic ecosystem res
 
 Restoration planning report for the Neexdzii Kwah (Upper Bulkley River) watershed, prepared for the Wet'suwet'en Treaty Office Society on behalf of SERN BC.
 
-**Current Version:** v0.3.1 DRAFT (see NEWS.md for version tracking)
+**Current Version:** v0.3.2 DRAFT (see NEWS.md for version tracking)
 
 **Key characteristics:**
 - Living document combining ecological science with Wet'suwet'en Indigenous stewardship

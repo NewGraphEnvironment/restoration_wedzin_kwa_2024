@@ -42,7 +42,7 @@ The United Nations Decade on Ecosystem Restoration (2021–2030) reinforces thes
 
 ### Governance Structure {-}
 
-Effective restoration requires not just identifying what to do, but establishing who decides. We propose a four-tier governance model anchored in Wet'suwet'en governance:
+Effective restoration requires not just identifying what to do, but establishing who decides. We propose a four-tier governance model anchored in Wet'suwet'en governance. One tier already exists in the Upper Bulkley Round Table; the others would need to be established:
 
 1. **Watershed Stewardship Council (Decision Authority)** — Wet'suwet'en hereditary leadership and technical advisors. Sets restoration priorities, approves projects, and holds accountability. Grounded in Wet'suwet'en law (Anuk Nu'at'en) and land stewardship responsibilities.
 
@@ -50,7 +50,7 @@ Effective restoration requires not just identifying what to do, but establishing
 
 3. **Implementation Partnerships (Delivery)** — Landowners, contractors, conservation groups, and government agencies. Execute approved projects within the governance framework, with project complexity matched to delivery capacity.
 
-4. **Community Roundtable (Input & Accountability)** — Open forum for landowners, residents, and stakeholders. Provides local knowledge, flags concerns, and reviews progress to ensure transparency and broad engagement.
+4. **Community Roundtable (Input & Accountability)** — The Upper Bulkley Round Table already fills much of this role, bringing together the Office of Wet'suwet'en, Fisheries and Oceans Canada, provincial representatives, the Morice Water Monitoring Trust, and A Rocha, alongside local land users and landowners. Provides local knowledge, flags concerns, and reviews progress to ensure transparency and broad engagement.
 
 
 ### Gates Before Scoring {-}
