@@ -1,3 +1,9 @@
+# restoration_wedzin_kwa_2024 DRAFT 0.3.1 (2026-08-27)
+
+- fix the gitbook download button, which pointed at two files the project does not produce
+  (`Restoration_Neexdzii_Kwah_2024.pdf` and `.html` — the report is not configured for
+  full-report PDF output). It now serves the standalone executive summary PDF.
+
 # restoration_wedzin_kwa_2024 DRAFT 0.3.0 (2026-08-26)
 
 Reframes the site prioritization work as a superseded exercise rather than a shortlist, in
