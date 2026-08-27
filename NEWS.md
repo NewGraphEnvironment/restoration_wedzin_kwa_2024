@@ -20,6 +20,15 @@ response to external review of the executive summary ([#155](https://github.com/
   with an above/below-falls caveat ([#111](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/111))
 - link the standalone executive summary PDF from the gitbook chapter
 - AI disclosure no longer pins a specific Claude version
+- background: new "Floodplain and Riparian Function" section — lateral connectivity, hyporheic
+  exchange and summer cooling, canopy shade, food web subsidies, and large wood recruitment
+  ([#159](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/159))
+- recommendations: corrected "Seven principles" (six were listed) and added "Protection of what
+  remains" ([#158](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/158))
+  and "Connection to place"
+- methods, results, executive summary: seed collection program with Seed the North, including
+  stored inventory table and link to the contractor report
+  ([#129](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/129))
 
 
 # restoration_wedzin_kwa_2024 DRAFT 0.2.11 (2026-06-30)
