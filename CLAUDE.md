@@ -209,6 +209,115 @@ CSV controls in `data/lulc/`: `flood_scenarios.csv` (`run=TRUE` rows executed) a
 - Package citations: append `knitr::write_bib()` output to `references.bib` after rbbt writes it ([soul#27](https://github.com/NewGraphEnvironment/soul/issues/27), not yet implemented)
 - LULC: Agriculture superclass = Crops + Rangeland + Bare Ground (10m IO LULC can't distinguish reliably)
 
+## Working Conventions
+
+Project-specific operating rules. Migrated from machine-local Claude memory (soul#47).
+
+### Never hardcode statistics in prose
+
+Use inline R pulling from pipeline outputs — `area_scores.csv`, `floodplain_landcover.gpkg` —
+not typed numbers.
+
+**Why:** Sub-basin names, boundaries, and metrics change as `break_points.csv` is refined.
+Hardcoded numbers go stale silently and create inconsistencies between prose, tables, and
+appendix figures.
+
+**How to apply:** Load the source in a prep chunk, compute derived stats, then use inline R:
+`` `r basin$name_basin[1]` (`r abs(basin$tree_loss_fp_pct[1])`%) ``. Applies to the executive
+summary as much as the body.
+
+### Say "First Nations reserve land", not "reserves"
+
+**Why:** Unqualified "reserves" is ambiguous in a report that also discusses forestry and
+conservation contexts.
+
+**How to apply:** Column headers use "FN Reserves (ha)". Prose uses "First Nations reserve
+land". Table captions say "First Nations reserves are from CLAB".
+
+### Bump DESCRIPTION before rebuilding, not after
+
+Sequence: bump `DESCRIPTION` → rebuild → commit → tag → push.
+
+**Why:** The gitbook and executive summary PDF stamp the version from
+`desc::desc_get_version()` at render time. Building before the bump means the published
+artefacts carry the old version while the tag says otherwise.
+
+**How to apply:** Decide the version first. This also makes `/gh-pr-merge` take its
+`SKIP_BUMP` path and tag a commit whose rendered output is already correct
+(see [soul#56](https://github.com/NewGraphEnvironment/soul/issues/56)).
+
+### Adding a citation requires a deliberate bib round trip
+
+`index.Rmd` sets `update_bib: FALSE`, so `references.bib` is **not** regenerated on a normal
+build. A citekey absent from `references.bib` renders broken, logging only
+`[WARNING] Citeproc: citation <key> not found` — and the build still exits 0.
+
+**Why:** The `FALSE` default exists so the report builds offline and reproducibly without
+Zotero (2b7c786). It silently breaks any newly added citation.
+
+**How to apply:** `grep -c "<citekey>" references.bib` first. If absent, start Zotero, flip
+`update_bib: TRUE`, run `scripts/run.R`, then flip back to `FALSE` and commit the regenerated
+bib. Never hand-edit `references.bib`. Note `smith_gaboury2016BUILTREPORT` warns on every build
+already ([#151](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/151))
+— do not read that line as proof your own citation failed.
+
+### Citations: verify, never infer
+
+Two rules with the same root — check the source rather than reconstructing it.
+
+**Citation keys.** Never guess a BBT key from author/year/title. Query the actual
+`citationKey` field in `~/Zotero/zotero.sqlite`, or use `/zotero-lookup`. BBT's title-word
+casing, suffix inclusion, and corporate-author handling are not predictable — three guessed
+keys in one session were all wrong, and rbbt would have rendered all three broken.
+
+**Abstracts and claims.** Never write a Zotero abstract manually; if CrossRef has none, leave
+it blank. Five fabricated abstracts were found and removed from the shared library
+(2026-03-17). LLM-written abstracts read as real but carry false claims — one attributed the
+`flooded` R package to authors who never used it, another presented figures lifted from the
+PDF body as though they were the abstract.
+
+**How to apply:** Verify claims against PDF content using the ragnar store
+(`scripts/rag_build.R`; `data/rag/vca_refs.duckdb` already covers the floodplain and
+process-based restoration set) before citing them.
+
+### Leave `.claude/settings.local.json` dirty
+
+Never stage, commit, or stash it.
+
+**Why:** Local machine state, not project configuration. Committing it pushes one machine's
+permission grants onto everyone, and it changes constantly.
+
+**How to apply:** `git add -A ':!.claude/settings.local.json'` when staging broadly. Expect it
+as the only dirty entry at session end and say so rather than treating it as unfinished.
+
+### `git pull` blocks on a dirty tree — fast-forward instead
+
+`pull.rebase` is set globally, so `git pull` aborts with "cannot pull with rebase: You have
+unstaged changes" whenever anything is modified — which, per the rule above, is most of the
+time.
+
+**How to apply:** Confirm the incoming range does not touch what is modified, then
+fast-forward directly:
+
+```bash
+git diff --name-only HEAD origin/main -- <dirty-paths>   # empty = safe
+git fetch origin --prune && git merge --ff-only origin/main
+```
+
+### Sub-basin break points come from the `breaks` repo
+
+Break points and sub-basin polygons are generated by a separate shiny app at
+`~/Projects/repo/breaks`, which writes `data/lulc/break_points.csv` and
+`data/lulc/subbasins.gpkg` here. Requires an SSH tunnel on port 63333 for FWA database access
+— as do `scripts/data_map-study-area.R` and `scripts/fwa_query.R`.
+
+**How to apply:** When sub-basin names, descriptions, or attributes change, edit
+`break_points.csv` and re-run the pipeline rather than editing downstream outputs.
+`name_basin` is the join key everywhere, and `falls_downstream = 0` means below Bulkley Falls
+(salmon accessible).
+
+See also `notes/pipeline_floodplain-lcc.md` for pipeline traps not visible from the code.
+
 <!-- BEGIN SOUL CONVENTIONS — DO NOT EDIT BELOW THIS LINE -->
 
 
