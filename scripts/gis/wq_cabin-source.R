@@ -12,7 +12,7 @@
 # Note: ogr2ogr refuses -a_srs together with -t_srs, so a_srs assigns 4326 here
 # and the reprojection to BC Albers happens in R below.
 #
-# Output: ~/Projects/gis/restoration_wedzin_kwa/cabin_sites.gpkg (layer cabin_sites),
+# Output: ~/Projects/gis/restoration_wedzin_kwa/wq/cabin_sites.gpkg (layer cabin_sites),
 #   added to the Mergin QGIS project under Project Specific > Water Quality, in the
 #   "Floodplain" map theme only.
 
@@ -28,7 +28,7 @@ id_wsg <- "51f20b1a-ab75-42de-809d-bf415a0f9c62"
 wsg_codes <- c("BULK", "MORR")
 
 path_project <- fs::path_expand("~/Projects/gis/restoration_wedzin_kwa")
-path_gpkg <- fs::path(path_project, "cabin_sites.gpkg")
+path_gpkg <- fs::path(path_project, "wq", "cabin_sites.gpkg")
 path_qgs <- fs::path(path_project, "restoration_wedzin_kwa.qgs")
 
 
