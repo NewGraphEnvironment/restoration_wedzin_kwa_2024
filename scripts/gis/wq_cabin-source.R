@@ -171,6 +171,18 @@ qgs_layernames <- function(path) {
 }
 if (layer_name %in% qgs_layernames(path_qgs)) {
   rfp::rfp_qgs_layer_rm(path_qgs, layer = layer_name)
+
+  # rfp writes <qgs>.bak beside the project, which is INSIDE the Mergin working
+  # directory - left there it syncs a 14 MB copy of the project to every editor.
+  # Keep the safety net, move it to the hold/ tree where backups belong.
+  path_bak <- fs::path_ext_set(path_qgs, "qgs.bak")
+  if (fs::file_exists(path_bak)) {
+    dir_hold <- fs::path_expand(fs::path("~/Projects/gis/hold",
+                                         basename(path_project), "qgs_versions"))
+    fs::dir_create(dir_hold)
+    fs::file_move(path_bak, fs::path(dir_hold, paste0(
+      format(Sys.time(), "%Y%m%d_%H%M%S"), "_restoration_wedzin_kwa.qgs.bak")))
+  }
 }
 
 # themes is named explicitly: a Mergin map theme hides a layer by ABSENCE from the
