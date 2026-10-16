@@ -8,7 +8,7 @@ bbox = c(-126.77000, 54.08832, -125.88822, 54.68786)
 
 q <- rstac::stac("https://images.a11s.one/") |>
     rstac::stac_search(
-      collections = "imagery-uav-bc-prod",
+      collections = "stac-imagery-uav-bc",
                       bbox = bbox
                      ) |>
   rstac::post_request()
