@@ -579,7 +579,7 @@ site_summary_table <- function(site_sf, font = 9) {
 stac_uav_viewer <- function(site_sf,
                             radius_m = 100,
                             stac_url = "https://images.a11s.one/",
-                            collection = "imagery-uav-bc-prod",
+                            collection = "stac-imagery-uav-bc",
                             viewer_base = "https://viewer.a11s.one/?cog=") {
   pt <- site_sf |>
     sf::st_geometry() |>
