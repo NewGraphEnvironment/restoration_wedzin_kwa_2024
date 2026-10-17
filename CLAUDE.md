@@ -80,7 +80,7 @@ Fork of `bcgov/bc_climate_anomaly` with modifications on `newgraph` branch.
 ### STAC Ecosystem (Spatial Data)
 | Repo | Purpose |
 |------|---------|
-| `stac_dem_bc` | Digital elevation models |
+| `stac_elevation_bc` | LiDAR elevation (DEM, DSM) |
 | `stac_orthophoto_bc` | Orthophotos |
 | `stac_uav_bc` | UAV/drone imagery |
 
