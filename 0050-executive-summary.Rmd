@@ -81,7 +81,7 @@ This report presents a governance and prioritization framework for restoration o
 - Floodplain delineation — [`flooded`](https://www.newgraphenvironment.com/flooded)
 - Land cover change detection — [`drift`](https://www.newgraphenvironment.com/drift)
 - Airphoto footprint estimation and optimal coverage selection — [`fly`](https://www.newgraphenvironment.com/fly)
-- Provincial LiDAR digital elevation models (DEMs) — [`stac_dem_bc`](https://www.newgraphenvironment.com/stac_dem_bc)
+- Provincial LiDAR digital elevation models (DEMs) — [`stac_elevation_bc`](https://www.newgraphenvironment.com/stac_elevation_bc)
 - UAV imagery catalog — [`stac_uav_bc`](https://github.com/NewGraphEnvironment/stac_uav_bc)
 - Historic airphoto catalog — [`stac_airphoto_bc`](https://www.newgraphenvironment.com/stac_airphoto_bc/)
 
