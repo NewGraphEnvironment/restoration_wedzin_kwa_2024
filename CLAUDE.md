@@ -32,39 +32,39 @@ Restoration planning report for the Neexdzii Kwah (Upper Bulkley River) watershe
 ### Recommendations Shiny App
 | Repo | Location |
 |------|----------|
-| `restoration_wedzin_kwa_2024_recomendations` | `~/Projects/repo/restoration_wedzin_kwa_2024_recomendations` |
+| `restoration_wedzin_kwa_2024_recomendations` | `NewGraphEnvironment/restoration_wedzin_kwa_2024_recomendations` |
 
 Interactive shiny app linked from main report containing recommendations as a user-sortable table. Uses `xciter` package for generating citations within HTML objects. **Note:** Updates to recommendations require coordination between main report and this app.
 
 ### Climate Analysis
 | Repo | Location | Purpose |
 |------|----------|---------|
-| `bc_climate_anomaly` (fork, newgraph branch) | `~/Projects/repo/bc_climate_anomaly` | Climate perspective before/during study period; illustrates climate pattern differences within Neexdzi Kwah watershed |
+| `bc_climate_anomaly` (fork, newgraph branch) | `NewGraphEnvironment/bc_climate_anomaly` | Climate perspective before/during study period; illustrates climate pattern differences within Neexdzi Kwah watershed |
 
 Fork of `bcgov/bc_climate_anomaly` with modifications on `newgraph` branch.
 
 ### Related Blog Posts (new_graphiti)
 | Post | Location | Purpose |
 |------|----------|---------|
-| `2024-06-19-precipitation` | `~/Projects/repo/new_graphiti/posts/2024-06-19-precipitation` | 3D interactive precipitation patterns; demonstrates reproducible workflow |
-| `2024-06-30-land-cover` | `~/Projects/repo/new_graphiti/posts/2024-06-30-land-cover` | Proof of concept for baseline land cover classification; reference for future large-scale change detection |
-| `2024-11-15-bcdata-ortho-historic` | `~/Projects/repo/new_graphiti/posts/2024-11-15-bcdata-ortho-historic` | Historic orthophoto processing workflow |
-| `2026-01-08-stac-ortho-mosaics` | `~/Projects/repo/new_graphiti/posts/2026-01-08-stac-ortho-mosaics` | Time series analysis example (Maxam Creek / Bulkley Lake) |
+| `2024-06-19-precipitation` | `new_graphiti/posts/2024-06-19-precipitation` | 3D interactive precipitation patterns; demonstrates reproducible workflow |
+| `2024-06-30-land-cover` | `new_graphiti/posts/2024-06-30-land-cover` | Proof of concept for baseline land cover classification; reference for future large-scale change detection |
+| `2024-11-15-bcdata-ortho-historic` | `new_graphiti/posts/2024-11-15-bcdata-ortho-historic` | Historic orthophoto processing workflow |
+| `2026-01-08-stac-ortho-mosaics` | `new_graphiti/posts/2026-01-08-stac-ortho-mosaics` | Time series analysis example (Maxam Creek / Bulkley Lake) |
 
 ## Repository Ecosystem
 
 ### Core Templates
 | Repo | Purpose |
 |------|---------|
-| `mybookdown-template` | General bookdown template - upstream base |
-| `fish_passage_template_reporting` | Fish passage report template (sibling pattern) |
+| internal bookdown template | General bookdown template - upstream base |
+| internal fish passage template | Fish passage report template (sibling pattern) |
 
 ### R Packages (Internal)
 | Repo | Purpose |
 |------|---------|
 | `fpr` | Fish passage R functions |
 | `ngr` | New Graph R utilities |
-| `rfp` | R functions for proposals/reporting |
+| internal reporting package | R functions for proposals/reporting |
 | `xciter` | Citation management |
 | `drift` | STAC land cover fetch, classification, multi-temporal change analysis |
 | `flooded` | Floodplain delineation from DEMs and stream networks |
@@ -74,14 +74,14 @@ Fork of `bcgov/bc_climate_anomaly` with modifications on `newgraph` branch.
 | Repo | Purpose |
 |------|---------|
 | `dff-2022` | Shared scripts (`/scripts`) for data processing |
-| `db_newgraph` | Database management |
-| `compost` | Communications workflow templates |
+| internal database repo | Database management |
+| internal communications repo | Communications workflow templates |
 
 ### STAC Ecosystem (Spatial Data)
 | Repo | Purpose |
 |------|---------|
 | `stac_elevation_bc` | LiDAR elevation (DEM, DSM) |
-| `stac_orthophoto_bc` | Orthophotos |
+| orthophoto STAC catalogue (internal repo) | Orthophotos |
 | `stac_uav_bc` | UAV/drone imagery |
 
 ## External Dependencies
@@ -108,7 +108,7 @@ Primary GIS project for field data collection and collaborative mapping:
 
 | GIS Project | Location |
 |-------------|----------|
-| `restoration_wedzin_kwa` | `~/Projects/gis/restoration_wedzin_kwa` |
+| `restoration_wedzin_kwa` | Mergin Maps project, synced to a local QGIS projects directory |
 
 **Workflow:** Mergin Maps for mobile/desktop sync, QGIS for analysis, scripts in `scripts/gis/` for processing.
 
@@ -128,7 +128,7 @@ gitignored `.claude/project-config.local.md` — read that file when running
 ### Mergin Sync (`/mergin-sync`)
 | Key | Value |
 |-----|-------|
-| GIS Project Path | `~/Projects/gis/restoration_wedzin_kwa` |
+| GIS Project Path | `<qgis-projects-dir>/restoration_wedzin_kwa` |
 | Conda Environment | `dff2` |
 
 ### Build (`/push-pr`)
@@ -206,12 +206,12 @@ CSV controls in `data/lulc/`: `flood_scenarios.csv` (`run=TRUE` rows executed) a
 - Validate cross-references and citations
 - Streamline GIS ↔ reporting integration (gq basemap extraction: [gq#13](https://github.com/NewGraphEnvironment/gq/issues/13))
 - Form data backup synchronization
-- Package citations: append `knitr::write_bib()` output to `references.bib` after rbbt writes it ([soul#27](https://github.com/NewGraphEnvironment/soul/issues/27), not yet implemented)
+- Package citations: append `knitr::write_bib()` output to `references.bib` after rbbt writes it (not yet implemented)
 - LULC: Agriculture superclass = Crops + Rangeland + Bare Ground (10m IO LULC can't distinguish reliably)
 
 ## Working Conventions
 
-Project-specific operating rules. Migrated from machine-local Claude memory (soul#47).
+Project-specific operating rules. Migrated from machine-local Claude memory.
 
 ### Never hardcode statistics in prose
 
@@ -243,8 +243,7 @@ Sequence: bump `DESCRIPTION` → rebuild → commit → tag → push.
 artefacts carry the old version while the tag says otherwise.
 
 **How to apply:** Decide the version first. This also makes `/gh-pr-merge` take its
-`SKIP_BUMP` path and tag a commit whose rendered output is already correct
-(see [soul#56](https://github.com/NewGraphEnvironment/soul/issues/56)).
+`SKIP_BUMP` path and tag a commit whose rendered output is already correct.
 
 ### Adding a citation requires a deliberate bib round trip
 
@@ -306,9 +305,9 @@ git fetch origin --prune && git merge --ff-only origin/main
 
 ### Sub-basin break points come from the `breaks` repo
 
-Break points and sub-basin polygons are generated by a separate shiny app at
-`~/Projects/repo/breaks`, which writes `data/lulc/break_points.csv` and
-`data/lulc/subbasins.gpkg` here. Requires an SSH tunnel on port 63333 for FWA database access
+Break points and sub-basin polygons are generated by a separate shiny app,
+[`breaks`](https://github.com/NewGraphEnvironment/breaks), which writes `data/lulc/break_points.csv` and
+`data/lulc/subbasins.gpkg` here. Requires a connection to a bcfishpass/fwapg database for FWA access
 — as do `scripts/data_map-study-area.R` and `scripts/fwa_query.R`.
 
 **How to apply:** When sub-basin names, descriptions, or attributes change, edit
