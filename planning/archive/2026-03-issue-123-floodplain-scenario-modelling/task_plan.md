@@ -6,7 +6,7 @@
 **Created:** 2026-03-11
 **Issue:** [#123](https://github.com/NewGraphEnvironment/restoration_wedzin_kwa_2024/issues/123)
 **Branch:** `123-floodplain-refinement`
-**SRED Tracking:** Relates to NewGraphEnvironment/sred-2025-2026#4
+**SRED Tracking:** Relates to an internal issue
 
 ---
 

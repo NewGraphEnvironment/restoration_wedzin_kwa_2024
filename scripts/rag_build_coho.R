@@ -18,7 +18,7 @@
 # Output:
 #   data/rag/coho_refs.duckdb   (gitignored via data/rag/)
 #
-# Relates to fisheries-precision-neexdzii branch, NewGraphEnvironment/sred-2025-2026#14
+# Relates to fisheries-precision-neexdzii branch, an internal issue
 
 library(ragnar)
 

@@ -15,4 +15,4 @@ Made the Neexdzii Kwa restoration report and its floodplain LULC pipeline **repr
 - Stale citation key `smith_gaboury2016BUILTREPORT` (not in references.bib, not cited) — clean up.
 - Adopt a declarative `update_qgis` manifest param + shared copy helper (replaces the manual `cp` of LULC layers into the GIS project) — [mybookdown-template#92](https://github.com/NewGraphEnvironment/mybookdown-template/issues/92).
 
-Closed by: PR #150 (merge `7301e5e`), tag `v0.2.11`. Related: `mybookdown-template#92`, `NewGraphEnvironment/sred#15`.
+Closed by: PR #150 (merge `7301e5e`), tag `v0.2.11`. Related: `mybookdown-template#92`, an internal issue.

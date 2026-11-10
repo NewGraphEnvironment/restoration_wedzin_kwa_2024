@@ -19,7 +19,7 @@
 #   data/rag/vca_refs.duckdb   (gitignored)
 #
 # Relates to #123, cred#22, flooded#28
-# Relates to NewGraphEnvironment/sred-2025-2026#14
+# Relates to an internal issue
 
 library(ragnar)
 
